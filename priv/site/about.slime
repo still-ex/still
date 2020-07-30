@@ -2,7 +2,7 @@
 layout: _layout.slime
 title: Extatic | About
 ---
-= include("_includes/header.slime")
+= include("header")
 
 h1 About
 p Hi! I like Elixir.
