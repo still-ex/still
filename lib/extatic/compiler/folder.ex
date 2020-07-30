@@ -1,7 +1,7 @@
 defmodule Extatic.Compiler.Folder do
   import Extatic.Utils
 
-  alias Extatic.{Compiler, Transforms}
+  alias Extatic.{Compiler, Transforms, Compiler.Preprocessor}
 
   def compile(folder \\ "") do
     with {:ok, files} <- File.ls(Path.join(get_input_path(), folder)),
@@ -30,13 +30,9 @@ defmodule Extatic.Compiler.Folder do
     ext = Path.extname(file)
 
     cond do
-      Enum.member?(template_languages(), ext) -> Compiler.File.compile(file)
+      Enum.member?(Preprocessor.supported_extensions(), ext) -> Compiler.File.compile(file)
       true -> :ok
     end
-  end
-
-  defp template_languages do
-    Application.get_env(:extatic, :template_languages, [])
   end
 
   defp pass_through_copy do
