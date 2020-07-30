@@ -13,4 +13,8 @@ defmodule Extatic.Compiler.Preprocessor do
     @supported_preprocessors[extension] ||
       raise CompileError, message: "unsupported file extension in #{file}"
   end
+
+  def supported_extensions do
+    Map.keys(@supported_preprocessors)
+  end
 end

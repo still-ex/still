@@ -11,7 +11,7 @@ defmodule Extatic.Compiler do
          :ok <- File.mkdir_p(get_output_path()) do
       Extatic.Collections.reset()
       collect_metadata()
-      compile_folder()
+      __MODULE__.Folder.compile()
     end
   end
 
@@ -37,22 +37,6 @@ defmodule Extatic.Compiler do
   def handle_metadata(file, metadata) do
     if Map.has_key?(metadata, "tag") do
       Extatic.Collections.add(metadata["tag"], Map.put(metadata, "id", file))
-    end
-  end
-
-  defp compile_folder(folder \\ "") do
-    with {:ok, files} <- File.ls(Path.join(get_input_path(), folder)),
-         files <- Enum.reject(files, &String.starts_with?(&1, "_")),
-         _ <- Enum.map(files, &compile_file(Path.join(folder, &1))) do
-      :ok
-    end
-  end
-
-  defp compile_file(file) do
-    if File.dir?(Path.join(get_input_path(), file)) do
-      compile_folder(file)
-    else
-      Compiler.File.compile(file)
     end
   end
 end
