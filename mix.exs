@@ -13,7 +13,8 @@ defmodule Extatic.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      mod: {Extatic.Application, []}
+      mod: {Extatic.Application, []},
+      env: [reload_msg: "reload"]
     ]
   end
 
