@@ -19,11 +19,11 @@ defmodule Extatic.MixProject do
 
   defp deps do
     [
-      {:slime, "~> 1.2"},
       {:cowboy, "~> 2.8"},
+      {:file_system, "~> 0.2.8"},
       {:plug, "~> 1.10"},
       {:plug_cowboy, "~> 2.3"},
-      {:file_system, "~> 0.2.8"},
+      {:slime, "~> 1.2", optional: true},
       {:yaml_elixir, "~> 2.4"}
     ]
   end
