@@ -9,7 +9,9 @@ defmodule Extatic.Compiler.File do
     with {:ok, content} <- File.read(Path.join(get_input_path(), file)),
          {:ok, compiled} <- Compiler.Content.compile(content),
          new_file_name <- String.replace(file, Path.extname(file), ".html"),
-         :ok <- File.write(Path.join(get_output_path(), new_file_name), compiled) do
+         new_file_path <- Path.join(get_output_path(), new_file_name),
+         _ <- File.mkdir_p!(Path.dirname(new_file_path)),
+         :ok <- File.write(new_file_path, compiled) do
       Logger.info("Compiled #{file}")
       :ok
     else

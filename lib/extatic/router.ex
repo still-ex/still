@@ -12,11 +12,12 @@ defmodule Extatic.Router do
 
   get "/" do
     conn
+    |> put_resp_header("Content-Type", "text/html; charset=UTF-8")
     |> send_file(200, Path.join(get_output_path(), "index.html"))
   end
 
-  get ":path" do
-    file = "#{Path.join(get_output_path(), path)}.html"
+  get "*path" do
+    file = "#{Path.join(get_output_path(), Path.join(path))}.html"
 
     if File.exists?(file) do
       conn
