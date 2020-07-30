@@ -4,32 +4,11 @@ defmodule Extatic.Compiler.Content do
   import Extatic.Utils
 
   def compile(content) do
-    with [frontmatter, content] <- parse_frontmatter(content),
-         settings <- parse_yaml(frontmatter),
+    with {:ok, settings, content} <- Extatic.Compiler.Metadata.parse(content),
          compiled <- render_template(content),
          compiled <- append_layout(compiled, settings),
          compiled <- append_development_layout(compiled) do
       {:ok, compiled}
-    end
-  end
-
-  defp parse_frontmatter(content) do
-    case String.split(content, ~r/\n-{3,}\n/, parts: 2) do
-      [frontmatter, content] -> [frontmatter, content]
-      [content] -> [nil, content]
-    end
-  end
-
-  defp parse_yaml(nil), do: %{}
-
-  defp parse_yaml(yaml) do
-    case YamlElixir.read_from_string(yaml) do
-      {:ok, res} ->
-        res
-
-      _ ->
-        Logger.error("Failed parsing frontmatter\n#{yaml}")
-        %{}
     end
   end
 
@@ -60,6 +39,6 @@ defmodule Extatic.Compiler.Content do
 
   defp render_template(content, variables) do
     ("- import Extatic.Compiler.ViewHelpers\n" <> content)
-    |> Slime.render(variables)
+    |> Slime.render([{:collections, Extatic.Collections.all()} | variables])
   end
 end
