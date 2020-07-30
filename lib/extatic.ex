@@ -1,0 +1,2 @@
+defmodule Extatic do
+end

@@ -1,0 +1,8 @@
+doctype html
+html
+  head
+    title Extatic | About
+    meta name="viewport" content="width=device-width, initial-scale=1.0"
+  body
+    h1 About
+    p Hi! I like Elixir.
