@@ -20,6 +20,7 @@ defmodule Extatic.Router do
 
     if File.exists?(file) do
       conn
+      |> put_resp_header("Content-Type", "text/html; charset=UTF-8")
       |> send_file(200, file)
     else
       conn
