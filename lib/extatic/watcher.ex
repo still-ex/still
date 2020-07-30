@@ -42,6 +42,6 @@ defmodule Extatic.Watcher do
   end
 
   defp compile() do
-    Compiler.compile(get_input_path(), get_output_path())
+    Compiler.compile()
   end
 end

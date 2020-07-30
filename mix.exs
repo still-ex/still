@@ -23,7 +23,8 @@ defmodule Extatic.MixProject do
       {:cowboy, "~> 2.8"},
       {:plug, "~> 1.10"},
       {:plug_cowboy, "~> 2.3"},
-      {:file_system, "~> 0.2.8"}
+      {:file_system, "~> 0.2.8"},
+      {:yaml_elixir, "~> 2.4"}
     ]
   end
 end

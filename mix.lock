@@ -14,4 +14,6 @@
   "ranch": {:hex, :ranch, "1.7.1", "6b1fab51b49196860b733a49c07604465a47bdb78aa10c1c16a3d199f7f8c881", [:rebar3], [], "hexpm", "451d8527787df716d99dc36162fca05934915db0b6141bbdac2ea8d3c7afc7d7"},
   "slime": {:hex, :slime, "1.2.1", "71e036056051f0a6fae136af34eaa1322e8e11cdd2da3a56196fd31bca34dd49", [:mix], [{:neotoma, "~> 1.7", [hex: :neotoma, repo: "hexpm", optional: false]}], "hexpm", "298568e64291fed4eb690be094f6c46400daa03b594bab34fcaa0167e139c263"},
   "telemetry": {:hex, :telemetry, "0.4.2", "2808c992455e08d6177322f14d3bdb6b625fbcfd233a73505870d8738a2f4599", [:rebar3], [], "hexpm", "2d1419bd9dda6a206d7b5852179511722e2b18812310d304620c7bd92a13fcef"},
+  "yamerl": {:hex, :yamerl, "0.8.0", "8214cfe16bbabe5d1d6c14a14aea11c784b9a21903dd6a7c74f8ce180adae5c7", [:rebar3], [], "hexpm", "010634477bf9c208a0767dcca89116c2442cf0b5e87f9c870f85cd1c3e0c2aab"},
+  "yaml_elixir": {:hex, :yaml_elixir, "2.5.0", "45de762be6d75fa5a8b5f44ddff8c30f64c26526eab5b1d72e36d616007b7796", [:mix], [{:yamerl, "~> 0.7", [hex: :yamerl, repo: "hexpm", optional: false]}], "hexpm", "80fe4e43f05582f2a90f2dcd73fc6171fbd65f2e6836f71fe4ce2154ef358c36"},
 }
