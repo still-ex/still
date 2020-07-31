@@ -1,0 +1,10 @@
+---
+layout: _layout.slime
+---
+
+#id.class
+  h1 Home page
+  p Let's try to list some numbers:
+  ul
+    = Enum.map Map.get(collections, "post", []), fn x ->
+      li = x["id"]

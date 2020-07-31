@@ -8,10 +8,13 @@ defmodule Extatic.Compiler.Preprocessor do
   }
 
   def for(file) do
-    extension = Path.extname(file)
+    preprocessor = @supported_preprocessors[Path.extname(file)]
 
-    @supported_preprocessors[extension] ||
-      raise CompileError, message: "unsupported file extension in #{file}"
+    if preprocessor do
+      {:ok, preprocessor}
+    else
+      {:error, :preprocessor_not_found}
+    end
   end
 
   def supported_extensions do
