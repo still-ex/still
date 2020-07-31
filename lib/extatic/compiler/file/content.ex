@@ -3,6 +3,7 @@ defmodule Extatic.Compiler.File.Content do
 
   alias Extatic.FileProcess
   alias Extatic.Compiler.File.Frontmatter
+  alias Extatic.Compiler.Preprocessor
 
   def compile(file, content, preprocessor, data \\ %{}) do
     with {:ok, template_data, content} <- Frontmatter.parse(content),
@@ -33,7 +34,8 @@ defmodule Extatic.Compiler.File.Content do
     :dev ->
       @dev_layout "priv/extatic/dev.slime"
 
-      defp append_development_layout(content, preprocessor) do
+      defp append_development_layout(content, preprocessor)
+           when preprocessor == Preprocessor.Slime do
         Application.app_dir(:extatic, @dev_layout)
         |> File.read!()
         |> render_template(preprocessor,

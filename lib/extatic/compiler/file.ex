@@ -6,9 +6,9 @@ defmodule Extatic.Compiler.File do
   alias Extatic.Compiler
 
   def compile(file) do
-    with {:ok, compiled, _settings} <- process(file),
-         new_file_name <- String.replace(file, Path.extname(file), ".html"),
-         new_file_path <- Path.join(get_output_path(), new_file_name),
+    with {:ok, compiled, settings} <- process(file),
+         new_file_name <- get_output_file_name(file, settings),
+         new_file_path <- get_output_path(new_file_name),
          _ <- File.mkdir_p!(Path.dirname(new_file_path)),
          :ok <- File.write(new_file_path, compiled) do
       Logger.info("Compiled #{file}")
@@ -56,5 +56,13 @@ defmodule Extatic.Compiler.File do
       )
 
       {:error, :syntax_error}
+  end
+
+  defp get_output_file_name(_file, %{permalink: permalink}) do
+    permalink
+  end
+
+  defp get_output_file_name(file, _) do
+    String.replace(file, Path.extname(file), ".html")
   end
 end
