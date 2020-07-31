@@ -18,7 +18,7 @@ end
 If you're starting a project from scratch, run:
 
 ```
-mix new your_site --sup
+mix new your_site
 cd your_site
 mkdir -p priv/site
 touch priv/site/index.slime
