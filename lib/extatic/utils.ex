@@ -13,7 +13,7 @@ defmodule Extatic.Utils do
     |> Path.expand()
   end
 
-  def clean_output_dir() do
+  def rm_output_dir() do
     File.rm_rf(get_output_path())
   end
 end

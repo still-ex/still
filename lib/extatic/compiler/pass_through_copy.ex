@@ -59,6 +59,9 @@ defmodule Extatic.Compiler.PassThroughCopy do
   defp match_pass_through_copy(file, {match, _output}) when is_binary(match),
     do: match_pass_through_copy(file, match)
 
+  defp match_pass_through_copy(file, {match, _output}) when is_atom(match),
+    do: match_pass_through_copy(file, match |> Atom.to_string())
+
   defp match_pass_through_copy(file, match) when is_binary(match), do: file == match
 
   defp match_pass_through_copy(file, match) do

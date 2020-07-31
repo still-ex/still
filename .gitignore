@@ -23,3 +23,5 @@ erl_crash.dump
 extatic-*.tar
 
 _site/
+
+._test_site/

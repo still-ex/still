@@ -5,11 +5,13 @@ defmodule Extatic.Compiler.PassThroughCopyTest do
 
   describe "try" do
     test "matches folders" do
-      Application.put_env(:extatic, :pass_through_copy, [{"css", "styles"}])
+      Application.put_env(:extatic, :pass_through_copy, css: "styles", img: "img")
 
       PassThroughCopy.try("css")
+      PassThroughCopy.try("img")
 
       assert File.exists?(get_output_path("styles"))
+      assert File.exists?(get_output_path("img"))
     end
 
     test "matches files" do

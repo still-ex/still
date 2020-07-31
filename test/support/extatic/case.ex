@@ -8,7 +8,7 @@ defmodule Extatic.Case do
       setup do
         Application.put_env(:extatic, :pass_through_copy, [])
 
-        Extatic.Utils.clean_output_dir()
+        Extatic.Utils.rm_output_dir()
 
         :ok
       end
