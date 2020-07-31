@@ -6,6 +6,8 @@ defmodule Extatic.MixProject do
       app: :extatic,
       version: "0.1.0",
       elixir: "~> 1.10",
+      elixirc_paths: ["lib"] ++ elixirc_paths(Mix.env()),
+      aliases: aliases(),
       deps: deps()
     ]
   end
@@ -28,4 +30,16 @@ defmodule Extatic.MixProject do
       {:yaml_elixir, "~> 2.4"}
     ]
   end
+
+  defp aliases do
+    [
+      test: "test --no-start"
+    ]
+  end
+
+  defp elixirc_paths(:test) do
+    ["test/support"]
+  end
+
+  defp elixirc_paths(_), do: []
 end

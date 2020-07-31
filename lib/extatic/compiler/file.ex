@@ -7,7 +7,7 @@ defmodule Extatic.Compiler.File do
 
   def compile(file) do
     with {:ok, content} <- File.read(Path.join(get_input_path(), file)),
-         preprocessor <- Compiler.Preprocessor.for(file),
+         {:ok, preprocessor} <- Compiler.Preprocessor.for(file),
          {:ok, compiled} <- Compiler.Content.compile(content, preprocessor),
          new_file_name <- String.replace(file, Path.extname(file), ".html"),
          new_file_path <- Path.join(get_output_path(), new_file_name),
@@ -16,6 +16,9 @@ defmodule Extatic.Compiler.File do
       Logger.info("Compiled #{file}")
       :ok
     else
+      {:error, :preprocessor_not_found} ->
+        :ok
+
       _ ->
         Logger.error("Failed to compile #{file}")
     end

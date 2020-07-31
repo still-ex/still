@@ -11,7 +11,7 @@ defmodule Extatic.Compiler do
          :ok <- File.mkdir_p(get_output_path()) do
       Extatic.Collections.reset()
       collect_metadata()
-      __MODULE__.Folder.compile()
+      __MODULE__.Traverse.run()
     end
   end
 

@@ -4,7 +4,7 @@ defmodule Extatic.Compiler.ViewHelpers do
   alias Extatic.Compiler
 
   def include(file) do
-    with preprocessor <- Compiler.Preprocessor.for(file),
+    with {:ok, preprocessor} <- Compiler.Preprocessor.for(file),
          {:ok, content} <-
            get_input_path()
            |> Path.join(file)

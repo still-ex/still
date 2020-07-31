@@ -1,9 +1,9 @@
-defmodule Extatic.Compiler.Folder do
+defmodule Extatic.Compiler.Traverse do
   import Extatic.Utils
 
-  alias Extatic.{Compiler, Transforms, Compiler.Preprocessor}
+  alias Extatic.Compiler
 
-  def compile(folder \\ "") do
+  def run(folder \\ "") do
     with {:ok, files} <- File.ls(Path.join(get_input_path(), folder)),
          files <- Enum.reject(files, &String.starts_with?(&1, "_")),
          _ <- Enum.map(files, &compile_file(Path.join(folder, &1))) do
@@ -20,22 +20,18 @@ defmodule Extatic.Compiler.Folder do
   end
 
   defp process_folder(folder) do
-    cond do
-      Enum.member?(pass_through_copy(), folder) -> Transforms.PassThroughCopy.run(folder)
-      true -> compile(folder)
+    with :ok <- Compiler.PassThroughCopy.try(folder) do
+      :ok
+    else
+      _ -> run(folder)
     end
   end
 
   defp process_file(file) do
-    ext = Path.extname(file)
-
-    cond do
-      Enum.member?(Preprocessor.supported_extensions(), ext) -> Compiler.File.compile(file)
-      true -> :ok
+    with :ok <- Compiler.PassThroughCopy.try(file) do
+      :ok
+    else
+      _ -> Compiler.File.compile(file)
     end
-  end
-
-  defp pass_through_copy do
-    Application.get_env(:extatic, :pass_through_copy, [])
   end
 end
