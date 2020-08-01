@@ -7,6 +7,7 @@ defmodule Extatic.Application do
     Logger.info("Starting development server on port http://localhost:#{port()}")
 
     children = [
+      Extatic.Compiler.Supervisor,
       Extatic.Collections,
       {
         Plug.Cowboy,
