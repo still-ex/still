@@ -23,6 +23,10 @@ defmodule Extatic.Compiler.Context do
     GenServer.call(__MODULE__, :pop)
   end
 
+  def current() do
+    GenServer.call(__MODULE__, :current)
+  end
+
   def init(:ok) do
     {:ok, []}
   end
@@ -43,5 +47,13 @@ defmodule Extatic.Compiler.Context do
 
   def handle_call(:pop, _from, [h | t]) do
     {:reply, h, t}
+  end
+
+  def handle_call(:current, _from, []) do
+    {:reply, nil, []}
+  end
+
+  def handle_call(:current, _from, [h | _] = state) do
+    {:reply, h, state}
   end
 end

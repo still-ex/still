@@ -1,6 +1,8 @@
 defmodule Extatic.Compiler.ViewHelpers.Link do
   import Extatic.Utils
 
+  alias Extatic.Compiler
+
   def render(opts, do: markup) do
     render(markup, opts)
   end
@@ -8,7 +10,9 @@ defmodule Extatic.Compiler.ViewHelpers.Link do
   def render(text, opts) do
     {url, opts} = pop_url(opts)
 
-    Extatic.Compiler.Preprocessor.Slime.content_tag("a", text, [{:href, url} | opts])
+    %{preprocessor: preprocessor} = Compiler.Context.current()
+
+    preprocessor.content_tag("a", text, [{:href, url} | opts])
   end
 
   defp pop_url(opts) do

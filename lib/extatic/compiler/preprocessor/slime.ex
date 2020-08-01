@@ -2,6 +2,8 @@ if Code.ensure_loaded?(Slime) do
   defmodule Extatic.Compiler.Preprocessor.Slime do
     require Logger
 
+    @behaviour Extatic.Compiler.Preprocessor
+
     def render(content, variables \\ []) do
       do_render(content, variables)
     rescue
