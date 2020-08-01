@@ -13,6 +13,24 @@ if Code.ensure_loaded?(Slime) do
           column: e.column
     end
 
+    def content_tag(tag, content, opts) do
+      {data, opts} = Keyword.pop(opts, :data, [])
+      attrs = Enum.map(opts, fn {attr, value} -> ~s(#{attr}="#{value}") end)
+
+      attrs =
+        data
+        |> Enum.map(fn {attr, value} -> ~s(data-#{attr}="#{value}") end)
+        |> Enum.concat(attrs)
+        |> Enum.join(" ")
+
+      slim = """
+      #{tag} #{attrs}
+        | #{content}
+      """
+
+      Slime.render(slim)
+    end
+
     defp do_render(content, variables) do
       ("- import Extatic.Compiler.ViewHelpers\n" <> content)
       |> Slime.render(variables)

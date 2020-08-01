@@ -7,4 +7,9 @@ layout: _layout.slime
   p Let's try to list some numbers:
   ul
     = Enum.map Map.get(collections, "post", []), fn x ->
-      li = x["id"]
+      li = link "Post", to: x["id"], target: "_blank", style: "color: red", data: [method: :get]
+
+  = link to: "https://duckduckgo.com" do
+    span "External"
+    br
+    span "Search"

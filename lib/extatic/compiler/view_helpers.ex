@@ -2,6 +2,7 @@ defmodule Extatic.Compiler.ViewHelpers do
   import Extatic.Utils
 
   alias Extatic.Compiler
+  alias Extatic.Compiler.ViewHelpers
 
   def include(file) do
     with {:ok, preprocessor} <- Compiler.Preprocessor.for(file),
@@ -15,5 +16,9 @@ defmodule Extatic.Compiler.ViewHelpers do
     else
       _ -> ""
     end
+  end
+
+  def link(content, opts) do
+    ViewHelpers.Link.render(content, opts)
   end
 end
