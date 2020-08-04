@@ -1,7 +1,7 @@
 defmodule Extatic.FileProcess do
   use GenServer
 
-  alias Extatic.Compiler
+  alias Extatic.{Compiler, FileRegistry}
 
   import Extatic.Utils
 
@@ -19,11 +19,13 @@ defmodule Extatic.FileProcess do
 
   @impl true
   def init(%{file: file}) do
-    {:ok, %{file: file |> to_string(), subscribers: []}}
+    {:ok, %{file: file |> to_string()}}
   end
 
   @impl true
   def handle_call(:compile, _from, state) do
+    FileRegistry.clear_subscriptions()
+
     with :ok <- try_pass_through_copy(state) do
       {:reply, :ok, state}
     else
@@ -32,8 +34,10 @@ defmodule Extatic.FileProcess do
   end
 
   @impl true
-  def handle_call(:render, {from, _ref}, state) do
-    {:reply, do_render(state), %{state | subscribers: [from | state.subscribers] |> Enum.uniq()}}
+  def handle_call(:render, _from, state) do
+    FileRegistry.clear_subscriptions()
+
+    {:reply, do_render(state), state}
   end
 
   defp try_pass_through_copy(state) do
