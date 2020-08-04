@@ -20,7 +20,8 @@ defmodule Extatic.Compiler.Traverse do
   end
 
   defp process_folder(folder) do
-    with :ok <- Compiler.PassThroughCopy.try(folder) do
+    with {:ok, pid} <- FileRegistry.get(folder),
+         :ok <- FileProcess.compile(pid) do
       :ok
     else
       _ -> run(folder)
