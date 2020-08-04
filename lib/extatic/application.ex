@@ -12,6 +12,8 @@ defmodule Extatic.Application do
         Plug.Cowboy,
         scheme: :http, plug: {Extatic.Router, []}, port: port(), dispatch: dispatch()
       },
+      Extatic.FileRegistry,
+      Extatic.FileRegistry.Supervisor,
       Extatic.Watcher
     ]
 

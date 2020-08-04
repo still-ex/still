@@ -1,16 +1,11 @@
 defmodule Extatic.Compiler.ViewHelpers do
   import Extatic.Utils
 
-  alias Extatic.Compiler
+  alias Extatic.{FileRegistry, FileProcess}
 
   def include(file) do
-    with {:ok, preprocessor} <- Compiler.Preprocessor.for(file),
-         {:ok, content} <-
-           get_input_path()
-           |> Path.join(file)
-           |> File.read!()
-           |> Compiler.Content.compile(preprocessor) do
-      content
+    with {:ok, pid} <- FileRegistry.get(file) do
+      FileProcess.render(pid)
     else
       _ -> ""
     end
