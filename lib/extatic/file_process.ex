@@ -45,11 +45,16 @@ defmodule Extatic.FileProcess do
   end
 
   defp do_compile(state) do
-    if File.dir?(get_input_path(state.file)) do
-      {:reply, :error, state}
-    else
-      Compiler.File.compile(state.file)
-      {:reply, :ok, state}
+    cond do
+      File.dir?(get_input_path(state.file)) ->
+        {:reply, :error, state}
+
+      String.starts_with?(state.file, "_") ->
+        {:reply, :ok, state}
+
+      true ->
+        Compiler.File.compile(state.file)
+        {:reply, :ok, state}
     end
   end
 

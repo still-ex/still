@@ -51,7 +51,16 @@ defmodule Extatic.Watcher do
         file |> Path.dirname() |> recompile()
 
       {:ok, pid} ->
+        notify_file_process_subscribers(pid)
         FileProcess.compile(pid)
     end
+  end
+
+  defp notify_file_process_subscribers(pid) do
+    FileRegistry.subscriptions()
+    |> Enum.filter(fn {_k, pids} ->
+      Enum.member?(pids, pid)
+    end)
+    |> Enum.map(fn {pid, _v} -> FileProcess.compile(pid) end)
   end
 end
