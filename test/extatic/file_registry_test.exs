@@ -10,8 +10,20 @@ defmodule Extatic.FileRegistryTest do
   end
 
   describe "get" do
+    test "returns not found when the file process doesn't exist" do
+      assert {:error, :not_found} = FileRegistry.get("index.slime")
+    end
+
+    test "returns an existing file process" do
+      {:ok, pid} = FileRegistry.get_or_create("index.slime")
+
+      assert {:ok, ^pid} = FileRegistry.get("index.slime")
+    end
+  end
+
+  describe "get_or_create" do
     test "returns the pid of a file process" do
-      assert {:ok, _pid} = FileRegistry.get("index.slime")
+      assert {:ok, _pid} = FileRegistry.get_or_create("index.slime")
     end
   end
 

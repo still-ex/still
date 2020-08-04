@@ -11,6 +11,10 @@ defmodule Extatic.FileRegistry do
     GenServer.call(__MODULE__, {:get, file})
   end
 
+  def get_or_create(file) do
+    GenServer.call(__MODULE__, {:get_or_create, file})
+  end
+
   def get_and_subscribe(file) do
     GenServer.call(__MODULE__, {:get_and_subscribe, file})
   end
@@ -46,8 +50,17 @@ defmodule Extatic.FileRegistry do
   end
 
   @impl true
-  def handle_call({:get, file}, _from, state) do
+  def handle_call({:get_or_create, file}, _from, state) do
     {:reply, get_or_create_file_process(file), state}
+  end
+
+  @impl true
+  def handle_call({:get, file}, _from, state) do
+    {:reply, get_file_process(file), state}
+  end
+
+  defp get_file_process(file) do
+    Supervisor.get_file_process(file |> String.to_atom())
   end
 
   defp get_or_create_file_process(file) do

@@ -9,6 +9,16 @@ defmodule Extatic.FileRegistry.Supervisor do
     DynamicSupervisor.init(strategy: :one_for_one)
   end
 
+  def get_file_process(file) do
+    case Process.whereis(file) do
+      nil ->
+        {:error, :not_found}
+
+      pid ->
+        {:ok, pid}
+    end
+  end
+
   def get_or_create_file_process(file) do
     case Process.whereis(file) do
       nil ->

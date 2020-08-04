@@ -20,7 +20,7 @@ defmodule Extatic.Compiler.Traverse do
   end
 
   defp process_folder(folder) do
-    with {:ok, pid} <- FileRegistry.get(folder),
+    with {:ok, pid} <- FileRegistry.get_or_create(folder),
          :ok <- FileProcess.compile(pid) do
       :ok
     else
@@ -29,7 +29,7 @@ defmodule Extatic.Compiler.Traverse do
   end
 
   defp process_file(file) do
-    with {:ok, pid} <- FileRegistry.get(file) do
+    with {:ok, pid} <- FileRegistry.get_or_create(file) do
       FileProcess.compile(pid)
     end
   end

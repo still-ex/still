@@ -13,6 +13,12 @@ defmodule Extatic.Utils do
     |> Path.expand()
   end
 
+  def get_relative_input_path(full_path) do
+    full_path
+    |> String.replace(Application.fetch_env!(:extatic, :input), "")
+    |> String.trim_leading("/")
+  end
+
   def rm_output_dir() do
     File.rm_rf(get_output_path())
   end

@@ -1,7 +1,7 @@
 defmodule Extatic.Watcher do
   use GenServer
 
-  alias Extatic.Compiler
+  alias Extatic.{Compiler, FileRegistry, FileProcess}
 
   import Extatic.Utils
 
@@ -17,7 +17,7 @@ defmodule Extatic.Watcher do
     {:ok, watcher_pid} = FileSystem.start_link(dirs: [get_input_path()])
     FileSystem.subscribe(watcher_pid)
 
-    compile()
+    Compiler.compile()
 
     {:ok, %{subscribers: []}}
   end
@@ -26,8 +26,10 @@ defmodule Extatic.Watcher do
     {:noreply, %{state | subscribers: [pid | state.subscribers]}}
   end
 
-  def handle_info({:file_event, _watcher_pid, {_path, _events}}, state) do
-    compile()
+  def handle_info({:file_event, _watcher_pid, {file, _events}}, state) do
+    get_relative_input_path(file)
+    |> recompile()
+
     notify_subscribers(state.subscribers)
 
     {:noreply, state}
@@ -41,7 +43,15 @@ defmodule Extatic.Watcher do
     subscribers |> Enum.each(&send(&1, Application.fetch_env!(:extatic, :reload_msg)))
   end
 
-  defp compile() do
-    Compiler.compile()
+  defp recompile("."), do: :ok
+
+  defp recompile(file) do
+    case FileRegistry.get(file) do
+      {:error, :not_found} ->
+        file |> Path.dirname() |> recompile()
+
+      {:ok, pid} ->
+        FileProcess.compile(pid)
+    end
   end
 end
