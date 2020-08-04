@@ -19,9 +19,18 @@ defmodule Extatic.FileRegistry do
     GenServer.call(__MODULE__, :clear_subscriptions)
   end
 
+  def subscriptions do
+    GenServer.call(__MODULE__, :subsriptions)
+  end
+
   @impl true
   def init(_) do
     {:ok, %{subsriptions: %{}}}
+  end
+
+  @impl true
+  def handle_call(:subsriptions, _from, state) do
+    {:reply, state.subsriptions, state}
   end
 
   @impl true
