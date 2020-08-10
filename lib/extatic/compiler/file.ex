@@ -57,6 +57,6 @@ defmodule Extatic.Compiler.File do
         crash_reason: e.message
       )
 
-      {:ok, :syntax_error}
+      {:error, :syntax_error}
   end
 end
