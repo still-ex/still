@@ -5,8 +5,8 @@ defmodule Extatic.Compiler.PassThroughCopy do
 
   def try(file) do
     case get_pass_through_copy_match(file) do
-      {_, output_file} ->
-        run(file, output_file)
+      {input_file, output_file} ->
+        run(file, match_output(file, input_file, output_file))
 
       output_file when not is_nil(output_file) ->
         run(file)
@@ -62,12 +62,23 @@ defmodule Extatic.Compiler.PassThroughCopy do
   defp match_pass_through_copy(file, {match, _output}) when is_atom(match),
     do: match_pass_through_copy(file, match |> Atom.to_string())
 
-  defp match_pass_through_copy(file, match) when is_binary(match), do: file == match
+  defp match_pass_through_copy(file, match) when is_binary(match),
+    do: String.starts_with?(file, match)
 
   defp match_pass_through_copy(file, match) do
     cond do
       Regex.regex?(match) -> String.match?(file, match)
       true -> false
     end
+  end
+
+  defp match_output(file, input_match, output_match) when is_atom(output_match),
+    do: match_output(file, input_match, output_match |> Atom.to_string())
+
+  defp match_output(file, input_match, output_match) when is_atom(input_match),
+    do: match_output(file, input_match |> Atom.to_string(), output_match)
+
+  defp match_output(file, input_match, output_match) do
+    String.replace_prefix(file, input_match, output_match)
   end
 end

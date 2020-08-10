@@ -30,6 +30,8 @@ defmodule Extatic.Watcher do
     get_relative_input_path(file)
     |> compile()
 
+    notify_subscribers(state.subscribers)
+
     {:noreply, state}
   end
 
@@ -42,11 +44,15 @@ defmodule Extatic.Watcher do
     get_relative_input_path(file)
     |> compile()
 
+    notify_subscribers(state.subscribers)
+
     {:noreply, state}
   end
 
   def handle_info({:file_event, _watcher_pid, {_file, _events}}, state) do
     Compiler.compile()
+
+    notify_subscribers(state.subscribers)
 
     {:noreply, state}
   end
@@ -68,4 +74,7 @@ defmodule Extatic.Watcher do
         file |> Path.dirname() |> compile()
     end
   end
+
+  defp notify_subscribers(subscribers),
+    do: subscribers |> Enum.each(&send(&1, Application.fetch_env!(:extatic, :reload_msg)))
 end

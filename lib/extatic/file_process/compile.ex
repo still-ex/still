@@ -5,7 +5,7 @@ defmodule Extatic.FileProcess.Compile do
 
   def run(state) do
     with :ok <- try_pass_through_copy(state) do
-      {:reply, :ok, state}
+      :ok
     else
       _ -> do_compile(state)
     end

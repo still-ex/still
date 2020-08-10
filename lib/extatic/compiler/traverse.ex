@@ -12,7 +12,7 @@ defmodule Extatic.Compiler.Traverse do
   end
 
   defp compile_file(file) do
-    if File.dir?(Path.join(get_input_path(), file)) do
+    if File.dir?(get_input_path(file)) do
       process_folder(file)
     else
       process_file(file)
