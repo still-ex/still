@@ -15,7 +15,7 @@ defmodule Extatic.Compiler.PassThroughCopyTest do
     end
 
     test "matches files" do
-      Application.put_env(:extatic, :pass_through_copy, ["logo.jpg"])
+      Application.put_env(:extatic, :pass_through_copy, ["logo.jpg", css: "styles"])
 
       PassThroughCopy.try("logo.jpg")
 

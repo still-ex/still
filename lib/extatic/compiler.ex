@@ -28,15 +28,15 @@ defmodule Extatic.Compiler do
       collect_metadata(file)
     else
       {:ok, metadata, _content} =
-        Compiler.Metadata.parse(Path.join(get_input_path(), file) |> File.read!())
+        Compiler.File.Frontmatter.parse(get_input_path(file) |> File.read!())
 
       handle_metadata(file, metadata)
     end
   end
 
   def handle_metadata(file, metadata) do
-    if Map.has_key?(metadata, "tag") do
-      Extatic.Collections.add(metadata["tag"], Map.put(metadata, "id", file))
+    if Map.has_key?(metadata, :tag) do
+      Extatic.Collections.add(metadata[:tag], Map.put(metadata, "id", file))
     end
   end
 end

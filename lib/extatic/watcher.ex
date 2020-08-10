@@ -26,11 +26,27 @@ defmodule Extatic.Watcher do
     {:noreply, %{state | subscribers: [pid | state.subscribers]}}
   end
 
-  def handle_info({:file_event, _watcher_pid, {file, _events}}, state) do
+  def handle_info({:file_event, _watcher_pid, {file, [:created]}}, state) do
     get_relative_input_path(file)
-    |> recompile()
+    |> compile()
 
-    notify_subscribers(state.subscribers)
+    {:noreply, state}
+  end
+
+  def handle_info({:file_event, _watcher_pid, {file, [_, :removed]}}, state) do
+    FileRegistry.terminate_file_process(file)
+    {:noreply, state}
+  end
+
+  def handle_info({:file_event, _watcher_pid, {file, [_, :modified, _]}}, state) do
+    get_relative_input_path(file)
+    |> compile()
+
+    {:noreply, state}
+  end
+
+  def handle_info({:file_event, _watcher_pid, {_file, _events}}, state) do
+    Compiler.compile()
 
     {:noreply, state}
   end
@@ -39,28 +55,17 @@ defmodule Extatic.Watcher do
     {:noreply, state}
   end
 
-  defp notify_subscribers(subscribers) do
-    subscribers |> Enum.each(&send(&1, Application.fetch_env!(:extatic, :reload_msg)))
-  end
+  defp compile("."), do: :ok
 
-  defp recompile("."), do: :ok
+  defp compile(file) do
+    FileRegistry.get_or_create_file_process(file)
+    |> FileProcess.compile()
+    |> case do
+      :ok ->
+        :ok
 
-  defp recompile(file) do
-    case FileRegistry.get(file) do
-      {:error, :not_found} ->
-        file |> Path.dirname() |> recompile()
-
-      {:ok, pid} ->
-        notify_file_process_subscribers(pid)
-        FileProcess.compile(pid)
+      _ ->
+        file |> Path.dirname() |> compile()
     end
-  end
-
-  defp notify_file_process_subscribers(pid) do
-    FileRegistry.subscriptions()
-    |> Enum.filter(fn {_k, pids} ->
-      Enum.member?(pids, pid)
-    end)
-    |> Enum.map(fn {pid, _v} -> FileProcess.compile(pid) end)
   end
 end

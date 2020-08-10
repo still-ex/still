@@ -1,7 +1,7 @@
 defmodule Extatic.Compiler.Traverse do
   import Extatic.Utils
 
-  alias Extatic.{Compiler, FileRegistry, FileProcess}
+  alias Extatic.{FileRegistry, FileProcess}
 
   def run(folder \\ "") do
     with {:ok, files} <- File.ls(Path.join(get_input_path(), folder)),
@@ -20,17 +20,16 @@ defmodule Extatic.Compiler.Traverse do
   end
 
   defp process_folder(folder) do
-    with {:ok, pid} <- FileRegistry.get_or_create(folder),
-         :ok <- FileProcess.compile(pid) do
-      :ok
-    else
+    FileRegistry.get_or_create_file_process(folder)
+    |> FileProcess.compile()
+    |> case do
+      :ok -> :ok
       _ -> run(folder)
     end
   end
 
   defp process_file(file) do
-    with {:ok, pid} <- FileRegistry.get_or_create(file) do
-      FileProcess.compile(pid)
-    end
+    FileRegistry.get_or_create_file_process(file)
+    |> FileProcess.compile()
   end
 end
