@@ -39,9 +39,11 @@ defmodule Extatic.FileProcess.Compile do
   end
 
   defp notify_subscribers(state) do
-    state.subscribers
-    |> Enum.map(&FileRegistry.get_or_create_file_process/1)
-    |> Enum.map(&FileProcess.async_compile/1)
+    Task.start(fn ->
+      state.subscribers
+      |> Enum.map(&FileRegistry.get_or_create_file_process/1)
+      |> Enum.map(&FileProcess.compile/1)
+    end)
   end
 
   defp should_be_ignored?(file) do

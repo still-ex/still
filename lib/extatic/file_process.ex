@@ -29,10 +29,6 @@ defmodule Extatic.FileProcess do
     GenServer.call(pid, :compile)
   end
 
-  def async_compile(pid) do
-    GenServer.cast(pid, :compile)
-  end
-
   def render(pid, data, parent_file) do
     GenServer.call(pid, {:render, data, parent_file})
   end
