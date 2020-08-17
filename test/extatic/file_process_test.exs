@@ -26,7 +26,7 @@ defmodule Extatic.FileProcessTest do
 
       FileProcess.compile(pid)
 
-      assert_receive {_, :compile}
+      assert_receive {_, _, :compile}
     end
   end
 

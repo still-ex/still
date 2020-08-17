@@ -4,8 +4,6 @@ defmodule Extatic.Compiler.File.Content do
   alias Extatic.FileProcess
   alias Extatic.Compiler.File.Frontmatter
 
-  @dev_layout "priv/extatic/dev.slime"
-
   def compile(file, content, preprocessor, data \\ %{}) do
     with {:ok, template_data, content} <- Frontmatter.parse(content),
          data <- Map.merge(template_data, data) |> Map.put(:file_path, file),
@@ -16,37 +14,38 @@ defmodule Extatic.Compiler.File.Content do
     end
   end
 
-  defp append_layout(children, data) do
-    if Map.has_key?(data, :layout) do
-      layout_data =
-        data
-        |> Map.drop([:tag, :layout, :permalink, :file_path])
-        |> Map.merge(%{children: children})
-
-      {:ok, compiled, _} =
-        data[:layout]
-        |> Extatic.FileRegistry.get_or_create_file_process()
-        |> FileProcess.render(layout_data, data[:file_path])
-
+  defp append_layout(children, data = %{layout: _layout}) do
+    with layout_data <-
+           data
+           |> Map.drop([:tag, :layout, :permalink, :file_path])
+           |> Map.merge(%{children: children}),
+         {:ok, compiled, _} <-
+           data[:layout]
+           |> Extatic.FileRegistry.get_or_create_file_process()
+           |> FileProcess.render(layout_data, data[:file_path]) do
       compiled
-    else
-      children
     end
   end
 
-  defp append_development_layout(content, preprocessor) do
-    case Mix.env() do
-      :dev ->
+  defp append_layout(children, _), do: children
+
+  case Mix.env() do
+    :dev ->
+      @dev_layout "priv/extatic/dev.slime"
+
+      defp append_development_layout(content, preprocessor) do
         Application.app_dir(:extatic, @dev_layout)
         |> File.read!()
         |> render_template(preprocessor,
           children: content,
           file_path: @dev_layout
         )
+      end
 
-      _ ->
+    _ ->
+      defp append_development_layout(content, _preprocessor) do
         content
-    end
+      end
   end
 
   defp render_template(content, preprocessor, variables) when is_map(variables) do

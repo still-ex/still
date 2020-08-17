@@ -38,9 +38,7 @@ defmodule Extatic.Compiler.File do
     end
   end
 
-  defp process(file), do: process(file, %{})
-
-  defp process(file, data) do
+  defp process(file, data \\ %{}) do
     with {:ok, content} <- File.read(get_input_path(file)),
          {:ok, preprocessor} <- Compiler.Preprocessor.for(file) do
       compile_content(file, content, preprocessor, data)
