@@ -28,13 +28,13 @@ defmodule Extatic.Compiler.File do
       Logger.debug("Rendered #{file}")
       {:ok, compiled, settings}
     else
-      {:error, :preprocessor_not_found} ->
+      msg = {:error, :preprocessor_not_found} ->
         Logger.error("Preprocessor not found for #{file}")
-        :error
+        msg
 
-      _ ->
+      msg ->
         Logger.error("Failed to compile #{file}")
-        :error
+        msg
     end
   end
 
