@@ -18,7 +18,7 @@ defmodule Extatic.Compiler.File.Content do
     with layout_data <-
            data
            |> Map.drop([:tag, :layout, :permalink, :file_path])
-           |> Map.merge(%{children: children}),
+           |> Map.put(:children, children),
          {:ok, compiled, _} <-
            data[:layout]
            |> Extatic.FileRegistry.get_or_create_file_process()

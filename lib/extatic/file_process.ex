@@ -38,7 +38,7 @@ defmodule Extatic.FileProcess do
   end
 
   def remove_subscriber(pid, file) do
-    GenServer.call(pid, {:remove_subscriber, file})
+    GenServer.cast(pid, {:remove_subscriber, file})
   end
 
   @impl true
@@ -61,7 +61,7 @@ defmodule Extatic.FileProcess do
   end
 
   @impl true
-  def handle_call({:remove_subscriber, file}, _from, state) do
+  def handle_cast({:remove_subscriber, file}, state) do
     subscribers = Enum.reject(state.subscribers, &(&1 == file))
 
     {:noreply, %{state | subscribers: subscribers}}
@@ -72,13 +72,6 @@ defmodule Extatic.FileProcess do
     subscriptions = [file | state.subscriptions] |> Enum.uniq()
 
     {:noreply, %{state | subscriptions: subscriptions}}
-  end
-
-  @impl true
-  def handle_cast(:compile, state) do
-    with _result <- Compile.run(state) do
-      {:noreply, state}
-    end
   end
 
   defp do_render(data, state) do

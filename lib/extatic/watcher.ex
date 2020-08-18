@@ -26,25 +26,19 @@ defmodule Extatic.Watcher do
     {:noreply, %{state | subscribers: [pid | state.subscribers]}}
   end
 
-  def handle_info({:file_event, _watcher_pid, {file, [:created]}}, state) do
-    get_relative_input_path(file)
-    |> compile()
-
-    notify_subscribers(state.subscribers)
-
-    {:noreply, state}
-  end
-
   def handle_info({:file_event, _watcher_pid, {file, [_, :removed]}}, state) do
     FileRegistry.terminate_file_process(file)
     {:noreply, state}
   end
 
-  def handle_info({:file_event, _watcher_pid, {file, [_, :modified, _]}}, state) do
-    get_relative_input_path(file)
-    |> compile()
+  def handle_info({:file_event, _watcher_pid, {file, [:created]}}, state) do
+    process_file(file, state)
 
-    notify_subscribers(state.subscribers)
+    {:noreply, state}
+  end
+
+  def handle_info({:file_event, _watcher_pid, {file, [_, :modified, _]}}, state) do
+    process_file(file, state)
 
     {:noreply, state}
   end
@@ -61,9 +55,16 @@ defmodule Extatic.Watcher do
     {:noreply, state}
   end
 
-  defp compile("."), do: :ok
+  defp process_file(file, state) do
+    get_relative_input_path(file)
+    |> compile_file()
 
-  defp compile(file) do
+    notify_subscribers(state.subscribers)
+  end
+
+  defp compile_file("."), do: :ok
+
+  defp compile_file(file) do
     FileRegistry.get_or_create_file_process(file)
     |> FileProcess.compile()
     |> case do
@@ -71,7 +72,7 @@ defmodule Extatic.Watcher do
         :ok
 
       _ ->
-        file |> Path.dirname() |> compile()
+        file |> Path.dirname() |> compile_file()
     end
   end
 
