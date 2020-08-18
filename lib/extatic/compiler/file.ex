@@ -14,12 +14,12 @@ defmodule Extatic.Compiler.File do
       Logger.info("Compiled #{file}")
       :ok
     else
-      {:error, :preprocessor_not_found} ->
-        :error
+      msg = {:error, :preprocessor_not_found} ->
+        msg
 
-      _ ->
+      msg ->
         Logger.error("Failed to compile #{file}")
-        :error
+        msg
     end
   end
 

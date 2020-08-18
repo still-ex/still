@@ -17,7 +17,7 @@ defmodule Extatic.Watcher do
     {:ok, watcher_pid} = FileSystem.start_link(dirs: [get_input_path()])
     FileSystem.subscribe(watcher_pid)
 
-    Compiler.compile()
+    Compiler.Traverse.run()
 
     {:ok, %{subscribers: []}}
   end
@@ -44,7 +44,7 @@ defmodule Extatic.Watcher do
   end
 
   def handle_info({:file_event, _watcher_pid, {_file, _events}}, state) do
-    Compiler.compile()
+    Compiler.Traverse.run()
 
     notify_subscribers(state.subscribers)
 
