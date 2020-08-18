@@ -22,7 +22,7 @@ defmodule Extatic.Compiler.Traverse do
   end
 
   defp collect_file_metadata(file) do
-    if File.dir?(Path.join(get_input_path(), file)) do
+    if File.dir?(get_input_path(file)) do
       collect_metadata(file)
     else
       {:ok, metadata, _content} =
@@ -58,7 +58,8 @@ defmodule Extatic.Compiler.Traverse do
   end
 
   defp process_folder(folder) do
-    FileRegistry.get_or_create_file_process(folder)
+    folder
+    |> FileRegistry.get_or_create_file_process()
     |> FileProcess.compile()
     |> case do
       :ok -> :ok
@@ -67,7 +68,8 @@ defmodule Extatic.Compiler.Traverse do
   end
 
   defp process_file(file) do
-    FileRegistry.get_or_create_file_process(file)
+    file
+    |> FileRegistry.get_or_create_file_process()
     |> FileProcess.compile()
   end
 end
