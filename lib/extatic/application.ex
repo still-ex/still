@@ -4,6 +4,10 @@ defmodule Extatic.Application do
   require Logger
 
   def start(_type, _args) do
+    # Some templating engines need to redefine a module every time a particular
+    # file is rendered.
+    Code.compiler_options(ignore_module_conflict: true)
+
     Logger.info("Starting development server on port http://localhost:#{port()}")
 
     children = [
@@ -12,6 +16,7 @@ defmodule Extatic.Application do
         Plug.Cowboy,
         scheme: :http, plug: {Extatic.Router, []}, port: port(), dispatch: dispatch()
       },
+      Extatic.FileRegistry,
       Extatic.Watcher
     ]
 

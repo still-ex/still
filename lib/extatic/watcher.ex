@@ -1,7 +1,7 @@
 defmodule Extatic.Watcher do
   use GenServer
 
-  alias Extatic.Compiler
+  alias Extatic.{Compiler, FileRegistry, FileProcess}
 
   import Extatic.Utils
 
@@ -17,7 +17,7 @@ defmodule Extatic.Watcher do
     {:ok, watcher_pid} = FileSystem.start_link(dirs: [get_input_path()])
     FileSystem.subscribe(watcher_pid)
 
-    compile()
+    Compiler.Traverse.run()
 
     {:ok, %{subscribers: []}}
   end
@@ -26,8 +26,26 @@ defmodule Extatic.Watcher do
     {:noreply, %{state | subscribers: [pid | state.subscribers]}}
   end
 
-  def handle_info({:file_event, _watcher_pid, {_path, _events}}, state) do
-    compile()
+  def handle_info({:file_event, _watcher_pid, {file, [_, :removed]}}, state) do
+    FileRegistry.terminate_file_process(file)
+    {:noreply, state}
+  end
+
+  def handle_info({:file_event, _watcher_pid, {file, [:created]}}, state) do
+    process_file(file, state)
+
+    {:noreply, state}
+  end
+
+  def handle_info({:file_event, _watcher_pid, {file, [_, :modified, _]}}, state) do
+    process_file(file, state)
+
+    {:noreply, state}
+  end
+
+  def handle_info({:file_event, _watcher_pid, {_file, _events}}, state) do
+    Compiler.Traverse.run()
+
     notify_subscribers(state.subscribers)
 
     {:noreply, state}
@@ -37,11 +55,27 @@ defmodule Extatic.Watcher do
     {:noreply, state}
   end
 
-  defp notify_subscribers(subscribers) do
-    subscribers |> Enum.each(&send(&1, Application.fetch_env!(:extatic, :reload_msg)))
+  defp process_file(file, state) do
+    get_relative_input_path(file)
+    |> compile_file()
+
+    notify_subscribers(state.subscribers)
   end
 
-  defp compile() do
-    Compiler.compile()
+  defp compile_file("."), do: :ok
+
+  defp compile_file(file) do
+    FileRegistry.get_or_create_file_process(file)
+    |> FileProcess.compile()
+    |> case do
+      :ok ->
+        :ok
+
+      _ ->
+        file |> Path.dirname() |> compile_file()
+    end
   end
+
+  defp notify_subscribers(subscribers),
+    do: subscribers |> Enum.each(&send(&1, Application.fetch_env!(:extatic, :reload_msg)))
 end
