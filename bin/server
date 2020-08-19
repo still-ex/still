@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+source "./bin/functions"
+
+pp_info "server" "starting development server..."
+iex -S mix still.dev

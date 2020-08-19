@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+
+set -e
+source "./bin/functions"
+
+pp_info "lint" "running the elixir formatter"
+mix format --check-formatted --dot-formatter .formatter.exs
+echo "No errors found...."
+
+pp_info "lint" "running credo"
+mix credo --strict
+
+pp_success "lint" "Done! No errors!"
