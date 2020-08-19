@@ -38,6 +38,7 @@ if Code.ensure_loaded?(Slime) do
     defp create_slime_view_renderer(name, content, variables) do
       compiled = compile_slime(content, variables)
       args = get_args(variables)
+      module_variables = ensure_current_context(variables)
 
       ast =
         quote do
@@ -46,7 +47,7 @@ if Code.ensure_loaded?(Slime) do
           require Slime
           require EEx
 
-          use Extatic.Compiler.ViewHelpers, unquote(Macro.escape(variables))
+          use Extatic.Compiler.ViewHelpers, unquote(Macro.escape(module_variables))
 
           def render(unquote_splicing(args)) do
             unquote(compiled)
@@ -81,6 +82,10 @@ if Code.ensure_loaded?(Slime) do
           unquote(memo)
         end
       end)
+    end
+
+    defp ensure_current_context(variables) do
+      Keyword.put_new(variables, :current_context, "main")
     end
   end
 end

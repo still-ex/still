@@ -10,7 +10,7 @@ defmodule Extatic.FileProcess do
 
   * Compile - compiling a file means, most
   times, running it thorugh a preprocessor and writing to to the destination
-  folder. 
+  folder.
 
   * Render - rendering a file means that the current file is being
   included by another file. Template files may return HTML and images could return a path.
@@ -41,9 +41,24 @@ defmodule Extatic.FileProcess do
     GenServer.cast(pid, {:remove_subscriber, file})
   end
 
+  def add_variable(pid, context, name, value) do
+    GenServer.cast(pid, {:add_variable, context, name, value})
+  end
+
+  def get_variable(pid, context, name) do
+    GenServer.call(pid, {:get_variable, context, name})
+  end
+
   @impl true
   def init(%{file: file}) do
-    {:ok, %{file: file, subscribers: [], subscriptions: []}}
+    state = %{
+      file: file,
+      subscribers: [],
+      subscriptions: [],
+      contexts: %{"main" => %{}}
+    }
+
+    {:ok, state}
   end
 
   @impl true
@@ -56,8 +71,17 @@ defmodule Extatic.FileProcess do
   @impl true
   def handle_call({:render, data, parent_file}, _from, state) do
     subscribers = [parent_file | state.subscribers] |> Enum.uniq()
+    data = Map.put(data, :current_context, parent_file)
 
     {:reply, do_render(data, state), %{state | subscribers: subscribers}}
+  end
+
+  @impl true
+  def handle_call({:get_variable, ctx_name, name}, _from, state) do
+    context = state.contexts[ctx_name] || state.contexts["main"]
+    value = context[name]
+
+    {:reply, value, state}
   end
 
   @impl true
@@ -72,6 +96,15 @@ defmodule Extatic.FileProcess do
     subscriptions = [file | state.subscriptions] |> Enum.uniq()
 
     {:noreply, %{state | subscriptions: subscriptions}}
+  end
+
+  @impl true
+  def handle_cast({:add_variable, ctx_name, name, value}, state) do
+    context = state.contexts[ctx_name] || %{}
+    context = Map.put(context, name, value)
+    contexts = Map.put(state.contexts, ctx_name, context)
+
+    {:noreply, %{state | contexts: contexts}}
   end
 
   defp do_render(data, state) do

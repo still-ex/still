@@ -2,6 +2,8 @@
 layout: _layout.slime
 ---
 
+= include("_includes/header.slime")
+
 #id.class
   h1 Home page
   p Let's try to list some numbers:
