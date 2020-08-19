@@ -32,8 +32,10 @@ defmodule Extatic.Compiler.File.Content do
   case Mix.env() do
     :dev ->
       @dev_layout "priv/extatic/dev.slime"
+      @preprocessors_with_development_layout [Extatic.Compiler.Preprocessor.Slime]
 
-      defp append_development_layout(content, preprocessor) do
+      defp append_development_layout(content, preprocessor)
+           when preprocessor in @preprocessors_with_development_layout do
         Application.app_dir(:extatic, @dev_layout)
         |> File.read!()
         |> render_template(preprocessor,
