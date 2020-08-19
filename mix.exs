@@ -26,6 +26,7 @@ defmodule Still.MixProject do
   defp deps do
     [
       {:cowboy, "~> 2.8"},
+      {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
       {:earmark, "~> 1.4.10"},
       {:file_system, "~> 0.2.8"},
       {:plug, "~> 1.10"},

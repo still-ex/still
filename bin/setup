@@ -1,0 +1,56 @@
+#!/usr/bin/env sh
+
+set -e
+source "./bin/functions"
+
+env=${1:-"dev"}
+
+#
+# Elixir install
+#
+
+if ! installed "elixir"; then
+  pp_warn "setup" "Elixir is not installed. Attempting to install with asdf...\n"
+
+  if installed "asdf"; then
+    pp_info "setup" "Using asdf..."
+    set +e
+    asdf plugin-add elixir https://github.com/asdf-vm/asdf-elixir.git 2>/dev/null
+    set -e
+
+    asdf install
+  else
+    pp_warn "setup" "No asdf found...\n"
+    pp_error "setup" "No Elixir or asdf found. We are using asdf
+    (https://github.com/asdf-vm/asdf) to manage tool dependencies, since it was
+    not found on your system we cannot ensure that you are using the correct
+    versions. Please install it and run this script again, or proceed at your own
+    peril.
+    "
+
+    ensure_confirmation
+  fi
+else
+  minimum_minor_version=$(tool_versions_elixir_minor_version)
+  minor_version=$(elixir_minor_version)
+
+  if (( $(echo "$minimum_minor_version < $minor_version" | bc -l) )); then
+    warning_msg="Installed Elixir is v$minor_version. Minimum required is $minimum_minor_version.
+    The install might fail or the project might crash. Proceeding..."
+
+    pp_warn "setup" "$warning_msg\n"
+  else
+    pp_info "setup" "Elixir installed. Using v$minor_version..."
+  fi
+fi
+
+#
+# dependencies
+#
+
+pp_info "setup" "Installing elixir dependencies for env $env..."
+MIX_ENV=$env mix local.hex --force
+MIX_ENV=$env mix local.rebar --force
+MIX_ENV=$env mix deps.get
+
+pp_success "setup" "You're good to go! Run bin/server to get the development server running."
