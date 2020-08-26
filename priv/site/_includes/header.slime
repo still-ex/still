@@ -1,2 +1,10 @@
+- set :css do
+  css:
+    header {
+      color: red;
+    }
+
 header
   p This is a header
+
+= get(:css) |> minify(:css)
