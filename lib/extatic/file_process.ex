@@ -41,21 +41,12 @@ defmodule Extatic.FileProcess do
     GenServer.cast(pid, {:remove_subscriber, file})
   end
 
-  def add_variable(pid, context, name, value) do
-    GenServer.cast(pid, {:add_variable, context, name, value})
-  end
-
-  def get_variable(pid, context, name) do
-    GenServer.call(pid, {:get_variable, context, name})
-  end
-
   @impl true
   def init(%{file: file}) do
     state = %{
       file: file,
       subscribers: [],
-      subscriptions: [],
-      contexts: %{"main" => %{}}
+      subscriptions: []
     }
 
     {:ok, state}
@@ -77,14 +68,6 @@ defmodule Extatic.FileProcess do
   end
 
   @impl true
-  def handle_call({:get_variable, ctx_name, name}, _from, state) do
-    context = state.contexts[ctx_name] || state.contexts["main"]
-    value = context[name]
-
-    {:reply, value, state}
-  end
-
-  @impl true
   def handle_cast({:remove_subscriber, file}, state) do
     subscribers = Enum.reject(state.subscribers, &(&1 == file))
 
@@ -96,15 +79,6 @@ defmodule Extatic.FileProcess do
     subscriptions = [file | state.subscriptions] |> Enum.uniq()
 
     {:noreply, %{state | subscriptions: subscriptions}}
-  end
-
-  @impl true
-  def handle_cast({:add_variable, ctx_name, name, value}, state) do
-    context = state.contexts[ctx_name] || %{}
-    context = Map.put(context, name, value)
-    contexts = Map.put(state.contexts, ctx_name, context)
-
-    {:noreply, %{state | contexts: contexts}}
   end
 
   defp do_render(data, state) do

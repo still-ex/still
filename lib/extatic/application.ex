@@ -12,6 +12,7 @@ defmodule Extatic.Application do
 
     children = [
       Extatic.Collections,
+      Extatic.Context.Registry,
       {
         Plug.Cowboy,
         scheme: :http, plug: {Extatic.Router, []}, port: port(), dispatch: dispatch()

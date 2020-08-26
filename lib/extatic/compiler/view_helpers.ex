@@ -1,7 +1,11 @@
 defmodule Extatic.Compiler.ViewHelpers do
   defmacro __using__(variables) do
     quote do
-      alias Extatic.{FileRegistry, FileProcess}
+      alias Extatic.{
+        Context,
+        FileRegistry,
+        FileProcess
+      }
 
       require Logger
 
