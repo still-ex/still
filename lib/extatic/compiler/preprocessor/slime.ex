@@ -3,18 +3,28 @@ if Code.ensure_loaded?(Slime) do
     require Logger
     require Slime
 
-    @type file :: {:file_path, String.t()}
+    alias Extatic.Compiler.Preprocessor
 
-    @spec render(String.t(), [file, ...]) :: String.t() | no_return()
+    @behaviour Preprocessor
+
+    @impl true
     def render(content, variables \\ []) do
       do_render(content, variables)
     rescue
       e in Slime.TemplateSyntaxError ->
-        raise Extatic.Compiler.Preprocessor.SyntaxError,
+        raise Preprocessor.SyntaxError,
           message: e.message,
           line_number: e.line_number,
           line: e.line,
           column: e.column
+    end
+
+    @impl true
+    def content_tag(tag, content, opts, variables) do
+      slim = Preprocessor.Slime.ContentTag.render(tag, content, opts)
+
+      snippet_renderer(slim, variables)
+      |> apply(:render, variables |> Enum.into(%{}) |> Map.values())
     end
 
     defp do_render(content, variables) do
@@ -32,13 +42,17 @@ if Code.ensure_loaded?(Slime) do
         |> Enum.map(&String.replace(&1, "_", ""))
         |> Enum.map(&String.capitalize/1)
 
-      Module.concat([Extatic.Compiler.Preprocessor.Slime | name])
+      Module.concat([Preprocessor.Slime | name])
     end
 
     defp create_slime_view_renderer(name, content, variables) do
       compiled = compile_slime(content, variables)
       args = get_args(variables)
-      module_variables = ensure_current_context(variables)
+
+      module_variables =
+        variables
+        |> ensure_current_context()
+        |> ensure_preprocessor()
 
       ast =
         quote do
@@ -84,8 +98,40 @@ if Code.ensure_loaded?(Slime) do
       end)
     end
 
+    defp snippet_renderer(content, variables) do
+      compiled = compile_slime(content, variables)
+      args = get_args(variables)
+
+      ast =
+        quote do
+          @compile :nowarn_unused_vars
+
+          require Slime
+          require EEx
+
+          use Extatic.Compiler.ViewHelpers, unquote(Macro.escape(variables))
+
+          def render(unquote_splicing(args)) do
+            unquote(compiled)
+          end
+        end
+
+      with {:module, mod, _, _} <-
+             Module.create(
+               Extatic.Compiler.Preprocessor.Slime.SnippetRenderer,
+               ast,
+               Macro.Env.location(__ENV__)
+             ) do
+        mod
+      end
+    end
+
     defp ensure_current_context(variables) do
       Keyword.put_new(variables, :current_context, variables[:file_path])
+    end
+
+    defp ensure_preprocessor(variables) do
+      Keyword.put_new(variables, :preprocessor, __MODULE__)
     end
   end
 end

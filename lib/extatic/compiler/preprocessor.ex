@@ -7,6 +7,11 @@ defmodule Extatic.Compiler.Preprocessor do
     ".eex" => Preprocessor.EEx
   }
 
+  @type file :: {:file_path, String.t()}
+
+  @callback render(String.t(), [file, ...]) :: String.t() | no_return()
+  @callback content_tag(String.t(), String.t(), keyword(), [file, ...]) :: String.t()
+
   def for(file) do
     preprocessor = @supported_preprocessors[Path.extname(file)]
 

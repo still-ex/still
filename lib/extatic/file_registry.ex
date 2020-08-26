@@ -23,7 +23,7 @@ defmodule Extatic.FileRegistry do
       {:error, {:already_started, pid}} ->
         pid
 
-      {:error, reason} ->
+      {:error, _reason} ->
         raise "Failed to retrieve or locate file process for #{file}"
     end
   end
