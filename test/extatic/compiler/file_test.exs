@@ -1,11 +1,11 @@
 defmodule Extatic.Compiler.FileTest do
   use Extatic.Case
 
-  alias Extatic.{Compiler, Collections, FileRegistry}
+  alias Extatic.{Compiler, Compiler.Incremental, Compiler.Collections}
 
   setup do
     {:ok, _pid} = Collections.start_link(%{})
-    {:ok, _pid} = FileRegistry.start_link(%{})
+    {:ok, _pid} = Incremental.Registry.start_link(%{})
 
     :ok
   end

@@ -1,5 +1,7 @@
-defmodule Extatic.FileRegistry do
+defmodule Extatic.Compiler.Incremental.Registry do
   use DynamicSupervisor
+
+  alias Extatic.Compiler.Incremental
 
   def start_link(_) do
     DynamicSupervisor.start_link(__MODULE__, %{}, name: __MODULE__)
@@ -15,7 +17,7 @@ defmodule Extatic.FileRegistry do
   end
 
   def get_or_create_file_process(file) do
-    DynamicSupervisor.start_child(__MODULE__, {Extatic.FileProcess, file: file})
+    DynamicSupervisor.start_child(__MODULE__, {Incremental.Node, file: file})
     |> case do
       {:ok, pid} ->
         pid

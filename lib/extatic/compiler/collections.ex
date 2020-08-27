@@ -1,4 +1,4 @@
-defmodule Extatic.Collections do
+defmodule Extatic.Compiler.Collections do
   use GenServer
 
   def start_link(_) do

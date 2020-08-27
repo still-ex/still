@@ -1,8 +1,11 @@
 defmodule Extatic.Compiler.File.Content do
   require Logger
 
-  alias Extatic.FileProcess
-  alias Extatic.Compiler.File.Frontmatter
+  alias Extatic.Compiler.{
+    Collections,
+    Incremental,
+    File.Frontmatter
+  }
 
   def compile(file, content, preprocessor, data \\ %{}) do
     with {:ok, template_data, content} <- Frontmatter.parse(content),
@@ -21,8 +24,8 @@ defmodule Extatic.Compiler.File.Content do
            |> Map.put(:children, children),
          {:ok, compiled, _} <-
            data[:layout]
-           |> Extatic.FileRegistry.get_or_create_file_process()
-           |> FileProcess.render(layout_data, data[:file_path]) do
+           |> Incremental.Registry.get_or_create_file_process()
+           |> Incremental.Node.render(layout_data, data[:file_path]) do
       compiled
     end
   end
@@ -55,6 +58,6 @@ defmodule Extatic.Compiler.File.Content do
   end
 
   defp render_template(content, preprocessor, variables) do
-    preprocessor.render(content, [{:collections, Extatic.Collections.all()} | variables])
+    preprocessor.render(content, [{:collections, Collections.all()} | variables])
   end
 end

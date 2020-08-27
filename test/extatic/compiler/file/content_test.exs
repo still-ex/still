@@ -1,14 +1,13 @@
 defmodule Extatic.Compiler.File.ContentTest do
   use ExUnit.Case, async: true
 
-  alias Extatic.Compiler.File.Content
-  alias Extatic.{Collections, FileRegistry}
+  alias Extatic.Compiler.{Collections, File.Content, Incremental}
 
   @preprocessor Extatic.Compiler.Preprocessor.Slime
 
   setup do
     {:ok, _pid} = Collections.start_link(%{})
-    {:ok, _pid} = FileRegistry.start_link(%{})
+    {:ok, _pid} = Incremental.Registry.start_link(%{})
 
     :ok
   end

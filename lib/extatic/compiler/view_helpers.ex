@@ -1,11 +1,10 @@
 defmodule Extatic.Compiler.ViewHelpers do
   defmacro __using__(variables) do
     quote do
-      alias Extatic.{
-        Compiler.ViewHelpers.Link,
+      alias Extatic.Compiler.{
         Context,
-        FileRegistry,
-        FileProcess
+        Incremental,
+        ViewHelpers.Link
       }
 
       alias __MODULE__
@@ -13,10 +12,10 @@ defmodule Extatic.Compiler.ViewHelpers do
       require Logger
 
       def include(file, variables \\ %{}) do
-        with pid when not is_nil(pid) <- FileRegistry.get_or_create_file_process(file),
+        with pid when not is_nil(pid) <- Incremental.Registry.get_or_create_file_process(file),
              {:ok, content, _settings} <-
-               FileProcess.render(pid, variables, unquote(variables)[:file_path]) do
-          FileProcess.add_subscription(pid, file)
+               Incremental.Node.render(pid, variables, unquote(variables)[:file_path]) do
+          Incremental.Node.add_subscription(pid, file)
           content
         else
           _ ->
