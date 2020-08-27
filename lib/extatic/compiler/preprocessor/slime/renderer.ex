@@ -36,6 +36,7 @@ if Code.ensure_loaded?(Slime) do
           require EEx
 
           use Extatic.Compiler.ViewHelpers, unquote(Macro.escape(module_variables))
+          import Extatic.Compiler.Filters
 
           def render(unquote_splicing(args)) do
             unquote(compiled)

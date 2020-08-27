@@ -25,3 +25,5 @@ extatic-*.tar
 _site/
 
 ._test_site/
+
+assets/node_modules/

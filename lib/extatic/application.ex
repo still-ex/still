@@ -11,6 +11,7 @@ defmodule Extatic.Application do
     Logger.info("Starting development server on port http://localhost:#{port()}")
 
     children = [
+      {NodeJS.Supervisor, [path: Extatic.Utils.get_javascripts_path()]},
       Extatic.Compiler.Supervisor,
       {
         Plug.Cowboy,

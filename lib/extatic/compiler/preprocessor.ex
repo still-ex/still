@@ -4,7 +4,9 @@ defmodule Extatic.Compiler.Preprocessor do
   @supported_preprocessors %{
     ".slim" => Preprocessor.Slime,
     ".slime" => Preprocessor.Slime,
-    ".eex" => Preprocessor.EEx
+    ".eex" => Preprocessor.EEx,
+    ".css" => Preprocessor.PassThrough,
+    ".js" => Preprocessor.PassThrough
   }
 
   @type file :: {:file_path, String.t()}

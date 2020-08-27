@@ -34,6 +34,7 @@ defmodule Extatic.Compiler.Preprocessor.EEx.Renderer do
         require EEx
 
         use Extatic.Compiler.ViewHelpers, unquote(Macro.escape(module_variables))
+        import Extatic.Compiler.Filters
 
         def render(unquote_splicing(args)) do
           unquote(compiled)

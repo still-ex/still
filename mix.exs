@@ -27,7 +27,8 @@ defmodule Extatic.MixProject do
       {:plug, "~> 1.10"},
       {:plug_cowboy, "~> 2.3"},
       {:slime, "~> 1.2", optional: true},
-      {:yaml_elixir, "~> 2.4"}
+      {:yaml_elixir, "~> 2.4"},
+      {:nodejs, "~> 2.0"}
     ]
   end
 

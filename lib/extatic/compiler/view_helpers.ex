@@ -43,9 +43,6 @@ defmodule Extatic.Compiler.ViewHelpers do
       def link(content, opts) do
         Link.render(content, unquote(variables), opts)
       end
-
-      # TODO
-      def minify(code, _type), do: code
     end
   end
 end

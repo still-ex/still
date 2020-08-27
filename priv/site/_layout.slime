@@ -7,6 +7,19 @@ html
     title
       = title
     meta name="viewport" content="width=device-width, initial-scale=1.0"
-    link media="all" rel="stylesheet" href="styles/theme.css"
   body
+
+    - set :css do
+      = include "css/theme.css"
+
+    - set :js do
+      = include "js/append.js"
+      = include "js/console.js"
+
     = children
+
+    style
+      = get(:css) |> cssmin()
+
+    script
+      = get(:js) |> jsmin()
