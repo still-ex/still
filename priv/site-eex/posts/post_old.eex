@@ -1,0 +1,9 @@
+---
+layout: _layout.eex
+tag: post
+permalink: /keep-same-link.html
+title: Old post
+---
+
+<h1>This an old blog post</h1>
+<p>that has a permanent link.</p>

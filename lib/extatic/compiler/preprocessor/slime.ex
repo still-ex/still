@@ -1,6 +1,5 @@
 if Code.ensure_loaded?(Slime) do
   defmodule Extatic.Compiler.Preprocessor.Slime do
-    require Logger
     require Slime
 
     alias Extatic.Compiler.{

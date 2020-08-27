@@ -1,0 +1,13 @@
+<% set :css do %>
+  header {
+    color: red;
+  }
+<% end %>
+
+<header>
+  <p>This is a header</p>
+</header>
+
+<style>
+  <%= get(:css) |> minify(:css) %>
+</style>
