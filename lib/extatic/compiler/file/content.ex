@@ -8,11 +8,17 @@ defmodule Extatic.Compiler.File.Content do
     File.Frontmatter
   }
 
-  def compile(file, content, preprocessor, data \\ %{}) do
+  def render(file, content, preprocessor, data \\ %{}) do
     with {:ok, template_data, content} <- Frontmatter.parse(content),
          data <- Map.merge(template_data, data) |> Map.put(:file_path, file),
          compiled <- render_template(content, preprocessor, data),
-         compiled <- append_layout(compiled, data),
+         compiled <- append_layout(compiled, data) do
+      {:ok, compiled, data}
+    end
+  end
+
+  def compile(file, content, preprocessor, data \\ %{}) do
+    with {:ok, compiled, data} <- render(file, content, preprocessor, data),
          compiled <- append_development_layout(compiled, preprocessor) do
       {:ok, compiled, data}
     end
