@@ -8,12 +8,6 @@ if Code.ensure_loaded?(Slime) do
       |> create_slime_view_renderer(content, variables)
     end
 
-    def create_snippet(content, variables) do
-      name = Preprocessor.Slime.SnippetRenderer
-
-      create_slime_view_renderer(name, content, variables)
-    end
-
     defp file_path_to_module_name(file) do
       name =
         Path.split(file)
