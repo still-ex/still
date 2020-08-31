@@ -85,7 +85,7 @@ if Code.ensure_loaded?(Slime) do
     end
 
     defp ensure_current_context(variables) do
-      Keyword.put_new(variables, :current_context, "main")
+      Keyword.put_new(variables, :current_context, variables[:file_path])
     end
   end
 end

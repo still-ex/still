@@ -9,25 +9,8 @@ defmodule Extatic.Context.Registry do
     DynamicSupervisor.init(strategy: :one_for_one)
   end
 
-  def terminate_contexts_for(file) do
-    suffix = build_suffix(file)
-
-    pids =
-      Process.registered()
-      |> Enum.filter(fn name ->
-        name
-        |> Atom.to_string()
-        |> String.starts_with?(suffix)
-      end)
-      |> Enum.map(&Process.whereis/1)
-
-    for pid <- pids, do: DynamicSupervisor.terminate_child(__MODULE__, pid)
-
-    :ok
-  end
-
-  def get_or_start(file, ctx) do
-    name = build_name(file, ctx)
+  def start(file) do
+    name = build_name(file)
 
     DynamicSupervisor.start_child(__MODULE__, {Extatic.Context, name: name})
     |> case do
@@ -42,7 +25,14 @@ defmodule Extatic.Context.Registry do
     end
   end
 
-  defp build_suffix(file), do: "#{Extatic.Context}::#{file}"
+  def terminate(file) do
+    name = build_name(file) |> String.to_atom()
+    pid = Process.whereis(name)
 
-  defp build_name(file, ctx_name), do: :"#{build_suffix(file)}::#{ctx_name}"
+    DynamicSupervisor.terminate_child(__MODULE__, pid)
+
+    :ok
+  end
+
+  defp build_name(file), do: "#{Extatic.Context}::#{file}"
 end
