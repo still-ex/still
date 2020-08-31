@@ -1,15 +1,18 @@
 defmodule Extatic.Compiler.ViewHelpers.Link do
   import Extatic.Utils
 
+  alias Extatic.Compiler.ViewHelpers.ContentTag
+
   def render(opts, variables, do: markup) do
-    render(markup, variables, opts)
+    preprocessor = variables[:preprocessor]
+    content = preprocessor.render(markup, variables)
+    render(content, variables, opts)
   end
 
-  def render(text, variables, opts) do
+  def render(text, _variables, opts) do
     {url, opts} = pop_url(opts)
-    preprocessor = variables[:preprocessor]
 
-    preprocessor.content_tag("a", text, [{:href, url} | opts], variables)
+    ContentTag.render("a", text, [{:href, url} | opts])
   end
 
   defp pop_url(opts) do
