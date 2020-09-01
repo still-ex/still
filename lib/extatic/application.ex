@@ -8,23 +8,35 @@ defmodule Extatic.Application do
     # file is rendered.
     Code.compiler_options(ignore_module_conflict: true)
 
-    Logger.info("Starting development server on port http://localhost:#{port()}")
-
-    children = [
-      Extatic.Compiler.Supervisor,
-      {
-        Plug.Cowboy,
-        scheme: :http, plug: {Extatic.Router, []}, port: port(), dispatch: dispatch()
-      },
-      Extatic.Watcher
-    ]
-
+    children = base_children() ++ server_children()
     opts = [strategy: :one_for_one, name: Extatic.Supervisor]
+
+    if server?() do
+      Logger.info("Starting development server on port http://localhost:#{port()}")
+    end
 
     Supervisor.start_link(children, opts)
   end
 
-  defp dispatch do
+  defp base_children do
+    [Extatic.Compiler.Supervisor]
+  end
+
+  defp server_children do
+    if server?() do
+      [
+        {
+          Plug.Cowboy,
+          scheme: :http, plug: {Extatic.Router, []}, port: port(), dispatch: cowboy_dispatch()
+        },
+        Extatic.Watcher
+      ]
+    else
+      []
+    end
+  end
+
+  defp cowboy_dispatch do
     [
       {:_,
        [
@@ -37,5 +49,9 @@ defmodule Extatic.Application do
   defp port do
     System.get_env("PORT", "3000")
     |> String.to_integer()
+  end
+
+  defp server? do
+    Application.get_env(:extatic, :server, false)
   end
 end
