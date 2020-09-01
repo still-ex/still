@@ -20,11 +20,7 @@ defmodule Extatic.Watcher do
 
     Compiler.Traverse.run()
 
-    {:ok, %{subscribers: []}}
-  end
-
-  def handle_cast({:subscribe, pid}, state) do
-    {:noreply, %{state | subscribers: [pid | state.subscribers]}}
+    {:ok, %{}}
   end
 
   def handle_info({:file_event, _watcher_pid, {file, [_, :removed]}}, state) do
@@ -35,21 +31,19 @@ defmodule Extatic.Watcher do
   end
 
   def handle_info({:file_event, _watcher_pid, {file, [:created]}}, state) do
-    process_file(file, state)
+    process_file(file)
 
     {:noreply, state}
   end
 
   def handle_info({:file_event, _watcher_pid, {file, [_, :modified, _]}}, state) do
-    process_file(file, state)
+    process_file(file)
 
     {:noreply, state}
   end
 
   def handle_info({:file_event, _watcher_pid, {_file, _events}}, state) do
     Compiler.Traverse.run()
-
-    notify_subscribers(state.subscribers)
 
     {:noreply, state}
   end
@@ -58,11 +52,9 @@ defmodule Extatic.Watcher do
     {:noreply, state}
   end
 
-  defp process_file(file, state) do
+  defp process_file(file) do
     get_relative_input_path(file)
     |> compile_file()
-
-    notify_subscribers(state.subscribers)
   end
 
   defp compile_file("."), do: :ok
@@ -80,7 +72,4 @@ defmodule Extatic.Watcher do
         file |> Path.dirname() |> compile_file()
     end
   end
-
-  defp notify_subscribers(subscribers),
-    do: subscribers |> Enum.each(&send(&1, Application.fetch_env!(:extatic, :reload_msg)))
 end

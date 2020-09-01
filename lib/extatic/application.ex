@@ -27,7 +27,7 @@ defmodule Extatic.Application do
       [
         {
           Plug.Cowboy,
-          scheme: :http, plug: {Extatic.Router, []}, port: port(), dispatch: cowboy_dispatch()
+          scheme: :http, plug: {Extatic.Web.Router, []}, port: port(), dispatch: cowboy_dispatch()
         },
         Extatic.Watcher
       ]
@@ -40,8 +40,8 @@ defmodule Extatic.Application do
     [
       {:_,
        [
-         {"/ws", Extatic.SocketHandler, []},
-         {:_, Plug.Cowboy.Handler, {Extatic.Router, []}}
+         {"/ws", Extatic.Web.SocketHandler, []},
+         {:_, Plug.Cowboy.Handler, {Extatic.Web.Router, []}}
        ]}
     ]
   end

@@ -1,4 +1,4 @@
-defmodule Extatic.Router do
+defmodule Extatic.Web.Router do
   use Plug.Router
   use Plug.Debugger
   require Logger

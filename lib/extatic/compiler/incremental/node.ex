@@ -18,6 +18,7 @@ defmodule Extatic.Compiler.Incremental.Node do
 
   use GenServer
 
+  alias Extatic.Web.BrowserSubscriptions
   alias Extatic.Compiler
   alias __MODULE__.Compile
 
@@ -55,6 +56,7 @@ defmodule Extatic.Compiler.Incremental.Node do
   @impl true
   def handle_call(:compile, _from, state) do
     with result <- Compile.run(state) do
+      BrowserSubscriptions.notify()
       {:reply, result, state}
     end
   end
