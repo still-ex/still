@@ -2,10 +2,13 @@ defmodule Extatic.Compiler.ViewHelpers do
   defmacro __using__(variables) do
     quote do
       alias Extatic.{
+        Compiler.ViewHelpers.Link,
         Context,
         FileRegistry,
         FileProcess
       }
+
+      alias __MODULE__
 
       require Logger
 
@@ -36,6 +39,10 @@ defmodule Extatic.Compiler.ViewHelpers do
         ctx = unquote(variables)[:current_context]
 
         Context.get(file, ctx, variable)
+      end
+
+      def link(content, opts) do
+        Link.render(content, unquote(variables), opts)
       end
 
       # TODO

@@ -6,3 +6,19 @@ title: Extatic | About
 
 h1 About
 p Hi! I like Elixir.
+
+= link "Home", to: "/"
+
+br
+
+= link "Search", to: "https://duckduckgo.com"
+
+br
+
+- set :hacker_message do
+  span style="color: green"
+    | Become a hacker!
+
+= link to: "https://hackertyper.net" do
+  button
+    = get :hacker_message

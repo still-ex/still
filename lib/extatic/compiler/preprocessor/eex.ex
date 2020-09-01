@@ -1,3 +1,4 @@
+# TODO: Before merging, update this to use a custom module like Slime
 defmodule Extatic.Compiler.Preprocessor.EEx do
   require EEx
 

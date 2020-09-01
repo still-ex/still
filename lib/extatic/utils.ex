@@ -22,4 +22,8 @@ defmodule Extatic.Utils do
   def rm_output_dir() do
     File.rm_rf(get_output_path())
   end
+
+  def get_base_url() do
+    Application.fetch_env!(:extatic, :base_url)
+  end
 end
