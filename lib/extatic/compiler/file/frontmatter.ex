@@ -1,6 +1,8 @@
 defmodule Extatic.Compiler.File.Frontmatter do
   require Logger
 
+  alias Extatic.Utils
+
   def parse(content) do
     with [frontmatter, content] <- parse_frontmatter(content),
          settings <- parse_yaml(frontmatter) do
@@ -20,19 +22,11 @@ defmodule Extatic.Compiler.File.Frontmatter do
   defp parse_yaml(yaml) do
     case YamlElixir.read_from_string(yaml, atoms: true) do
       {:ok, variables} ->
-        variables
-        |> keys_to_atoms()
+        Utils.Map.deep_atomify_keys(variables)
 
       _ ->
         Logger.error("Failed parsing frontmatter\n#{yaml}")
         %{}
     end
   end
-
-  defp keys_to_atoms(map) do
-    map |> Enum.reduce(%{}, fn {k, v}, memo -> Map.put(memo, to_atom(k), v) end)
-  end
-
-  defp to_atom(key) when is_binary(key), do: key |> String.to_atom()
-  defp to_atom(key), do: key
 end
