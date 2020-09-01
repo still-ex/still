@@ -1,6 +1,8 @@
 defmodule Extatic.Compiler.Collections do
   use GenServer
 
+  alias Extatic.Utils
+
   def start_link(_) do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
   end
@@ -26,9 +28,11 @@ defmodule Extatic.Compiler.Collections do
   end
 
   def handle_call({:add, collection, value}, _from, state) do
+    value = Utils.Map.deep_atomify_keys(value)
+
     values =
       Map.get(state, collection, [])
-      |> Enum.reject(&(&1["id"] == value["id"]))
+      |> Enum.reject(&(&1[:id] == value[:id]))
 
     state =
       state

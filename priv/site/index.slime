@@ -9,4 +9,5 @@ layout: _layout.slime
   p Let's try to list some numbers:
   ul
     = Enum.map Map.get(collections, "post", []), fn x ->
-      li = x["id"]
+      li
+        = link x[:title], to: x[:permalink]
