@@ -1,13 +1,14 @@
 defmodule Extatic.Compiler.Traverse do
   import Extatic.Utils
 
-  alias Extatic.{FileRegistry, FileProcess, Compiler}
+  alias Extatic.Compiler
+  alias Extatic.Compiler.{Collections, Incremental}
 
   def run() do
     with true <- File.dir?(get_input_path()),
          _ <- File.rmdir(get_output_path()),
          :ok <- File.mkdir_p(get_output_path()) do
-      Extatic.Collections.reset()
+      Collections.reset()
       collect_metadata()
       do_run()
     end
@@ -36,7 +37,7 @@ defmodule Extatic.Compiler.Traverse do
   end
 
   def handle_metadata(file, metadata = %{tag: tag}) when not is_nil(tag) do
-    Extatic.Collections.add(tag, Map.put(metadata, "id", file))
+    Collections.add(tag, Map.put(metadata, "id", file))
   end
 
   def handle_metadata(_file, _metadata), do: :ok
@@ -59,8 +60,8 @@ defmodule Extatic.Compiler.Traverse do
 
   defp process_folder(folder) do
     folder
-    |> FileRegistry.get_or_create_file_process()
-    |> FileProcess.compile()
+    |> Incremental.Registry.get_or_create_file_process()
+    |> Incremental.Node.compile()
     |> case do
       :ok -> :ok
       _ -> do_run(folder)
@@ -69,7 +70,7 @@ defmodule Extatic.Compiler.Traverse do
 
   defp process_file(file) do
     file
-    |> FileRegistry.get_or_create_file_process()
-    |> FileProcess.compile()
+    |> Incremental.Registry.get_or_create_file_process()
+    |> Incremental.Node.compile()
   end
 end

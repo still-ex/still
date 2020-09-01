@@ -1,4 +1,4 @@
-defmodule Extatic.Context do
+defmodule Extatic.Compiler.Context do
   use GenServer
 
   alias __MODULE__

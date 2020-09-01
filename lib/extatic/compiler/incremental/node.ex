@@ -1,6 +1,6 @@
-defmodule Extatic.FileProcess do
+defmodule Extatic.Compiler.Incremental.Node do
   @doc """
-  A FileProcess represents a file, or folder, that is processed
+  A Incremental Node represents a file, or folder, that is processed
   individually. Each file has a list of subscriptions and subcribers. The
   subscriptions are the files included by the current file. The subscribers are
   the files that the current file includes. When the current file changes, it

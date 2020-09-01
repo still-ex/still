@@ -1,5 +1,7 @@
-defmodule Extatic.Context.Registry do
+defmodule Extatic.Compiler.Context.Registry do
   use DynamicSupervisor
+
+  alias Extatic.Compiler.Context
 
   def start_link(_) do
     DynamicSupervisor.start_link(__MODULE__, %{}, name: __MODULE__)
@@ -12,7 +14,7 @@ defmodule Extatic.Context.Registry do
   def start(file) do
     name = build_name(file)
 
-    DynamicSupervisor.start_child(__MODULE__, {Extatic.Context, name: name})
+    DynamicSupervisor.start_child(__MODULE__, {Context, name: name})
     |> case do
       {:ok, pid} ->
         pid
