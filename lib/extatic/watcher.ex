@@ -1,7 +1,7 @@
 defmodule Extatic.Watcher do
   use GenServer
 
-  alias Extatic.{Compiler, FileRegistry, FileProcess}
+  alias Extatic.{Compiler, Context, FileRegistry, FileProcess}
 
   import Extatic.Utils
 
@@ -28,6 +28,8 @@ defmodule Extatic.Watcher do
 
   def handle_info({:file_event, _watcher_pid, {file, [_, :removed]}}, state) do
     FileRegistry.terminate_file_process(file)
+    Context.Registry.terminate(file)
+
     {:noreply, state}
   end
 
@@ -65,6 +67,8 @@ defmodule Extatic.Watcher do
   defp compile_file("."), do: :ok
 
   defp compile_file(file) do
+    Context.Registry.start(file)
+
     FileRegistry.get_or_create_file_process(file)
     |> FileProcess.compile()
     |> case do

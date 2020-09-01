@@ -10,7 +10,7 @@ defmodule Extatic.FileProcess do
 
   * Compile - compiling a file means, most
   times, running it thorugh a preprocessor and writing to to the destination
-  folder. 
+  folder.
 
   * Render - rendering a file means that the current file is being
   included by another file. Template files may return HTML and images could return a path.
@@ -43,7 +43,13 @@ defmodule Extatic.FileProcess do
 
   @impl true
   def init(%{file: file}) do
-    {:ok, %{file: file, subscribers: [], subscriptions: []}}
+    state = %{
+      file: file,
+      subscribers: [],
+      subscriptions: []
+    }
+
+    {:ok, state}
   end
 
   @impl true
@@ -56,6 +62,7 @@ defmodule Extatic.FileProcess do
   @impl true
   def handle_call({:render, data, parent_file}, _from, state) do
     subscribers = [parent_file | state.subscribers] |> Enum.uniq()
+    data = Map.put(data, :current_context, parent_file)
 
     {:reply, do_render(data, state), %{state | subscribers: subscribers}}
   end
