@@ -21,6 +21,25 @@ defmodule Extatic.Compiler.ViewHelpers do
             ""
         end
       end
+
+      def set(variable, do: content) do
+        file = unquote(variables)[:file_path]
+        ctx = unquote(variables)[:current_context]
+
+        Context.put(file, ctx, variable, content)
+
+        :ok
+      end
+
+      def get(variable) do
+        file = unquote(variables)[:file_path]
+        ctx = unquote(variables)[:current_context]
+
+        Context.get(file, ctx, variable)
+      end
+
+      # TODO
+      def minify(code, _type), do: code
     end
   end
 end
