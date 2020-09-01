@@ -1,0 +1,17 @@
+---
+layout: _layout.eex
+---
+
+<%= include("_includes/header.eex") %>
+
+<div id="id" class="class">
+  <h1>Home page</h1>
+  <p>Let's try to list some numbers:</p>
+  <ul>
+    <%= Enum.map Map.get(collections, "post", []), fn x -> %>
+      <li>
+        <%= link x[:title], to: x[:permalink] %>
+      </li>
+    <% end %>
+  </ul>
+</div>

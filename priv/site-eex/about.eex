@@ -1,0 +1,27 @@
+---
+layout: _layout.eex
+title: Extatic | About
+---
+
+<%= include("_includes/header.eex") %>
+
+<h1>About</h1>
+<p>Hi! I like Elixir.</p>
+
+<%= link "Home", to: "/" %>
+
+<br />
+
+<%= link "Search", to: "https://duckduckgo.com" %>
+
+<br />
+
+<% set :hacker_message do %>
+  <span style="color: green">Become a hacker!</span>
+<% end %>
+
+<%= link to: "https://hackertyper.net" do %>
+  <button>
+    <%= get :hacker_message %>
+  </button>
+<% end %>

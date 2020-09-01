@@ -4,6 +4,7 @@ defmodule Extatic.Compiler.File.Content do
   alias Extatic.Compiler.{
     Collections,
     Incremental,
+    Preprocessor,
     File.Frontmatter
   }
 
@@ -35,7 +36,7 @@ defmodule Extatic.Compiler.File.Content do
   case Mix.env() do
     :dev ->
       @dev_layout "priv/extatic/dev.slime"
-      @preprocessors_with_development_layout [Extatic.Compiler.Preprocessor.Slime]
+      @preprocessors_with_development_layout [Preprocessor.Slime]
 
       defp append_development_layout(content, preprocessor)
            when preprocessor in @preprocessors_with_development_layout do
@@ -45,6 +46,10 @@ defmodule Extatic.Compiler.File.Content do
           children: content,
           file_path: @dev_layout
         )
+      end
+
+      defp append_development_layout(content, _preprocessor) do
+        content
       end
 
     _ ->
