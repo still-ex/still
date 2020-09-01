@@ -11,7 +11,7 @@ defmodule Extatic.Compiler.Context.Registry do
     DynamicSupervisor.init(strategy: :one_for_one)
   end
 
-  def start(file) do
+  def get_or_start(file) do
     name = build_name(file)
 
     DynamicSupervisor.start_child(__MODULE__, {Context, name: name})
@@ -28,7 +28,7 @@ defmodule Extatic.Compiler.Context.Registry do
   end
 
   def terminate(file) do
-    name = build_name(file) |> String.to_atom()
+    name = build_name(file)
     pid = Process.whereis(name)
 
     DynamicSupervisor.terminate_child(__MODULE__, pid)
@@ -36,5 +36,5 @@ defmodule Extatic.Compiler.Context.Registry do
     :ok
   end
 
-  defp build_name(file), do: "#{Extatic.Context}::#{file}"
+  defp build_name(file), do: :"#{Extatic.Context}::#{file}"
 end

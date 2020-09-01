@@ -68,7 +68,7 @@ defmodule Extatic.Watcher do
   defp compile_file("."), do: :ok
 
   defp compile_file(file) do
-    Context.Registry.start(file)
+    Context.Registry.get_or_start(file)
 
     Incremental.Registry.get_or_create_file_process(file)
     |> Incremental.Node.compile()

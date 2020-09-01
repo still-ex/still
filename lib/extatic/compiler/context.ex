@@ -7,13 +7,13 @@ defmodule Extatic.Compiler.Context do
     GenServer.start_link(__MODULE__, :ok, name: name)
   end
 
-  def put(file, ctx, var, value) do
-    get_or_start(file, ctx)
+  def put(file, var, value) do
+    Context.Registry.get_or_start(file)
     |> GenServer.call({:put, var, value})
   end
 
-  def get(file, ctx, var) do
-    get_or_start(file, ctx)
+  def get(file, var) do
+    Context.Registry.get_or_start(file)
     |> GenServer.call({:get, var})
   end
 
@@ -32,9 +32,5 @@ defmodule Extatic.Compiler.Context do
   @impl true
   def handle_call({:get, var}, _from, state) do
     {:reply, state[var], state}
-  end
-
-  defp get_or_start(file, ctx) do
-    Context.Registry.get_or_start(file, ctx)
   end
 end
