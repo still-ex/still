@@ -1,7 +1,7 @@
 - set :css do
   css:
     header {
-      color: green;
+      color: blue;
     }
 
 header
