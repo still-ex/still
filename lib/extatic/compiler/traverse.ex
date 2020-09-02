@@ -37,7 +37,12 @@ defmodule Extatic.Compiler.Traverse do
   end
 
   def handle_metadata(file, metadata = %{tag: tag}) when not is_nil(tag) do
-    Collections.add(tag, Map.put(metadata, "id", file))
+    value =
+      metadata
+      |> Map.put(:id, file)
+      |> Map.put_new(:permalink, get_output_file_name(file))
+
+    Collections.add(tag, value)
   end
 
   def handle_metadata(_file, _metadata), do: :ok
@@ -72,5 +77,9 @@ defmodule Extatic.Compiler.Traverse do
     file
     |> Incremental.Registry.get_or_create_file_process()
     |> Incremental.Node.compile()
+  end
+
+  defp get_output_file_name(file) do
+    String.replace(file, Path.extname(file), ".html")
   end
 end
