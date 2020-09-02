@@ -5,7 +5,7 @@ defmodule Extatic.Compiler.Preprocessor do
     ".slim" => [Preprocessor.Frontmatter, Preprocessor.Slime],
     ".slime" => [Preprocessor.Frontmatter, Preprocessor.Slime],
     ".eex" => [Preprocessor.Frontmatter, Preprocessor.EEx],
-    ".css" => [Preprocessor.Css]
+    ".css" => [Preprocessor.Minify]
   }
 
   @callback render(String.t(), map()) :: {String.t(), map()} | no_return()

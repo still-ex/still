@@ -66,8 +66,8 @@ defmodule Extatic.Compiler.File.Content do
 
   defp render_template(content, preprocessors, variables) do
     preprocessors
-    |> Enum.reduce({content, variables}, fn preprocessor, {con, var} ->
-      preprocessor.run(con, Map.put(var, :collections, Collections.all()))
+    |> Enum.reduce({content, variables}, fn preprocessor, {content, variables} ->
+      preprocessor.run(content, Map.put(variables, :collections, Collections.all()))
     end)
   end
 end
