@@ -2,7 +2,6 @@
 
 javascript:
   window.socket = new WebSocket(`ws://${location.host}/ws`);
-  console.log('#{Application.fetch_env!(:extatic, :reload_msg)}')
 
   window.socket.onmessage = function(event) {
     console.log('received', event);
