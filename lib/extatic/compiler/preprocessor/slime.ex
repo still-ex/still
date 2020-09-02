@@ -10,8 +10,13 @@ if Code.ensure_loaded?(Slime) do
     @behaviour Preprocessor
 
     @impl true
-    def render(content, variables \\ []) do
-      do_render(content, variables)
+    def extension() do
+      ".html"
+    end
+
+    @impl true
+    def render(content, variables \\ %{}) do
+      {do_render(content, variables), variables}
     rescue
       e in Slime.TemplateSyntaxError ->
         raise Preprocessor.SyntaxError,
@@ -23,7 +28,7 @@ if Code.ensure_loaded?(Slime) do
 
     defp do_render(content, variables) do
       Renderer.create(content, variables)
-      |> apply(:render, variables |> Enum.into(%{}) |> Map.values())
+      |> apply(:render, variables |> Map.values())
     end
   end
 end

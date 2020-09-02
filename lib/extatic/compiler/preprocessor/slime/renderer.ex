@@ -27,6 +27,7 @@ if Code.ensure_loaded?(Slime) do
         variables
         |> ensure_current_context()
         |> ensure_preprocessor()
+        |> Map.to_list()
 
       ast =
         quote do
@@ -73,11 +74,11 @@ if Code.ensure_loaded?(Slime) do
     end
 
     defp ensure_current_context(variables) do
-      Keyword.put_new(variables, :current_context, variables[:file_path])
+      Map.put_new(variables, :current_context, variables[:file_path])
     end
 
     defp ensure_preprocessor(variables) do
-      Keyword.put_new(variables, :preprocessor, Preprocessor.Slime)
+      Map.put_new(variables, :preprocessor, Preprocessor.Slime)
     end
   end
 end
