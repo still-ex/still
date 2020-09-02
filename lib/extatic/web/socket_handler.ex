@@ -1,4 +1,4 @@
-defmodule Extatic.SocketHandler do
+defmodule Extatic.Web.SocketHandler do
   @behaviour :cowboy_websocket
 
   require Logger
@@ -16,7 +16,7 @@ defmodule Extatic.SocketHandler do
   def websocket_handle({:text, message}, state) do
     if message == "subscribe" do
       Logger.debug("Browser subscribing for changes")
-      Extatic.Watcher.subscribe(self())
+      Extatic.Web.BrowserSubscriptions.add(self())
     end
 
     {:ok, state}
