@@ -7,15 +7,10 @@ if Code.ensure_loaded?(Slime) do
       Preprocessor.Slime.Renderer
     }
 
-    @behaviour Preprocessor
+    use Preprocessor, ext: ".html"
 
     @impl true
-    def extension() do
-      ".html"
-    end
-
-    @impl true
-    def render(content, variables \\ %{}) do
+    def render(content, variables) do
       {do_render(content, variables), variables}
     rescue
       e in Slime.TemplateSyntaxError ->

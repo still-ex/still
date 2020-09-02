@@ -4,7 +4,7 @@ defmodule Extatic.Compiler.Preprocessor.Frontmatter do
 
   require Logger
 
-  @behaviour Preprocessor
+  use Preprocessor
 
   @impl true
   def render(content, variables) do
@@ -14,19 +14,9 @@ defmodule Extatic.Compiler.Preprocessor.Frontmatter do
       frontmatter
       |> parse_yaml()
       |> Map.merge(variables)
-      |> set_permalink()
 
     {content, settings}
   end
-
-  defp set_permalink(variables = %{permalink: _}), do: variables
-
-  defp set_permalink(variables = %{file_path: file_path}) do
-    variables
-    |> Map.put(:permalink, String.replace(file_path, Path.extname(file_path), ".html"))
-  end
-
-  defp set_permalink(variables), do: variables
 
   defp parse_frontmatter(content) do
     case String.split(content, ~r/\n-{3,}\n/, parts: 2) do

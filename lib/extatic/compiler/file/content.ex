@@ -3,8 +3,7 @@ defmodule Extatic.Compiler.File.Content do
 
   alias Extatic.Compiler.{
     Collections,
-    Incremental,
-    Preprocessor
+    Incremental
   }
 
   def render(file, content, preprocessors, data \\ %{}) do
@@ -35,12 +34,11 @@ defmodule Extatic.Compiler.File.Content do
     end
   end
 
-  defp append_layout(children, _data), do: children
+  defp append_layout(children, _), do: children
 
   case Mix.env() do
     :dev ->
       @dev_layout "priv/extatic/dev.slime"
-      @preprocessors_with_development_layout [Preprocessor.Slime]
 
       defp append_development_layout(content, preprocessors) do
         last_preprocessor = preprocessors |> List.last()
@@ -49,7 +47,7 @@ defmodule Extatic.Compiler.File.Content do
           {compiled, _data} =
             Application.app_dir(:extatic, @dev_layout)
             |> File.read!()
-            |> render_template([Preprocessor.Slime], %{
+            |> render_template([Extatic.Compiler.Preprocessor.Slime], %{
               children: content,
               file_path: @dev_layout
             })
@@ -69,7 +67,7 @@ defmodule Extatic.Compiler.File.Content do
   defp render_template(content, preprocessors, variables) do
     preprocessors
     |> Enum.reduce({content, variables}, fn preprocessor, {con, var} ->
-      preprocessor.render(con, Map.put(var, :collections, Collections.all()))
+      preprocessor.run(con, Map.put(var, :collections, Collections.all()))
     end)
   end
 end
