@@ -8,7 +8,7 @@ defmodule Extatic.Compiler.Preprocessor do
     ".css" => [Preprocessor.CSSMinify]
   }
 
-  @callback render(String.t(), map()) :: {String.t(), map()} | no_return()
+  @callback render(String.t(), map()) :: %{content: String.t(), variables: map()} | no_return()
 
   def for(file) do
     preprocessor = @supported_preprocessors[Path.extname(file)]
@@ -29,9 +29,9 @@ defmodule Extatic.Compiler.Preprocessor do
       @behaviour Extatic.Compiler.Preprocessor
 
       def run(content, variables \\ %{}) do
-        {content, variables} = render(content, variables)
+        result = render(content, variables)
 
-        {content, variables |> set_permalink()}
+        %{result | variables: result[:variables] |> set_permalink()}
       end
 
       def extension do

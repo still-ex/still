@@ -7,7 +7,7 @@ defmodule Extatic.Compiler.File.Content do
   }
 
   def render(file, content, preprocessors, data \\ %{}) do
-    with {compiled, data} <-
+    with %{content: compiled, variables: data} <-
            render_template(content, preprocessors, Map.put(data, :file_path, file)),
          compiled <- append_layout(compiled, data) do
       {:ok, compiled, data}
@@ -44,7 +44,7 @@ defmodule Extatic.Compiler.File.Content do
         last_preprocessor = preprocessors |> List.last()
 
         if last_preprocessor.extension() == ".html" do
-          {compiled, _data} =
+          %{content: compiled} =
             Application.app_dir(:extatic, @dev_layout)
             |> File.read!()
             |> render_template([Extatic.Compiler.Preprocessor.Slime], %{
@@ -66,8 +66,11 @@ defmodule Extatic.Compiler.File.Content do
 
   defp render_template(content, preprocessors, variables) do
     preprocessors
-    |> Enum.reduce({content, variables}, fn preprocessor, {content, variables} ->
-      preprocessor.run(content, Map.put(variables, :collections, Collections.all()))
-    end)
+    |> Enum.reduce(
+      %{content: content, variables: variables},
+      fn preprocessor, %{content: content, variables: variables} ->
+        preprocessor.run(content, Map.put(variables, :collections, Collections.all()))
+      end
+    )
   end
 end

@@ -5,7 +5,7 @@ defmodule Extatic.Compiler.ViewHelpers.Link do
 
   def render(opts, variables, do: markup) do
     preprocessor = variables[:preprocessor]
-    {content, _data} = preprocessor.render(markup, variables |> Enum.into(%{}))
+    %{content: content} = preprocessor.render(markup, variables |> Enum.into(%{}))
     render(content, variables, opts)
   end
 

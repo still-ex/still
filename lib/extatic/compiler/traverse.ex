@@ -26,7 +26,7 @@ defmodule Extatic.Compiler.Traverse do
     if File.dir?(get_input_path(file)) do
       collect_metadata(file)
     else
-      {_content, metadata} =
+      %{variables: metadata} =
         file
         |> get_input_path()
         |> File.read!()

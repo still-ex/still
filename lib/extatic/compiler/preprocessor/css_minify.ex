@@ -10,6 +10,6 @@ defmodule Extatic.Compiler.Preprocessor.CSSMinify do
       |> Enum.map(&Regex.replace(~r/^ */, &1, ""))
       |> Enum.join("")
 
-    {content, variables}
+    %{content: content, variables: variables}
   end
 end

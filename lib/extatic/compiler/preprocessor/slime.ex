@@ -11,7 +11,7 @@ if Code.ensure_loaded?(Slime) do
 
     @impl true
     def render(content, variables) do
-      {do_render(content, variables), variables}
+      %{content: do_render(content, variables), variables: variables}
     rescue
       e in Slime.TemplateSyntaxError ->
         raise Preprocessor.SyntaxError,

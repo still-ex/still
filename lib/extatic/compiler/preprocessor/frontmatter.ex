@@ -15,7 +15,7 @@ defmodule Extatic.Compiler.Preprocessor.Frontmatter do
       |> parse_yaml()
       |> Map.merge(variables)
 
-    {content, settings}
+    %{content: content, variables: settings}
   end
 
   defp parse_frontmatter(content) do

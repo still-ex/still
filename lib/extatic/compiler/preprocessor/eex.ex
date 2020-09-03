@@ -6,11 +6,11 @@ defmodule Extatic.Compiler.Preprocessor.EEx do
     Preprocessor.EEx.Renderer
   }
 
-  use Preprocessor
+  use Preprocessor, ext: ".html"
 
   @impl true
   def render(content, variables) do
-    {do_render(content, variables), variables}
+    %{content: do_render(content, variables), variables: variables}
   rescue
     e in EEx.SyntaxError ->
       raise Preprocessor.SyntaxError,
