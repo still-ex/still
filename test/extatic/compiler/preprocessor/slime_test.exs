@@ -8,7 +8,7 @@ defmodule Extatic.Compiler.Preprocessor.SlimeTest do
       slime = "p Extatic"
       file_path = "index.slime"
 
-      {html, _} = Slime.render(slime, %{file_path: file_path})
+      %{content: html} = Slime.render(slime, %{file_path: file_path})
 
       assert html == "<p>Extatic</p>"
     end
@@ -18,7 +18,7 @@ defmodule Extatic.Compiler.Preprocessor.SlimeTest do
       file_path = "index.slime"
       title = "This is a test"
 
-      {html, _} = Slime.render(slime, %{file_path: file_path, title: title})
+      %{content: html} = Slime.render(slime, %{file_path: file_path, title: title})
 
       assert html == "<p>This is a test</p>"
     end
