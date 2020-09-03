@@ -7,7 +7,8 @@ defmodule Extatic.Compiler.File do
 
   def compile(file) do
     with {:ok, compiled, settings} <- compile_file(file),
-         new_file_path <- get_output_path(settings[:permalink]),
+         new_file_name <- get_output_file_name(file, settings),
+         new_file_path <- get_output_path(new_file_name),
          _ <- File.mkdir_p!(Path.dirname(new_file_path)),
          :ok <- File.write(new_file_path, compiled) do
       Logger.info("Compiled #{file}")
@@ -64,6 +65,16 @@ defmodule Extatic.Compiler.File do
     e in Compiler.Preprocessor.SyntaxError ->
       handle_syntax_error(file, e)
   end
+
+  defp get_output_file_name(_file, %{permalink: permalink}) do
+    permalink
+  end
+
+  defp get_output_file_name(file, %{extension: extension}) do
+    String.replace(file, Path.extname(file), extension)
+  end
+
+  defp get_output_file_name(file, _), do: file
 
   defp handle_syntax_error(file, e) do
     Logger.error("Syntax error in #{file}\n#{e.line_number}: #{e.line}\n#{e.message}",

@@ -5,7 +5,7 @@ defmodule Extatic.Compiler.Preprocessor do
     ".slim" => [Preprocessor.Frontmatter, Preprocessor.Slime],
     ".slime" => [Preprocessor.Frontmatter, Preprocessor.Slime],
     ".eex" => [Preprocessor.Frontmatter, Preprocessor.EEx],
-    ".css" => [Preprocessor.CSSMinify]
+    ".css" => [Preprocessor.EEx, Preprocessor.CSSMinify]
   }
 
   @callback render(String.t(), map()) :: %{content: String.t(), variables: map()} | no_return()
@@ -31,26 +31,20 @@ defmodule Extatic.Compiler.Preprocessor do
       def run(content, variables \\ %{}) do
         result = render(content, variables)
 
-        %{result | variables: result[:variables] |> set_permalink()}
+        %{result | variables: result[:variables] |> set_extension()}
       end
 
       def extension do
         unquote(opts)[:ext]
       end
 
-      defp set_permalink(variables = %{permalink: _}), do: variables
-
       if not is_nil(unquote(opts)[:ext]) do
-        defp set_permalink(variables = %{file_path: file_path}) do
-          permalink =
-            file_path
-            |> String.replace(Path.extname(file_path), extension())
-
-          Map.put(variables, :permalink, permalink)
+        defp set_extension(variables = %{file_path: file_path}) do
+          Map.put(variables, :extension, unquote(opts)[:ext])
         end
       end
 
-      defp set_permalink(variables), do: variables
+      defp set_extension(variables), do: variables
     end
   end
 end

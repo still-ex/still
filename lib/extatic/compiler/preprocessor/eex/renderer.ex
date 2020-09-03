@@ -26,6 +26,7 @@ defmodule Extatic.Compiler.Preprocessor.EEx.Renderer do
       variables
       |> ensure_current_context()
       |> ensure_preprocessor()
+      |> Map.to_list()
 
     ast =
       quote do
@@ -71,10 +72,10 @@ defmodule Extatic.Compiler.Preprocessor.EEx.Renderer do
   end
 
   defp ensure_current_context(variables) do
-    Keyword.put_new(variables, :current_context, variables[:file_path])
+    Map.put_new(variables, :current_context, variables[:file_path])
   end
 
   defp ensure_preprocessor(variables) do
-    Keyword.put_new(variables, :preprocessor, Preprocessor.EEx)
+    Map.put_new(variables, :preprocessor, Preprocessor.EEx)
   end
 end
