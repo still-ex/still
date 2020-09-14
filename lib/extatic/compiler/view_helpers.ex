@@ -42,8 +42,10 @@ defmodule Extatic.Compiler.ViewHelpers do
         Link.render(content, unquote(variables), opts)
       end
 
-      # TODO
-      def minify(code, _type), do: code
+      def cssmin(code) do
+        %{content: content} = Extatic.Compiler.Preprocessor.CSSMinify.render(code, %{})
+        content
+      end
     end
   end
 end

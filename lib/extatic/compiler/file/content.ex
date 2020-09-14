@@ -3,23 +3,20 @@ defmodule Extatic.Compiler.File.Content do
 
   alias Extatic.Compiler.{
     Collections,
-    Incremental,
-    Preprocessor,
-    File.Frontmatter
+    Incremental
   }
 
-  def render(file, content, preprocessor, data \\ %{}) do
-    with {:ok, template_data, content} <- Frontmatter.parse(content),
-         data <- Map.merge(template_data, data) |> Map.put(:file_path, file),
-         compiled <- render_template(content, preprocessor, data),
+  def render(file, content, preprocessors, data \\ %{}) do
+    with %{content: compiled, variables: data} <-
+           render_template(content, preprocessors, Map.put(data, :file_path, file)),
          compiled <- append_layout(compiled, data) do
       {:ok, compiled, data}
     end
   end
 
-  def compile(file, content, preprocessor, data \\ %{}) do
-    with {:ok, compiled, data} <- render(file, content, preprocessor, data),
-         compiled <- append_development_layout(compiled, preprocessor) do
+  def compile(file, content, preprocessors, data \\ %{}) do
+    with {:ok, compiled, data} <- render(file, content, preprocessors, data),
+         compiled <- append_development_layout(compiled, preprocessors) do
       {:ok, compiled, data}
     end
   end
@@ -42,20 +39,23 @@ defmodule Extatic.Compiler.File.Content do
   case Mix.env() do
     :dev ->
       @dev_layout "priv/extatic/dev.slime"
-      @preprocessors_with_development_layout [Preprocessor.Slime]
 
-      defp append_development_layout(content, preprocessor)
-           when preprocessor in @preprocessors_with_development_layout do
-        Application.app_dir(:extatic, @dev_layout)
-        |> File.read!()
-        |> render_template(preprocessor,
-          children: content,
-          file_path: @dev_layout
-        )
-      end
+      defp append_development_layout(content, preprocessors) do
+        last_preprocessor = preprocessors |> List.last()
 
-      defp append_development_layout(content, _preprocessor) do
-        content
+        if last_preprocessor.extension() == ".html" do
+          %{content: compiled} =
+            Application.app_dir(:extatic, @dev_layout)
+            |> File.read!()
+            |> render_template([Extatic.Compiler.Preprocessor.Slime], %{
+              children: content,
+              file_path: @dev_layout
+            })
+
+          compiled
+        else
+          content
+        end
       end
 
     _ ->
@@ -64,11 +64,13 @@ defmodule Extatic.Compiler.File.Content do
       end
   end
 
-  defp render_template(content, preprocessor, variables) when is_map(variables) do
-    render_template(content, preprocessor, variables |> Enum.to_list())
-  end
-
-  defp render_template(content, preprocessor, variables) do
-    preprocessor.render(content, [{:collections, Collections.all()} | variables])
+  defp render_template(content, preprocessors, variables) do
+    preprocessors
+    |> Enum.reduce(
+      %{content: content, variables: variables},
+      fn preprocessor, %{content: content, variables: variables} ->
+        preprocessor.run(content, Map.put(variables, :collections, Collections.all()))
+      end
+    )
   end
 end

@@ -1,13 +1,21 @@
-defmodule Extatic.Compiler.File.Frontmatter do
-  require Logger
-
+defmodule Extatic.Compiler.Preprocessor.Frontmatter do
+  alias Extatic.Compiler.Preprocessor
   alias Extatic.Utils
 
-  def parse(content) do
-    with [frontmatter, content] <- parse_frontmatter(content),
-         settings <- parse_yaml(frontmatter) do
-      {:ok, settings, content}
-    end
+  require Logger
+
+  use Preprocessor
+
+  @impl true
+  def render(content, variables) do
+    [frontmatter, content] = parse_frontmatter(content)
+
+    settings =
+      frontmatter
+      |> parse_yaml()
+      |> Map.merge(variables)
+
+    %{content: content, variables: settings}
   end
 
   defp parse_frontmatter(content) do

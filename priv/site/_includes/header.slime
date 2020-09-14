@@ -7,4 +7,4 @@
 header
   p This is a header
 
-= get(:css) |> minify(:css)
+= get(:css) |> cssmin()

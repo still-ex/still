@@ -3,7 +3,10 @@ defmodule Extatic.Compiler.File.ContentTest do
 
   alias Extatic.Compiler.{Collections, File.Content, Incremental}
 
-  @preprocessor Extatic.Compiler.Preprocessor.Slime
+  @preprocessors [
+    Extatic.Compiler.Preprocessor.Frontmatter,
+    Extatic.Compiler.Preprocessor.Slime
+  ]
 
   setup do
     {:ok, _pid} = Collections.start_link(%{})
@@ -12,13 +15,13 @@ defmodule Extatic.Compiler.File.ContentTest do
     :ok
   end
 
-  describe "compile " do
+  describe "compile" do
     test "compiles a file" do
       file = "index.slime"
       content = "p Hello"
 
       assert {:ok, "<p>Hello</p>", %{file_path: file}} =
-               Content.compile(file, content, @preprocessor)
+               Content.compile(file, content, @preprocessors)
     end
 
     test "returns the metadata" do
@@ -35,7 +38,7 @@ defmodule Extatic.Compiler.File.ContentTest do
       """
 
       assert {:ok, "<p>Hello</p>", %{hello: "world", tags: ["post", "article"]}} =
-               Content.compile(file, content, @preprocessor)
+               Content.compile(file, content, @preprocessors)
     end
 
     test "supports layout" do
@@ -48,7 +51,7 @@ defmodule Extatic.Compiler.File.ContentTest do
       p Hello
       """
 
-      {:ok, content, _} = Content.compile(file, content, @preprocessor)
+      {:ok, content, _} = Content.compile(file, content, @preprocessors)
 
       assert String.starts_with?(content, "<!DOCTYPE html><html><head><title>Extatic</title>")
       assert String.ends_with?(content, "<body><p>Hello</p></body></html>")

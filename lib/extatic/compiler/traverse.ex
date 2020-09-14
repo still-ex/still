@@ -26,11 +26,11 @@ defmodule Extatic.Compiler.Traverse do
     if File.dir?(get_input_path(file)) do
       collect_metadata(file)
     else
-      {:ok, metadata, _content} =
+      %{variables: metadata} =
         file
         |> get_input_path()
         |> File.read!()
-        |> Compiler.File.Frontmatter.parse()
+        |> Compiler.Preprocessor.Frontmatter.render(%{})
 
       handle_metadata(file, metadata)
     end

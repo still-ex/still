@@ -6,11 +6,11 @@ defmodule Extatic.Compiler.Preprocessor.EEx do
     Preprocessor.EEx.Renderer
   }
 
-  @behaviour Preprocessor
+  use Preprocessor, ext: ".html"
 
   @impl true
-  def render(content, variables \\ []) do
-    do_render(content, variables)
+  def render(content, variables) do
+    %{content: do_render(content, variables), variables: variables}
   rescue
     e in EEx.SyntaxError ->
       raise Preprocessor.SyntaxError,
@@ -22,6 +22,6 @@ defmodule Extatic.Compiler.Preprocessor.EEx do
 
   defp do_render(content, variables) do
     Renderer.create(content, variables)
-    |> apply(:render, variables |> Enum.into(%{}) |> Map.values())
+    |> apply(:render, variables |> Map.values())
   end
 end

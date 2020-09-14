@@ -1,6 +1,16 @@
 body {
-  color: #333;
+  color: <%= "#333" %>;
   background: white;
   font-size: 16px;
   line-height: 1.2rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+ul,
+ol {
+  list-style-type: circle;
+  list-style-position: inside;
 }
