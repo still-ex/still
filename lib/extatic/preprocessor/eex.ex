@@ -1,10 +1,8 @@
-defmodule Extatic.Compiler.Preprocessor.EEx do
+defmodule Extatic.Preprocessor.EEx do
   require EEx
 
-  alias Extatic.Compiler.{
-    Preprocessor,
-    Preprocessor.EEx.Renderer
-  }
+  alias Extatic.Preprocessor
+  alias Extatic.Preprocessor.EEx.Renderer
 
   use Preprocessor, ext: ".html"
 

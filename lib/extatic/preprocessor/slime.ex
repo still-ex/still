@@ -1,11 +1,9 @@
 if Code.ensure_loaded?(Slime) do
-  defmodule Extatic.Compiler.Preprocessor.Slime do
+  defmodule Extatic.Preprocessor.Slime do
     require Slime
 
-    alias Extatic.Compiler.{
-      Preprocessor,
-      Preprocessor.Slime.Renderer
-    }
+    alias Extatic.Preprocessor
+    alias Extatic.Preprocessor.Slime.Renderer
 
     use Preprocessor, ext: ".html"
 

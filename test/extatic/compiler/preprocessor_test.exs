@@ -1,6 +1,6 @@
-defmodule Extatic.Compiler.PreprocessorTest do
+defmodule Extatic.PreprocessorTest do
   use ExUnit.Case, async: true
-  alias Extatic.Compiler.Preprocessor
+  alias Extatic.Preprocessor
 
   defmodule TestPreprocessorWithExt do
     use Preprocessor, ext: ".css"

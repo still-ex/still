@@ -3,7 +3,7 @@ defmodule Extatic.Compiler.File do
 
   import Extatic.Utils
 
-  alias Extatic.Compiler
+  alias Extatic.{Compiler, Preprocessor}
 
   def compile(file) do
     with {:ok, compiled, settings} <- compile_file(file),
@@ -40,14 +40,14 @@ defmodule Extatic.Compiler.File do
 
   defp compile_file(file) do
     with {:ok, content} <- File.read(get_input_path(file)),
-         {:ok, preprocessor} <- Compiler.Preprocessor.for(file) do
+         {:ok, preprocessor} <- Preprocessor.for(file) do
       compile_content(file, content, preprocessor)
     end
   end
 
   defp render_file(file, data) do
     with {:ok, content} <- File.read(get_input_path(file)),
-         {:ok, preprocessor} <- Compiler.Preprocessor.for(file) do
+         {:ok, preprocessor} <- Preprocessor.for(file) do
       render_content(file, content, preprocessor, data)
     end
   end
@@ -55,14 +55,14 @@ defmodule Extatic.Compiler.File do
   defp compile_content(file, content, preprocessor) do
     Compiler.File.Content.compile(file, content, preprocessor)
   rescue
-    e in Compiler.Preprocessor.SyntaxError ->
+    e in Preprocessor.SyntaxError ->
       handle_syntax_error(file, e)
   end
 
   defp render_content(file, content, preprocessor, data) do
     Compiler.File.Content.render(file, content, preprocessor, data)
   rescue
-    e in Compiler.Preprocessor.SyntaxError ->
+    e in Preprocessor.SyntaxError ->
       handle_syntax_error(file, e)
   end
 

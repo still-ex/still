@@ -1,5 +1,5 @@
-defmodule Extatic.Compiler.Preprocessor.Frontmatter do
-  alias Extatic.Compiler.Preprocessor
+defmodule Extatic.Preprocessor.Frontmatter do
+  alias Extatic.Preprocessor
   alias Extatic.Utils
 
   require Logger
