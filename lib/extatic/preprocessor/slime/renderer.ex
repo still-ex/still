@@ -1,6 +1,6 @@
 if Code.ensure_loaded?(Slime) do
-  defmodule Extatic.Compiler.Preprocessor.Slime.Renderer do
-    alias Extatic.Compiler.Preprocessor
+  defmodule Extatic.Preprocessor.Slime.Renderer do
+    alias Extatic.Preprocessor
 
     def create(content, variables) do
       variables[:file_path]

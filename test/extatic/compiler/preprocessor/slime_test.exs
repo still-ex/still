@@ -1,7 +1,7 @@
-defmodule Extatic.Compiler.Preprocessor.SlimeTest do
+defmodule Extatic.Preprocessor.SlimeTest do
   use Extatic.Case
 
-  alias Extatic.Compiler.Preprocessor.Slime
+  alias Extatic.Preprocessor.Slime
 
   describe "render" do
     test "compiles a template" do
@@ -29,7 +29,7 @@ defmodule Extatic.Compiler.Preprocessor.SlimeTest do
 
       Slime.render(slime, %{file_path: file_path})
 
-      assert {:module, _} = Code.ensure_compiled(Extatic.Compiler.Preprocessor.Slime.Posts.Index)
+      assert {:module, _} = Code.ensure_compiled(Extatic.Preprocessor.Slime.Posts.Index)
     end
   end
 end

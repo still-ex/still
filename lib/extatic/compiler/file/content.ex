@@ -47,7 +47,7 @@ defmodule Extatic.Compiler.File.Content do
           %{content: compiled} =
             Application.app_dir(:extatic, @dev_layout)
             |> File.read!()
-            |> render_template([Extatic.Compiler.Preprocessor.Slime], %{
+            |> render_template([Extatic.Preprocessor.Slime], %{
               children: content,
               file_path: @dev_layout
             })

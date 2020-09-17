@@ -1,5 +1,5 @@
-defmodule Extatic.Compiler.Preprocessor.CSSMinify do
-  alias Extatic.Compiler.Preprocessor
+defmodule Extatic.Preprocessor.CSSMinify do
+  alias Extatic.Preprocessor
 
   use Preprocessor, ext: ".css"
 

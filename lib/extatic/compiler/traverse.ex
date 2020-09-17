@@ -1,7 +1,7 @@
 defmodule Extatic.Compiler.Traverse do
   import Extatic.Utils
 
-  alias Extatic.Compiler
+  alias Extatic.Preprocessor
   alias Extatic.Compiler.{Collections, Incremental}
 
   def run() do
@@ -30,7 +30,7 @@ defmodule Extatic.Compiler.Traverse do
         file
         |> get_input_path()
         |> File.read!()
-        |> Compiler.Preprocessor.Frontmatter.render(%{})
+        |> Preprocessor.Frontmatter.render(%{})
 
       handle_metadata(file, metadata)
     end

@@ -4,8 +4,8 @@ defmodule Extatic.Compiler.File.ContentTest do
   alias Extatic.Compiler.{Collections, File.Content, Incremental}
 
   @preprocessors [
-    Extatic.Compiler.Preprocessor.Frontmatter,
-    Extatic.Compiler.Preprocessor.Slime
+    Extatic.Preprocessor.Frontmatter,
+    Extatic.Preprocessor.Slime
   ]
 
   setup do

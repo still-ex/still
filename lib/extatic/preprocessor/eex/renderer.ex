@@ -1,5 +1,5 @@
-defmodule Extatic.Compiler.Preprocessor.EEx.Renderer do
-  alias Extatic.Compiler.Preprocessor
+defmodule Extatic.Preprocessor.EEx.Renderer do
+  alias Extatic.Preprocessor
 
   def create(content, variables) do
     variables[:file_path]
