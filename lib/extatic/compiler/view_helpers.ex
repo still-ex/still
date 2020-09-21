@@ -11,10 +11,12 @@ defmodule Extatic.Compiler.ViewHelpers do
 
       require Logger
 
+      @env unquote(variables)
+
       def include(file, variables \\ %{}) do
         with pid when not is_nil(pid) <- Incremental.Registry.get_or_create_file_process(file),
              {:ok, content, _settings} <-
-               Incremental.Node.render(pid, variables, unquote(variables)[:file_path]) do
+               Incremental.Node.render(pid, variables, @env[:file_path]) do
           Incremental.Node.add_subscription(pid, file)
           content
         else
@@ -25,7 +27,7 @@ defmodule Extatic.Compiler.ViewHelpers do
       end
 
       def set(variable, do: content) do
-        ctx = unquote(variables)[:current_context]
+        ctx = @env[:current_context]
 
         Context.put(ctx, variable, content)
 
@@ -33,13 +35,13 @@ defmodule Extatic.Compiler.ViewHelpers do
       end
 
       def get(variable) do
-        ctx = unquote(variables)[:current_context]
+        ctx = @env[:current_context]
 
         Context.get(ctx, variable)
       end
 
       def link(content, opts) do
-        Link.render(content, unquote(variables), opts)
+        Link.render(content, @env, opts)
       end
 
       def cssmin(code) do
