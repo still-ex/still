@@ -1,9 +1,9 @@
-defmodule Extatic.MixProject do
+defmodule Still.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :extatic,
+      app: :still,
       version: "0.1.0",
       elixir: "~> 1.10",
       elixirc_paths: ["lib"] ++ elixirc_paths(Mix.env()),
@@ -15,7 +15,7 @@ defmodule Extatic.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      mod: {Extatic.Application, []},
+      mod: {Still.Application, []},
       env: [
         reload_msg: "reload",
         server: false

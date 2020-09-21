@@ -1,6 +1,6 @@
 ---
 layout: _layout.slime
-title: Extatic | About
+title: Still | About
 ---
 = include("_includes/header.slime")
 
