@@ -28,7 +28,7 @@ defmodule <%= app_module %>.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:extatic, "~> <%= extatic_version %>"},
+      {:still, "~> <%= still_version %>"},
       {:slime, "~> 1.2"}
     ]
   end

@@ -1,0 +1,16 @@
+= children
+
+javascript:
+  window.socket = new WebSocket(`ws://${location.host}/ws`);
+
+  window.socket.onmessage = function(event) {
+    console.log('received', event);
+
+    if (event.data === '#{Application.fetch_env!(:still, :reload_msg)}') {
+      location.reload();
+    }
+  }
+
+  window.socket.onopen = () => {
+    window.socket.send("subscribe");
+  };
