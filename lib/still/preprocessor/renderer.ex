@@ -44,7 +44,7 @@ defmodule Still.Preprocessor.Renderer do
           |> Map.to_list()
 
         renderer_ast =
-          if Module.defines?(__MODULE__, {:ast, 0}) do
+          if Kernel.function_exported?(__MODULE__, :ast, 0) do
             ast()
           else
             []
