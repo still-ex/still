@@ -54,6 +54,7 @@ defmodule Still.Preprocessor.Renderer do
           quote do
             @compile :nowarn_unused_vars
 
+            unquote(user_view_helpers_asts())
             unquote(renderer_ast)
 
             use Still.Compiler.ViewHelpers, unquote(Macro.escape(module_variables))
@@ -83,6 +84,21 @@ defmodule Still.Preprocessor.Renderer do
             unquote(memo)
           end
         end)
+      end
+
+      defp user_view_helpers_asts do
+        :application.loaded_applications()
+        |> Enum.map(fn {app, _, _} ->
+          {:ok, mods} = :application.get_key(app, :modules)
+
+          for module <- mods,
+              Still.ViewHelper in (module.module_info(:attributes)[:behaviour] || []) do
+            quote do
+              import unquote(module)
+            end
+          end
+        end)
+        |> List.flatten()
       end
 
       defp ensure_current_context(variables) do
