@@ -10,3 +10,4 @@ html
     link media="all" rel="stylesheet" href="css/theme.css"
   body
     = children
+    = hello(file_path)
