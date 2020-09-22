@@ -1,11 +1,7 @@
 defmodule Still.Preprocessor.EEx.Renderer do
-  use Still.Preprocessor.Renderer
-
-  @impl true
-  def extensions, do: [".eex"]
-
-  @impl true
-  def preprocessor, do: Still.Preprocessor.EEx
+  use Still.Preprocessor.Renderer,
+    extensions: [".eex"],
+    preprocessor: Still.Preprocessor.EEx
 
   @impl true
   def compile(content, _variables) do
@@ -15,7 +11,7 @@ defmodule Still.Preprocessor.EEx.Renderer do
   end
 
   @impl true
-  def ast_steps do
+  def ast do
     quote do
       require EEx
     end

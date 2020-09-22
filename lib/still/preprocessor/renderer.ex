@@ -1,17 +1,17 @@
 defmodule Still.Preprocessor.Renderer do
   @type ast :: {atom(), keyword(), list()}
 
-  @callback extensions :: [String.t()]
-
-  @callback preprocessor :: atom()
-
   @callback compile(String.t(), [{atom(), any()}]) :: ast()
 
-  @callback ast_steps :: ast()
+  @callback ast() :: ast()
 
-  defmacro __using__(_) do
+  @optional_callbacks [ast: 0]
+
+  defmacro __using__(opts) do
     quote do
       @behaviour unquote(__MODULE__)
+      @preprocessor Keyword.fetch!(unquote(opts), :preprocessor)
+      @extensions Keyword.fetch!(unquote(opts), :extensions)
 
       def create(content, variables) do
         variables[:file_path]
@@ -22,12 +22,12 @@ defmodule Still.Preprocessor.Renderer do
       defp file_path_to_module_name(file) do
         name =
           Path.split(file)
-          |> reject_extensions()
-          |> replace_extensions()
+          |> Enum.reject(&Enum.member?(["/" | @extensions], &1))
+          |> Enum.map(&String.replace(&1, @extensions, ""))
           |> Enum.map(&String.replace(&1, "_", ""))
           |> Enum.map(&String.capitalize/1)
 
-        Module.concat([preprocessor() | name])
+        Module.concat([@preprocessor | name])
       end
 
       defp create_view_renderer(name, content, variables) do
@@ -43,27 +43,24 @@ defmodule Still.Preprocessor.Renderer do
           |> ensure_preprocessor()
           |> Map.to_list()
 
-        nowarn_ast =
-          quote do
-            @compile :nowarn_unused_vars
+        renderer_ast =
+          if Module.defines?(__MODULE__, {:ast, 0}) do
+            ast()
+          else
+            []
           end
 
-        renderer_ast = ast_steps()
-
-        function_ast =
+        ast =
           quote do
+            @compile :nowarn_unused_vars
+
+            unquote(renderer_ast)
+
             use Still.Compiler.ViewHelpers, unquote(Macro.escape(module_variables))
 
             def render(unquote_splicing(args)) do
               unquote(compiled)
             end
-          end
-
-        ast =
-          quote do
-            unquote(nowarn_ast)
-            unquote(renderer_ast)
-            unquote(function_ast)
           end
 
         with {:module, mod, _, _} <- Module.create(name, ast, Macro.Env.location(__ENV__)) do
@@ -88,22 +85,12 @@ defmodule Still.Preprocessor.Renderer do
         end)
       end
 
-      defp reject_extensions(path) do
-        blacklist = List.flatten(["/", extensions()])
-
-        Enum.reject(path, &Enum.member?(blacklist, &1))
-      end
-
-      defp replace_extensions(path) do
-        Enum.map(path, &String.replace(&1, extensions(), ""))
-      end
-
       defp ensure_current_context(variables) do
         Map.put_new(variables, :current_context, variables[:file_path])
       end
 
       defp ensure_preprocessor(variables) do
-        Map.put_new(variables, :preprocessor, preprocessor())
+        Map.put_new(variables, :preprocessor, @preprocessor)
       end
     end
   end

@@ -1,12 +1,8 @@
 if Code.ensure_loaded?(Slime) do
   defmodule Still.Preprocessor.Slime.Renderer do
-    use Still.Preprocessor.Renderer
-
-    @impl true
-    def extensions, do: [".slime"]
-
-    @impl true
-    def preprocessor, do: Still.Preprocessor.Slime
+    use Still.Preprocessor.Renderer,
+      extensions: [".slime"],
+      preprocessor: Still.Preprocessor.Slime
 
     @impl true
     def compile(content, _variables) do
@@ -17,7 +13,7 @@ if Code.ensure_loaded?(Slime) do
     end
 
     @impl true
-    def ast_steps do
+    def ast do
       quote do
         require EEx
         require Slime
