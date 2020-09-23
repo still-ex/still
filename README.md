@@ -43,12 +43,12 @@ code will not trigger a refresh.
 ### Preprocessors
 
 Still works with [EEx](https://elixirschool.com/en/lessons/specifics/eex/) and
-[Slime](https://github.com/slime-lang/slime), and CSS by default. Any file with
+[Slime](https://github.com/slime-lang/slime), Markdown, and CSS by default. Any file with
 a `.eex`, `.slime` or `.css` extension will be automatically converted and
 placed on the output folder.
 
-We run the CSS files through EEx which mean you can use EEx interpolation
-inside CSS files.
+We run the Markdown and CSS files through EEx which mean you can use EEx interpolation
+inside these files.
 
 #### Custom preprocessors
 
