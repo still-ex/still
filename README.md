@@ -168,3 +168,7 @@ Still was created and is maintained with :heart: by [Subvisual][subvisual].
 
 [subvisual]: http://subvisual.com
 [subvisual-logo]: https://raw.githubusercontent.com/subvisual/guides/master/github/templates/logos/blue.png
+
+## License
+
+Still is released unde the [ISC License](./LICENSE).
