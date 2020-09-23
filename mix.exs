@@ -29,7 +29,7 @@ defmodule Still.MixProject do
       {:file_system, "~> 0.2.8"},
       {:plug, "~> 1.10"},
       {:plug_cowboy, "~> 2.3"},
-      {:slime, "~> 1.2", optional: true},
+      {:slime, "~> 1.2"},
       {:yaml_elixir, "~> 2.4"}
     ]
   end
