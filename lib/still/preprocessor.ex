@@ -3,7 +3,8 @@ defmodule Still.Preprocessor do
     ".slim" => [__MODULE__.Frontmatter, __MODULE__.Slime],
     ".slime" => [__MODULE__.Frontmatter, __MODULE__.Slime],
     ".eex" => [__MODULE__.Frontmatter, __MODULE__.EEx],
-    ".css" => [__MODULE__.EEx, __MODULE__.CSSMinify]
+    ".css" => [__MODULE__.EEx, __MODULE__.CSSMinify],
+    ".md" => [__MODULE__.Frontmatter, __MODULE__.EEx, __MODULE__.Markdown]
   }
 
   def for(file) do
