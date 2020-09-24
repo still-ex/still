@@ -22,16 +22,18 @@ defmodule Still.Compiler.Incremental.Node do
   alias Still.Compiler
   alias __MODULE__.Compile
 
+  @compilation_timeout 10_000
+
   def start_link(file: file) do
     GenServer.start_link(__MODULE__, %{file: file}, name: file |> String.to_atom())
   end
 
   def compile(pid) do
-    GenServer.call(pid, :compile)
+    GenServer.call(pid, :compile, @compilation_timeout)
   end
 
   def render(pid, data, parent_file) do
-    GenServer.call(pid, {:render, data, parent_file})
+    GenServer.call(pid, {:render, data, parent_file}, @compilation_timeout)
   end
 
   def add_subscription(pid, file) do
