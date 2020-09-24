@@ -1,10 +1,10 @@
 # Still
 
-Still is a simple static site generator for Elixir inspired by
-[Eleventy](https://www.11ty.dev/docs/). Still will work with any project
-structure with little configuration. This project is JavaScript free.
+Still is a static site generator for Elixir inspired by [Eleventy](https://www.11ty.dev/docs/). It works with any project structure with little configuration. Still is JavaScript free.
 
 ## Installation
+
+**TODO:** Add instruction on how to use the generator.
 
 Add `still` as a dependency in `mix.exs`:
 
@@ -30,30 +30,21 @@ To compile the whole site run `mix still.compile`.
 
 ## Documentation
 
-The documentation is not perfect, but [the website](./priv/site) should be
-a fine example of what you can do with Still.
+Still works by compiling any file in the input directory that matches a valid extension into the output folder. By default, it looks for `.eex`, `.slime`, `.md` and `.css`.
+
+The documentation is not complete, but [our website](./priv/site) uses most of the features available. Please look there if what you're looking for is not documented.
 
 ### Development
 
-In development, when you run `mix still.dev`, Still watches the file
-system for changes and refreshes the browser when necessary. This only works for
-changes in your input folder, if you're extending Still, changes to the Elixir
-code will not trigger a refresh.
+In development mode, when you run `iex -S mix still.dev`, Still watches the input folder for changes and refreshes the browser when necessary. After you start Still, your website should be available in [http://localhost:3000](http://localhost:3000/).
 
 ### Preprocessors
 
-Still works with [EEx](https://elixirschool.com/en/lessons/specifics/eex/) and
-[Slime](https://github.com/slime-lang/slime), Markdown, and CSS by default. Any file with
-a `.eex`, `.slime` or `.css` extension will be automatically converted and
-placed on the output folder.
-
-We run the Markdown and CSS files through EEx which mean you can use EEx interpolation
-inside these files.
+Any file in the input folder with the extensions `.eex`, `.slime`, `.md` and `.css` will be compiled and placed using the same name (but a different extension) in the output folder. Markdown and CSS files run through EEx first, which means you can use EEx syntax in those files.
 
 #### Custom preprocessors
 
-To write a custom preprocessor first define a module that uses
-`Still.Preprocessor`, for instance:
+If necessary, you can add your own preprocessors. Take the following example:
 
 ```elixir
 defmodule SiteTest.Js do
@@ -66,12 +57,11 @@ defmodule SiteTest.Js do
 end
 ```
 
-A preprocessor must implement the `render/2` function which receives the
-content of a file and its context. In this function you can transform both the
-contents and the variables, returning both of them for the next preprocessor.
+This preprocessor is a regular module that calls `use Still.Preprocessor` and implements the `render/2` function. In the `render/2` function any preprocessor can transform both the content and the variables.
 
-Then, in your configuration you must specify an object that matches an
-extension to a list of preprocessors. For instance:
+Preprocessors usually run in chains, so the output of one preprocessor will be the input of another.
+
+Finally, in your configuration file you must specify a map that matches an extension to a list of preprocessor.
 
 ```elixir
 config :still,
@@ -162,13 +152,10 @@ when necessary.
 
 ## About
 
-Still was created and is maintained with :heart: by [Subvisual][subvisual].
+Still was created and is maintained with :heart: by [Subvisual](http://subvisual.com).
 
-[![Subvisual][subvisual-logo]][subvisual]
-
-[subvisual]: http://subvisual.com
-[subvisual-logo]: https://raw.githubusercontent.com/subvisual/guides/master/github/templates/logos/blue.png
+![Subvisual](https://raw.githubusercontent.com/subvisual/guides/master/github/templates/logos/blue.png)
 
 ## License
 
-Still is released unde the [ISC License](./LICENSE).
+Still is released under the [ISC License](./LICENSE).
