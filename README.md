@@ -90,22 +90,41 @@ This preprocessor doesn't do anything to the contents of a file, so the file on 
 
 ### Pass through copy
 
-You can extend Still with preprocessors, but sometimes you only want to copy
-files over. For those situations you can use the pass through copy.
+If you only want to copy files from the input to the output folder you can use the pass through copy. This is a mechanism where you can specify a string or regular expression and any file that matches will be copied over.
 
-The following example covers all the supported configurations:
+If you specify a string any file, or folder, that matches that string, or starts with that string, will be copied over to the output folder. For instance, if you write this:
+
+```elixir
+config :still,
+  pass_through_copy: ["img/logo.png"]
+```
+
+The file `logo.png` inside the `img` folder will be copied. But if you write this:
+
+```elixir
+config :still,
+  pass_through_copy: ["img"]
+```
+
+Any file or folder that starts with `img` will be copied, which may include an `img` folder or a file named `image.png`. So you need to be mindfull of that.
+
+You can also specify a regular expression, and if a file, or path, matches that expression, it's copied over. For instance:
 
 ```elixir
 config still,
-  pass_through_copy: [~r/.*jpg/, "logo.png", css: "styles"]
+  pass_through_copy: [~r/.*jpg/]
 ```
 
-In this example, we'll copy every file that has the `.jpg` extension, the
-`logo.png` file, and the `css` folder, but the `css` will be called `styles` in
-the output folder.
+This configuration will copy any file with a `.jpg` extension.
 
-You can write a regex, a file path, or a keyword list where value is the
-destination name.
+There's another, more advanced functionality, which is to specify a keyword, and the key will be used to match the input folder, and the value will be use to replace the input path. For instance:
+
+```elixir
+config :still,
+  pass_through_copy: [css: "styles"]
+```
+
+Will copy the `css` folder from the input folder but will rename it to `styles` in the output folder.
 
 ### Layouts
 
