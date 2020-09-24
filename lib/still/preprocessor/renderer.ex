@@ -87,18 +87,25 @@ defmodule Still.Preprocessor.Renderer do
       end
 
       defp user_view_helpers_asts do
-        :application.loaded_applications()
-        |> Enum.map(fn {app, _, _} ->
-          {:ok, mods} = :application.get_key(app, :modules)
-
-          for module <- mods,
-              Still.ViewHelper in (module.module_info(:attributes)[:behaviour] || []) do
+        :code.all_available()
+        |> Stream.map(fn {mod, _, _} -> :"#{mod}" end)
+        |> Stream.map(fn mod ->
+          try do
+            {mod, mod.module_info(:attributes)[:behaviour] || []}
+          rescue
+            UndefinedFunctionError ->
+              nil
+          end
+        end)
+        |> Stream.filter(& &1)
+        |> Stream.map(fn {module, behaviours} ->
+          if Still.ViewHelper in behaviours do
             quote do
               import unquote(module)
             end
           end
         end)
-        |> List.flatten()
+        |> Enum.filter(& &1)
       end
 
       defp ensure_current_context(variables) do
