@@ -15,12 +15,16 @@ defmodule Still.Watcher do
   end
 
   def init(_) do
+    {:ok, %{}, {:continue, :async_compile}}
+  end
+
+  def handle_continue(:async_compile, state) do
     {:ok, watcher_pid} = FileSystem.start_link(dirs: [get_input_path()])
     FileSystem.subscribe(watcher_pid)
 
     Compiler.Traverse.run()
 
-    {:ok, %{}}
+    {:noreply, state}
   end
 
   def handle_info({:file_event, _watcher_pid, {file, [_, :removed]}}, state) do
