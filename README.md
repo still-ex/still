@@ -30,9 +30,9 @@ To compile the whole site run `mix still.compile`.
 
 ## Documentation
 
-Still works by compiling any file in the input directory that matches a valid extension into the output folder. By default, it looks for `.eex`, `.slime`, `.md` and `.css`.
+Still works by compiling any file in the input directory, that matches an expression, into the output folder. By default, it looks for files with the extensions `.eex`, `.slime`, `.md` and `.css`.
 
-The documentation is not complete, but [our website](./priv/site) uses most of the features available. Please look there if what you're looking for is not documented.
+This document is not complete, but [our website](./priv/site) uses most of the features available in Still. Please have a look there if what you're looking for is not documented.
 
 ### Development
 
@@ -40,11 +40,16 @@ In development mode, when you run `iex -S mix still.dev`, Still watches the inpu
 
 ### Preprocessors
 
-Any file in the input folder with the extensions `.eex`, `.slime`, `.md` and `.css` will be compiled and placed using the same name (but a different extension) in the output folder. Markdown and CSS files run through EEx first, which means you can use EEx syntax in those files.
+Any file in the input folder with the extensions `.eex`, `.slime`, `.md` and `.css` will be compiled and placed with a different extension in the output folder. Markdown and CSS files run through EEx first, which means you can use EEx syntax in those files. For instance:
+
+```markdown
+# Some title
+<%= link "Some link", to: "somewhere" %>
+```
 
 #### Custom preprocessors
 
-If necessary, you can add your own preprocessors. Take the following example:
+If the default preprocessors are not enough, you can add your own. Take the following example:
 
 ```elixir
 defmodule SiteTest.Js do
@@ -57,11 +62,22 @@ defmodule SiteTest.Js do
 end
 ```
 
-This preprocessor is a regular module that calls `use Still.Preprocessor` and implements the `render/2` function. In the `render/2` function any preprocessor can transform both the content and the variables.
+This preprocessor is a regular module that calls `use Still.Preprocessor` and implements the `render/2` function. The render function is used to transform the content and the variables of a file.
 
-Preprocessors usually run in chains, so the output of one preprocessor will be the input of another.
+Preprocessors are always part of a transformation chain, and each file will run through the chain, using the output of the one preprocessor as the input of the next. At the moment, the default transformation chains look like this:
 
-Finally, in your configuration file you must specify a map that matches an extension to a list of preprocessor.
+```elixir
+@default_preprocessors %{
+  ".slim" => [Preprocessor.Frontmatter, Preprocessor.Slime],
+  ".slime" => [Preprocessor.Frontmatter, Preprocessor.Slime],
+  ".eex" => [Preprocessor.Frontmatter, Preprocessor.EEx],
+  ".css" => [Preprocessor.EEx, Preprocessor.CSSMinify]
+}
+```
+
+You can see that some files go through a front matter preprocessor, and CSS goes through EEx, which allows for the interpolation mentioned above.
+
+For our example preprocessor, we can simply add it to the list in the configuration file:
 
 ```elixir
 config :still,
@@ -70,8 +86,7 @@ config :still,
   }
 ```
 
-In this example we created a preprocessor that simply copies files `.js` files
-from the input to the output folder.
+This preprocessor doesn't do anything to the contents of a file, so the file on the output folder will look exactly like the file in the input folder.
 
 ### Pass through copy
 
