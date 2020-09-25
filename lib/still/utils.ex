@@ -2,28 +2,32 @@ defmodule Still.Utils do
   def get_input_path(file), do: Path.join(get_input_path(), file)
 
   def get_input_path() do
-    Application.fetch_env!(:still, :input)
+    config!(:input)
     |> Path.expand()
   end
 
   def get_output_path(file), do: Path.join(get_output_path(), file)
 
   def get_output_path() do
-    Application.fetch_env!(:still, :output)
+    config!(:output)
     |> Path.expand()
   end
 
   def get_relative_input_path(full_path) do
     full_path
-    |> String.replace(Application.fetch_env!(:still, :input), "")
+    |> String.replace(config!(:input), "")
     |> String.trim_leading("/")
   end
 
-  def rm_output_dir() do
-    File.rm_rf(get_output_path())
+  def get_base_url() do
+    config!(:base_url)
   end
 
-  def get_base_url() do
-    Application.fetch_env!(:still, :base_url)
+  def rm_output_dir() do
+    get_output_path()
+    |> File.rm_rf()
   end
+
+  def config!(key), do: Application.fetch_env!(:still, key)
+  def config(key, default), do: Application.get_env(:still, key, default)
 end
