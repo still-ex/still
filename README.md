@@ -1,10 +1,16 @@
 # Still
 
-Still is a static site generator for Elixir. It's designed to be simple to use and to extend. It works with any project structure with little configuration. Still is JavaScript free.
+Still is a static site generator for Elixir. It's designed to be easy to use and extend. It works on any project structure with little configuration. Still is JavaScript free.
 
 ## Installation
 
-**TODO:** Add instruction on how to use the generator.
+### For new projects
+
+`mix archive.install hex still` to install it on your system. You only need to do this once.
+
+Then you can create new static websites by running `mix still.new my_site`. That's it!
+
+### Adding to an existing project
 
 Add `still` as a dependency in `mix.exs`:
 
@@ -24,9 +30,7 @@ config :still,
   output: Path.join(Path.dirname(__DIR__), "_site")
 ```
 
-Create a file `index.slime` in the input folder and run `mix still.dev`.
-
-To compile the whole site run `mix still.compile`.
+Create a file `index.slime` in the input folder.
 
 ## Documentation
 
@@ -36,7 +40,11 @@ This document is not complete, but [our website](./priv/site) uses most of the f
 
 ### Development
 
-In development mode, when you run `iex -S mix still.dev`, Still watches the input folder for changes and refreshes the browser if necessary. After you start Still, your website should be available in [http://localhost:3000](http://localhost:3000/).
+In development, you run `iex -S mix still.dev` and still makes your website available in [http://localhost:3000](http://localhost:3000/). Still will be watching the the input folder for changes, refreshing the browser when necessary.
+
+### Compilation
+
+To compile the site run `mix still.compile`.
 
 ### Preprocessors
 
@@ -44,6 +52,7 @@ Any file in the input folder with the extensions `.eex`, `.slime`, `.md` and `.c
 
 ```markdown
 # Some title
+
 <%= link "Some link", to: "somewhere" %>
 ```
 
