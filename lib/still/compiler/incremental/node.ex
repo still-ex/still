@@ -14,6 +14,12 @@ defmodule Still.Compiler.Incremental.Node do
 
   * Render - rendering a file means that the current file is being
   included by another file. Template files may return HTML and images could return a path.
+
+  Incremental nodes attempt to compile/render files synchronously. If a file
+  takes longer than 5 seconds to be compiled, this process will crash. Although
+  not a common occurence, this can be configured by setting the
+  `:compilation_timeout` key in your `config/config.exs`. Default is `5_000`
+  (in milliseconds).
   """
 
   use GenServer
@@ -22,7 +28,7 @@ defmodule Still.Compiler.Incremental.Node do
   alias Still.Compiler
   alias __MODULE__.Compile
 
-  @default_compilation_timeout 10_000
+  @default_compilation_timeout 5_000
 
   def start_link(file: file) do
     GenServer.start_link(__MODULE__, %{file: file}, name: file |> String.to_atom())
