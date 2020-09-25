@@ -1,6 +1,6 @@
 # Still
 
-Still is a static site generator for Elixir inspired by [Eleventy](https://www.11ty.dev/docs/). It works with any project structure with little configuration. Still is JavaScript free.
+Still is a static site generator for Elixir. It's designed to be simple to use and to extend. It works with any project structure with little configuration. Still is JavaScript free.
 
 ## Installation
 
@@ -36,11 +36,11 @@ This document is not complete, but [our website](./priv/site) uses most of the f
 
 ### Development
 
-In development mode, when you run `iex -S mix still.dev`, Still watches the input folder for changes and refreshes the browser when necessary. After you start Still, your website should be available in [http://localhost:3000](http://localhost:3000/).
+In development mode, when you run `iex -S mix still.dev`, Still watches the input folder for changes and refreshes the browser if necessary. After you start Still, your website should be available in [http://localhost:3000](http://localhost:3000/).
 
 ### Preprocessors
 
-Any file in the input folder with the extensions `.eex`, `.slime`, `.md` and `.css` will be compiled and placed with a different extension in the output folder. Markdown and CSS files run through EEx first, which means you can use EEx syntax in those files. For instance:
+Any file in the input folder with the extensions `.eex`, `.slime`, `.md` and `.css` will be compiled and placed with a different extension in the output folder. Markdown and CSS files run through EEx first, which means you can use EEx syntax in those files. Here's an example of a markdown file that uses EEx interpolation:
 
 ```markdown
 # Some title
