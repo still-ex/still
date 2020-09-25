@@ -184,6 +184,41 @@ In any template you call the `link` function to create a link to somewhere
 else. This function will already take care of specifying the `rel` and `target`
 when necessary.
 
+#### Setting variables
+
+Inside you can also use the `get` and `set` functions to move information around. For instance, you can do something like this in your `index.slime`:
+
+```slime
+---
+layout: _layout.slime
+title: Still | About
+---
+= include("_includes/header.slime")
+
+- set :hacker_message do
+  span style="color: green"
+    | Become a hacker!
+
+= link to: "https://hackertyper.net" do
+  = get :hacker_message
+```
+
+The "Become a hacker" span with a green color will show up inside the `a`. But you can reference that same variable in the `_layout_slime` or the `_includes/header.slime`.
+
+For instance, in `_layout.slime` you can do something like this:
+
+```slime
+doctype html
+html
+  head
+    title
+      = get :hacker_message
+  body
+    = children
+```
+
+It will look all messed up, but you can do it.
+
 ## About
 
 Still was created and is maintained with :heart: by [Subvisual](http://subvisual.com).
