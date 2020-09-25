@@ -6,6 +6,8 @@ defmodule Still.Web.BrowserSubscriptions do
   end
 
   def add(pid) do
+    IO.inspect(pid)
+    IO.inspect(__MODULE__)
     GenServer.cast(__MODULE__, {:add, pid})
   end
 
@@ -18,6 +20,7 @@ defmodule Still.Web.BrowserSubscriptions do
   end
 
   def handle_cast({:add, pid}, state) do
+    IO.inspect(here: pid)
     {:noreply, %{state | subscribers: [pid | state.subscribers]}}
   end
 

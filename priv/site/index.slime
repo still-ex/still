@@ -4,10 +4,12 @@ layout: _layout.slime
 
 = include("_includes/header.slime")
 
-#id.class
-  h1 Home page
-  p Let's try to list some numbers:
+.main
+  h1 Still
+  p Still is a static site generator for Elixir. It's designed to be simple to use and to extend. It works with any project structure with little configuration. Still is JavaScript free.
+  h2 Blog
   ul
     = Enum.map Map.get(collections, "post", []), fn x ->
       li
-        = link x[:title], to: x[:permalink]
+        = link x[:date] <> " - " <> x[:title], to: x[:permalink]
+  = include("_includes/subvisual.md")

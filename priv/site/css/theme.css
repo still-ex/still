@@ -1,8 +1,11 @@
-body {
-  color: <%= "#333" %>;
+body, html {
+  color: #333;
   background: white;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1.2rem;
+  font-family: sans-serif;
+  padding: 0;
+  margin: 0;
 }
 
 * {
@@ -13,4 +16,46 @@ ul,
 ol {
   list-style-type: circle;
   list-style-position: inside;
+}
+
+h1 {
+  font-size: 2rem;
+}
+
+h2 {
+  font-size: 1.6rem;
+}
+
+h3 {
+  font-size: 1.4rem;
+}
+
+h1, h2, h3 {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  line-height: 1.2em;
+}
+
+img[alt=Subvisual] {
+  width: 200px;
+}
+
+code {
+  background: black;
+  padding: 2px 5px;
+}
+
+pre {
+  padding: 2rem 1rem;
+  background: black;
+}
+
+a {
+  color: #333;
+}
+
+.main {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem 0;
 }

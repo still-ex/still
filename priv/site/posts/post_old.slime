@@ -1,8 +1,0 @@
----
-layout: _layout.slime
-tag: post
-permalink: /keep-same-link.html
-title: "Post with a permalink"
----
-h1 This an old blog post
-p that has a permanent link.
