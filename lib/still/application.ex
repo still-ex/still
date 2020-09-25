@@ -29,7 +29,8 @@ defmodule Still.Application do
           Plug.Cowboy,
           scheme: :http, plug: {Still.Web.Router, []}, port: port(), dispatch: cowboy_dispatch()
         },
-        Still.Watcher
+        Still.Watcher,
+        Still.Web.BrowserSubscriptions
       ]
     else
       []
