@@ -4,7 +4,7 @@ defmodule Still.Preprocessor.Markdown do
   use Preprocessor, ext: ".html"
 
   def render(content, variables) do
-    html_doc = Earmark.as_html!(content)
+    html_doc = Markdown.to_html(content)
 
     %{content: html_doc, variables: variables}
   end
