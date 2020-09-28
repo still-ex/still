@@ -115,13 +115,13 @@ config :still,
   pass_through_copy: ["img"]
 ```
 
-Any file or folder that starts with `img` will be copied, which may include an `img` folder or a file named `image.png`. So you need to be mindfull of that.
+Any file or folder that starts with `img` will be copied, which may include an `img` folder or a file named `img.png`. So you need to be mindfull of that.
 
 You can also specify a regular expression, and if a file, or path, matches that expression, it's copied over. For instance:
 
 ```elixir
 config still,
-  pass_through_copy: [~r/.*jpg/]
+  pass_through_copy: [~r/.*\.jpe?g/]
 ```
 
 This configuration will copy any file with a `.jpg` extension.
