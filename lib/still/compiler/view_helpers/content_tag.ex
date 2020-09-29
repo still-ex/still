@@ -10,11 +10,7 @@ defmodule Still.Compiler.ViewHelpers.ContentTag do
       |> Enum.concat(data_attrs)
       |> Enum.join(" ")
 
-    """
-    #{opening_tag(tag, content, attrs)}
-      #{content}
-    #{closing_tag(tag, content)}
-    """
+    opening_tag(tag, content, attrs) <> content <> closing_tag(tag, content)
   end
 
   def opening_tag(tag, content, attrs) when is_nil(content) do
