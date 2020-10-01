@@ -1,4 +1,4 @@
-<!DOCTYPE html><html><head><title>Still on Elixir (Announcement)</title><meta charset="UTF-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><link href="/css/theme.css" media="all" rel="stylesheet"></head><body><header class="header"><a href="http://localhost:3000/">Still</a><nav class="header-nav"><a href="https://github.com/subvisual/still" rel="noopener noreferrer" target="_blank">Github</a><a href="http://localhost:3000/docs">Docs</a></nav></header><style type="text/css">.header {height: 80px;font-size: 1.2rem;display: flex;align-items: center;padding: 0 2rem;justify-content: space-between;}.header-nav > a {margin-left: 2rem;}.header a {text-decoration: none;}</style><h1 class="fancy-title">Still on Elixir (Announcement)</h1><div class="main"><p>We are proud to announce Still! Over the years, we had to build plenty of
+<!DOCTYPE html><html><head><title>Still on Elixir (Announcement)</title><meta charset="UTF-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><link href="https://subvisual.github.io/still//css/theme.css" media="all" rel="stylesheet"></head><body><header class="header"><a href="https://subvisual.github.io/still//">Still</a><nav class="header-nav"><a href="https://github.com/subvisual/still" rel="noopener noreferrer" target="_blank">Github</a><a href="https://subvisual.github.io/still//docs">Docs</a></nav></header><style type="text/css">.header {height: 80px;font-size: 1.2rem;display: flex;align-items: center;padding: 0 2rem;justify-content: space-between;}.header-nav > a {margin-left: 2rem;}.header a {text-decoration: none;}</style><h1 class="fancy-title">Still on Elixir (Announcement)</h1><div class="main"><p>We are proud to announce Still! Over the years, we had to build plenty of
 static websites, and as time passes, the tooling around building websites got
 more and more complicated. It doesn&#39;t have to be. Most of the issues tools like
 Gatsby solve were introduced by using React and its ecosystem in the first
@@ -25,16 +25,4 @@ one was auto-refresh on file changes, and there&#39;s more to come. We want Stil
 to feel like a modern development environment. You don&#39;t have to feel like
 you&#39;re building websites in 2010 just because you&#39;re not relying on the
 JavaScript tooling.</p>
-</div></body></html><script>window.socket = new WebSocket(`ws://${location.host}/ws`);
-
-window.socket.onmessage = function(event) {
-  console.log('received', event);
-
-  if (event.data === 'reload') {
-    location.reload();
-  }
-}
-
-window.socket.onopen = () => {
-  window.socket.send("subscribe");
-};</script>
+</div></body></html>

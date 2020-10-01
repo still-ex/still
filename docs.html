@@ -1,4 +1,4 @@
-<!DOCTYPE html><html><head><title>Documentation</title><meta charset="UTF-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><link href="/css/theme.css" media="all" rel="stylesheet"></head><body><header class="header"><a href="http://localhost:3000/">Still</a><nav class="header-nav"><a href="https://github.com/subvisual/still" rel="noopener noreferrer" target="_blank">Github</a><a href="http://localhost:3000/docs">Docs</a></nav></header><style type="text/css">.header {height: 80px;font-size: 1.2rem;display: flex;align-items: center;padding: 0 2rem;justify-content: space-between;}.header-nav > a {margin-left: 2rem;}.header a {text-decoration: none;}</style><h1 class="fancy-title">Documentation</h1><div class="main"><p>Still works by compiling files from an input directory into an output directory. By default, it looks for files with the extensions <code>.eex</code>, <code>.slime</code>, <code>.md</code> and <code>.css</code>, but continue reading to see how you set it up to your needs.</p>
+<!DOCTYPE html><html><head><title>Documentation</title><meta charset="UTF-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><link href="https://subvisual.github.io/still//css/theme.css" media="all" rel="stylesheet"></head><body><header class="header"><a href="https://subvisual.github.io/still//">Still</a><nav class="header-nav"><a href="https://github.com/subvisual/still" rel="noopener noreferrer" target="_blank">Github</a><a href="https://subvisual.github.io/still//docs">Docs</a></nav></header><style type="text/css">.header {height: 80px;font-size: 1.2rem;display: flex;align-items: center;padding: 0 2rem;justify-content: space-between;}.header-nav > a {margin-left: 2rem;}.header a {text-decoration: none;}</style><h1 class="fancy-title">Documentation</h1><div class="main"><p>Still works by compiling files from an input directory into an output directory. By default, it looks for files with the extensions <code>.eex</code>, <code>.slime</code>, <code>.md</code> and <code>.css</code>, but continue reading to see how you set it up to your needs.</p>
 
 <p><em>This document is not complete, but <a href="./priv/site">our website</a> uses most of the features available in Still. Please have a look there if you can&#39;t find what you&#39;re looking for.</em></p>
 
@@ -51,7 +51,7 @@ Your website will be available in <a href="http://localhost:3000/">http://localh
 
 <h1>Some title</h1>
 
-<p><a href="http://localhost:3000/somewhere">Some link</a>
+<p><a href="https://subvisual.github.io/still//somewhere">Some link</a>
 ```</p>
 
 <p>Files, or folders, that start with an underscore are ignored by the compilation step.</p>
@@ -201,16 +201,4 @@ when necessary.</p>
 <p>Still is released under the <a href="./LICENSE">ISC License</a>.</p>
 
 <div class="footer"><p>Still was created and is maintained by</p><img alt="Subvisual" src="./subvisual.png"></div>
-</div></body></html><script>window.socket = new WebSocket(`ws://${location.host}/ws`);
-
-window.socket.onmessage = function(event) {
-  console.log('received', event);
-
-  if (event.data === 'reload') {
-    location.reload();
-  }
-}
-
-window.socket.onopen = () => {
-  window.socket.send("subscribe");
-};</script>
+</div></body></html>
