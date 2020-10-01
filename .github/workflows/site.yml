@@ -11,3 +11,7 @@ jobs:
           elixir-version: '1.9.4'
       - run: mix deps.get
       - run: mix still.dev
+      - uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./_build
