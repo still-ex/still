@@ -1,4 +1,4 @@
 .footer
   p Still was created and is maintained by
 
-  img src="./subvisual.png" alt="Subvisual"
+  img src="#{url_for("subvisual.png")}" alt="Subvisual"

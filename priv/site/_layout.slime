@@ -11,3 +11,4 @@ html
     link media="all" rel="stylesheet" href="#{url_for("/css/theme.css")}"
   body
     = children
+    = include("_includes/footer.slime")

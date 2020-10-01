@@ -204,5 +204,3 @@ when necessary.
 ## License
 
 Still is released under the [ISC License](./LICENSE).
-
-<%= include "\_includes/footer.slime" %>

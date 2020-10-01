@@ -6,6 +6,8 @@ body, html {
   font-family: sans-serif;
   padding: 0;
   margin: 0;
+  overscroll-behavior-y: none;
+
 }
 
 * {
@@ -77,7 +79,8 @@ a {
 }
 
 .footer {
-  margin-top: 5rem;
+  max-width: 600px;
+  margin: 5rem auto;
 }
 
 .fancy-title {
