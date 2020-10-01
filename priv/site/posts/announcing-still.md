@@ -1,7 +1,7 @@
 ---
 layout: "_post_layout.slime"
 tag: post
-title: "Still on Elixir - Announcement"
+title: "Still on Elixir (Announcement)"
 date: 2020-10-01
 ---
 

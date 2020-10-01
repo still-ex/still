@@ -12,7 +12,7 @@ layout: _layout.slime
   p For more information please read the <%= link "documentaton", to: "/docs" %>.
   h2 Blog
   ul
-    = Enum.map Map.get(collections, "post", []), fn x ->
+    = Enum.map Map.get(collections, "post", []), fn post ->
       li
-        = link x[:date] <> " - " <> x[:title], to: x[:permalink]
+        = link post[:date] <> " - " <> post[:title], to: post[:permalink]
   = include("_includes/footer.slime")
