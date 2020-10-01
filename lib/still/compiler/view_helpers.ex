@@ -41,8 +41,8 @@ defmodule Still.Compiler.ViewHelpers do
         Context.get(ctx, variable)
       end
 
-      def url_for(relative_path, opts) do
-        UrlFor.render(relative_path, opts)
+      def url_for(relative_path) do
+        UrlFor.render(relative_path)
       end
 
       def link(content, opts) do

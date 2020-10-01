@@ -1,7 +1,7 @@
 defmodule Still.Compiler.ViewHelpers.UrlFor do
   import Still.Utils
 
-  def render(relative_path, _opts) do
+  def render(relative_path) do
     relative_path
     |> add_base_url()
   end
