@@ -1,5 +1,7 @@
 # Still
 
+[Documentation](https://subvisual.github.io/still/)
+
 Still is a static site generator for Elixir.
 
 We designed Still to be simple to use and easy to extend.
@@ -38,7 +40,7 @@ config :still,
 
 Create a file `index.slime` in the input folder.
 
-For more information please visit the website.
+For more information please visit the [website](https://subvisual.github.io/still/).
 
 ## About
 
