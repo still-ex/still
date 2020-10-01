@@ -14,21 +14,19 @@
 
 <p>Add <code>still</code> as a dependency in <code>mix.exs</code>:</p>
 
-<p><code>elixir
-def deps do
+<pre><code class="language-elixir">def deps do
   [
     {:still, &quot;~&gt; 0.0.1&quot;}
   ]
 end
-</code></p>
+</code></pre>
 
 <p>Open up <code>config.exs</code> and set the input and output folders:</p>
 
-<p><code>elixir
-config :still,
+<pre><code class="language-elixir">config :still,
   input: Path.join(Path.dirname(__DIR__), &quot;priv/site&quot;),
   output: Path.join(Path.dirname(__DIR__), &quot;_site&quot;)
-</code></p>
+</code></pre>
 
 <p>Create a file <code>index.slime</code> in the input folder.</p>
 
@@ -47,12 +45,10 @@ Your website will be available in <a href="http://localhost:3000/">http://localh
 
 <p>Markdown and CSS files run through EEx first, which means you can use EEx syntax in those files. Here&#39;s an example of a markdown file that uses EEx interpolation:</p>
 
-<p>```markdown</p>
+<pre><code class="language-markdown"># Some title
 
-<h1>Some title</h1>
-
-<p><a href="https://subvisual.github.io/still//somewhere">Some link</a>
-```</p>
+&lt;a href=&quot;https://subvisual.github.io/still//somewhere&quot;&gt;Some link&lt;/a&gt;
+</code></pre>
 
 <p>Files, or folders, that start with an underscore are ignored by the compilation step.</p>
 
@@ -60,40 +56,37 @@ Your website will be available in <a href="http://localhost:3000/">http://localh
 
 <p>If the default preprocessors are not enough, you can extend Still with your own. Take the following example:</p>
 
-<p>```elixir
-defmodule SiteTest.Js do
-  use Still.Preprocessor</p>
+<pre><code class="language-elixir">defmodule SiteTest.Js do
+  use Still.Preprocessor
 
-<p>@impl true
+  @impl true
   def render(content, variables) do
     %{content: content, variables: variables}
   end
 end
-```</p>
+</code></pre>
 
 <p>This preprocessor is a regular module that calls <code>use Still.Preprocessor</code> and implements the <code>render/2</code> function. The render function is used to transform the content and the variables of a file.</p>
 
 <p>Preprocessors are always part of a transformation chain, and each file will run through the chain, using the output of the one preprocessor as the input of the next. At the moment, the default transformation chains look like this:</p>
 
-<p><code>elixir
-@default_preprocessors %{
+<pre><code class="language-elixir">@default_preprocessors %{
   &quot;.slim&quot; =&gt; [Preprocessor.Frontmatter, Preprocessor.Slime],
   &quot;.slime&quot; =&gt; [Preprocessor.Frontmatter, Preprocessor.Slime],
   &quot;.eex&quot; =&gt; [Preprocessor.Frontmatter, Preprocessor.EEx],
   &quot;.css&quot; =&gt; [Preprocessor.EEx, Preprocessor.CSSMinify]
 }
-</code></p>
+</code></pre>
 
 <p>You can see that some files go through a front matter preprocessor, and CSS goes through EEx, which allows for the interpolation mentioned above.</p>
 
 <p>For our example preprocessor, we can simply add it to the list in the configuration file:</p>
 
-<p><code>elixir
-config :still,
+<pre><code class="language-elixir">config :still,
   preprocessors: %{
     &quot;.js&quot; =&gt; [SiteTest.Js]
   }
-</code></p>
+</code></pre>
 
 <p>This preprocessor doesn&#39;t do anything to the contents of a file, so the file on the output folder will look exactly like the file in the input folder.</p>
 
@@ -103,35 +96,31 @@ config :still,
 
 <p>In your configuration files, if you specify add string on the <code>pass_through_copy</code> key, any file, or folder, whose relative path starts with that same string will be copied over to the output.</p>
 
-<p><code>elixir
-config :still,
+<pre><code class="language-elixir">config :still,
   pass_through_copy: [&quot;img/logo.png&quot;]
-</code></p>
+</code></pre>
 
 <p>In the example above, the file <code>logo.png</code> inside the <code>img</code> folder will be copied to the <code>img</code> folder in the output. But if you write something like this:</p>
 
-<p><code>elixir
-config :still,
+<pre><code class="language-elixir">config :still,
   pass_through_copy: [&quot;img&quot;]
-</code></p>
+</code></pre>
 
 <p>Any file or folder that starts with the string <code>img</code> will be copied, which may include an <code>img</code> folder or a file named <code>img.png</code>. So you need to be mindfull of that.</p>
 
 <p>You can also use regular expression:</p>
 
-<p><code>elixir
-config still,
+<pre><code class="language-elixir">config still,
   pass_through_copy: [~r/.*\.jpe?g/]
-</code></p>
+</code></pre>
 
 <p>The example above will will copy any file with a <code>.jpg</code> extension.</p>
 
 <p>There&#39;s another way, which is to specify a keyword, and the key will be used to match the input folder, and the value will be use to transform the input path:</p>
 
-<p><code>elixir
-config :still,
+<pre><code class="language-elixir">config :still,
   pass_through_copy: [css: &quot;styles&quot;]
-</code></p>
+</code></pre>
 
 <p>In the example above, the <code>css</code> folder from the input folder but will be renamed to <code>styles</code> in the output folder.</p>
 
@@ -140,23 +129,22 @@ config :still,
 <p>Layouts can be used to wrap other content. To wrap the contents of a file with
 a layout template, use the <code>layout</code> key in front matter. For instance:</p>
 
-<h2>```slime</h2>
+<pre><code class="language-slime">---
+layout: _layout.slime
+---
 
-<h2>layout: _layout.slime</h2>
-
-<p>h1 About Page
-```</p>
+h1 About Page
+</code></pre>
 
 <p>This will look for <code>_layout.slime</code> in your input folder.</p>
 
 <p>The layout file must print the children variable, for instance:</p>
 
-<p><code>slime
-doctype html
+<pre><code class="language-slime">doctype html
 html
   body
     = children
-</code></p>
+</code></pre>
 
 <p>Notice that <code>_layout.slime</code> starts with an underscore. This is because we don&#39;t
 want to compile the layout file to the output.</p>
@@ -165,23 +153,20 @@ want to compile the layout file to the output.</p>
 
 <p>Collections allow you to group multiple files. For instance:</p>
 
-<h2>```</h2>
-
-<p>tags: post</p>
-
-<h2>title: A blog post</h2>
-
-<p>```</p>
+<pre><code>---
+tags: post
+title: A blog post
+---
+</code></pre>
 
 <p>Every file that specifies the <code>post</code> tag will be listed in the <code>post</code> collection.
 You can then iterate over this list doing something like this:</p>
 
-<p><code>slime
-ul
+<pre><code class="language-slime">ul
   = Enum.map Map.get(collections, &quot;post&quot;, []), fn x -&gt;
     li
       = link x[:title], to: x[:permalink]
-</code></p>
+</code></pre>
 
 <h2>View helpers</h2>
 
