@@ -18,6 +18,7 @@ ul,
 ol {
   list-style-type: circle;
   list-style-position: inside;
+  padding: 0;
 }
 
 h1 {
@@ -73,18 +74,35 @@ a {
 }
 
 .main {
-  max-width: 600px;
+  max-width: calc(600px + 1rem);
   margin: 0 auto;
-  padding: 2rem 0;
+  padding: 2rem 1rem 0;
 }
 
 .footer {
-  max-width: 600px;
-  margin: 5rem auto;
+  max-width: calc(600px + 1rem);
+  padding: 0 1rem;
+  margin: 5rem auto 2rem;
 }
 
 .fancy-title {
   font-size: 3rem;
-  margin: 8rem;
+  margin: 8rem 0;
   text-align: center;
+}
+
+@media (max-width: 600px) {
+  html, body {
+    font-size: 15px;
+  }
+
+  code {
+    font-size: 14px;
+  }
+
+  .fancy-title {
+    font-size: 1.4rem;
+    margin: 5rem 0;
+    text-align: center;
+  }
 }
