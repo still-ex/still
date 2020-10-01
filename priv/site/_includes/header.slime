@@ -1,3 +1,7 @@
+---
+header_title: true
+---
+
 - set :css do
   css:
     .header {
@@ -18,7 +22,10 @@
     }
 
 header.header
-  = link "Still", to: "/"
+  = if header_title do
+    = link "Still", to: "/"
+  - else
+    div
   nav.header-nav
     = link "Github", to: "https://github.com/subvisual/still"
     = link "Docs", to: "/docs"

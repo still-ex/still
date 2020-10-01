@@ -1,17 +1,34 @@
 ---
 layout: "_post_layout.slime"
 tag: post
-title: "Announcing Still"
+title: "Still on Elixir - Announcement"
 date: 2020-10-01
 ---
 
-# Still on Elixir
+We are proud to announce Still! Over the years, we had to build plenty of
+static websites, and as time passes, the tooling around building websites got
+more and more complicated. It doesn't have to be. Most of the issues tools like
+Gatsby solve were introduced by using React and its ecosystem in the first
+place!
 
-We are proud to announce Still! A static site generator for Elixir.
+Still doesn't rely on JavaScript. You can use it, and we have a package to make
+it simple to integrate tools from the JS ecosystem into it, but it's not
+necessary. We even built our CSS minifier!
 
-It isn't a secret that Still is inspired by Eleventy. We feel that
-Eleventy is a step in the right direction, but there's still too much
-JavaScript on it. After many years of makign static webites, we felt that
-there must be something in between jekkyl or middleman and gatsby. Our
-intention is to make something that's simple to get started but easy to
-extend.
+To be honest, the CSS minifier only removes newlines, but we believe that's
+enough for most people.
+
+Now the good stuff: its Elixir! And not just that, you can use Elixir to extend
+it! You can do everything you want in Elixir and call functions from the
+templates. The documentation is sparse, but have a look at the internals and
+our example websites.
+
+Finally, keep in mind that we are still figuring things out, so the APIs we
+have right now will likely change. We'll try and answer any issue you open.
+
+So why build Still instead of working on an existing solution? Because we
+wanted to add some features that the other packages didn't allow for. The first
+one was auto-refresh on file changes, and there's more to come. We want Still
+to feel like a modern development environment. You don't have to feel like
+you're building websites in 2010 just because you're not relying on the
+JavaScript tooling.

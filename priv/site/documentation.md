@@ -4,13 +4,19 @@ permalink: docs.html
 title: "Documentation"
 ---
 
-# Documentation
+Still works by compiling files from an input directory into an output directory. By default, it looks for files with the extensions `.eex`, `.slime`, `.md` and `.css`, but continue reading to see how you set it up to your needs.
 
-Still is a simple static site generator for Elixir inspired by
-[Eleventy](https://www.11ty.dev/docs/). Still will work with any project
-structure with little configuration. This project is JavaScript free.
+_This document is not complete, but [our website](./priv/site) uses most of the features available in Still. Please have a look there if you can't find what you're looking for._
 
 ## Installation
+
+### For new projects
+
+Run `mix archive.install hex still` to install Still in your system. You only need to do this once.
+
+Then you can create new static websites by running `mix still.new my_site`. That's it!
+
+### Adding to an existing project
 
 Add `still` as a dependency in `mix.exs`:
 
@@ -30,36 +36,34 @@ config :still,
   output: Path.join(Path.dirname(__DIR__), "_site")
 ```
 
-Create a file `index.slime` in the input folder and run `mix still.dev`.
+Create a file `index.slime` in the input folder.
 
-To compile the whole site run `mix still.compile`.
+## Development
 
-## Documentation
+While you're developing the website, run `iex -S mix still.dev` to start Still in development mode.
+Your website will be available in [http://localhost:3000](http://localhost:3000/) and Still will be watching the the input folder for changes, refreshing the browser when necessary.
 
-The documentation is not perfect, but [the website](./priv/site) should be
-a fine example of what you can do with Still.
+## Compilation
 
-### Development
+To compile the site run `mix still.compile`.
 
-In development, when you run `mix still.dev`, Still watches the file
-system for changes and refreshes the browser when necessary. This only works for
-changes in your input folder, if you're extending Still, changes to the Elixir
-code will not trigger a refresh.
+## Preprocessors
 
-### Preprocessors
+Any file with one of the extensions listed above will be compiled and placed in the same relative path (but with a different extension) in the output folder.
 
-Still works with [EEx](https://elixirschool.com/en/lessons/specifics/eex/) and
-[Slime](https://github.com/slime-lang/slime), Markdown, and CSS by default. Any file with
-a `.eex`, `.slime` or `.css` extension will be automatically converted and
-placed on the output folder.
+Markdown and CSS files run through EEx first, which means you can use EEx syntax in those files. Here's an example of a markdown file that uses EEx interpolation:
 
-We run the Markdown and CSS files through EEx which mean you can use EEx interpolation
-inside these files.
+```markdown
+# Some title
 
-#### Custom preprocessors
+<%= link "Some link", to: "somewhere" %>
+```
 
-To write a custom preprocessor first define a module that uses
-`Still.Preprocessor`, for instance:
+Files, or folders, that start with an underscore are ignored by the compilation step.
+
+### Custom preprocessors
+
+If the default preprocessors are not enough, you can extend Still with your own. Take the following example:
 
 ```elixir
 defmodule SiteTest.Js do
@@ -72,12 +76,22 @@ defmodule SiteTest.Js do
 end
 ```
 
-A preprocessor must implement the `render/2` function which receives the
-content of a file and its context. In this function you can transform both the
-contents and the variables, returning both of them for the next preprocessor.
+This preprocessor is a regular module that calls `use Still.Preprocessor` and implements the `render/2` function. The render function is used to transform the content and the variables of a file.
 
-Then, in your configuration you must specify an object that matches an
-extension to a list of preprocessors. For instance:
+Preprocessors are always part of a transformation chain, and each file will run through the chain, using the output of the one preprocessor as the input of the next. At the moment, the default transformation chains look like this:
+
+```elixir
+@default_preprocessors %{
+  ".slim" => [Preprocessor.Frontmatter, Preprocessor.Slime],
+  ".slime" => [Preprocessor.Frontmatter, Preprocessor.Slime],
+  ".eex" => [Preprocessor.Frontmatter, Preprocessor.EEx],
+  ".css" => [Preprocessor.EEx, Preprocessor.CSSMinify]
+}
+```
+
+You can see that some files go through a front matter preprocessor, and CSS goes through EEx, which allows for the interpolation mentioned above.
+
+For our example preprocessor, we can simply add it to the list in the configuration file:
 
 ```elixir
 config :still,
@@ -86,31 +100,49 @@ config :still,
   }
 ```
 
-In this example we created a preprocessor that simply copies files `.js` files
-from the input to the output folder.
+This preprocessor doesn't do anything to the contents of a file, so the file on the output folder will look exactly like the file in the input folder.
 
-### Pass through copy
+## Pass through copy
 
-You can extend Still with preprocessors, but sometimes you only want to copy
-files over. For those situations you can use the pass through copy.
+Some files you don't want to compile, only to copy from the input to the output. That's what pass through copy is for.
 
-The following example covers all the supported configurations:
+In your configuration files, if you specify add string on the `pass_through_copy` key, any file, or folder, whose relative path starts with that same string will be copied over to the output.
+
+```elixir
+config :still,
+  pass_through_copy: ["img/logo.png"]
+```
+
+In the example above, the file `logo.png` inside the `img` folder will be copied to the `img` folder in the output. But if you write something like this:
+
+```elixir
+config :still,
+  pass_through_copy: ["img"]
+```
+
+Any file or folder that starts with the string `img` will be copied, which may include an `img` folder or a file named `img.png`. So you need to be mindfull of that.
+
+You can also use regular expression:
 
 ```elixir
 config still,
-  pass_through_copy: [~r/.*jpg/, "logo.png", css: "styles"]
+  pass_through_copy: [~r/.*\.jpe?g/]
 ```
 
-In this example, we'll copy every file that has the `.jpg` extension, the
-`logo.png` file, and the `css` folder, but the `css` will be called `styles` in
-the output folder.
+The example above will will copy any file with a `.jpg` extension.
 
-You can write a regex, a file path, or a keyword list where value is the
-destination name.
+There's another way, which is to specify a keyword, and the key will be used to match the input folder, and the value will be use to transform the input path:
 
-### Layouts
+```elixir
+config :still,
+  pass_through_copy: [css: "styles"]
+```
 
-Layouts can be used to wrap other content. To wrap the contents of a file in
+In the example above, the `css` folder from the input folder but will be renamed to `styles` in the output folder.
+
+## Layouts
+
+Layouts can be used to wrap other content. To wrap the contents of a file with
 a layout template, use the `layout` key in front matter. For instance:
 
 ```slime
@@ -132,7 +164,10 @@ html
     = children
 ```
 
-### Collections
+Notice that `_layout.slime` starts with an underscore. This is because we don't
+want to compile the layout file to the output.
+
+## Collections
 
 Collections allow you to group multiple files. For instance:
 
@@ -153,19 +188,21 @@ ul
       = link x[:title], to: x[:permalink]
 ```
 
-### View helpers
+## View helpers
 
-#### Including other files
+### Including other files
 
 In any template you can access a `include` function that imports the contents
 of one file into another.
 
-#### Link to other files
+### Link to other files
 
 In any template you call the `link` function to create a link to somewhere
 else. This function will already take care of specifying the `rel` and `target`
 when necessary.
 
-## About
+## License
 
-Still is released under the <%= link "ISC License", to: "https://github.com/subvisual/still/LICENSE" %> .
+Still is released under the [ISC License](./LICENSE).
+
+<%= include "\_includes/footer.slime" %>

@@ -3,5 +3,8 @@ layout: _layout.slime
 ---
 = include("_includes/header.slime")
 
+h1.fancy-title
+  = title
+
 .main
   = children

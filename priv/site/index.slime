@@ -2,14 +2,17 @@
 layout: _layout.slime
 ---
 
-= include("_includes/header.slime")
+= include("_includes/header.slime", %{header_title: false})
 
 .main
-  h1 Still
-  p Still is a static site generator for Elixir. It's designed to be simple to use and to extend. It works with any project structure with little configuration. Still is JavaScript free.
+  h1.fancy-title Still
+  p Still is a static site generator for Elixir.
+  p We designed Still to be simple to use and easy to extend.
+  p There's no JavaScript.
+  p For more information please read the <%= link "documentaton", to: "/docs" %>.
   h2 Blog
   ul
     = Enum.map Map.get(collections, "post", []), fn x ->
       li
         = link x[:date] <> " - " <> x[:title], to: x[:permalink]
-  = include("_includes/subvisual.md")
+  = include("_includes/footer.slime")
