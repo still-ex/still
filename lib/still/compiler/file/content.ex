@@ -2,6 +2,7 @@ defmodule Still.Compiler.File.Content do
   require Logger
 
   alias Still.Compiler.{
+    PreprocessorError,
     Collections,
     Incremental
   }
@@ -16,7 +17,8 @@ defmodule Still.Compiler.File.Content do
 
   def compile(file, content, preprocessors, data \\ %{}) do
     with {:ok, compiled, data} <- render(file, content, preprocessors, data),
-         compiled <- append_development_layout(compiled, preprocessors) do
+         ext <- find_extension(file, data, preprocessors),
+         compiled <- append_development_layout(compiled, ext) do
       {:ok, compiled, data}
     end
   end
@@ -36,41 +38,44 @@ defmodule Still.Compiler.File.Content do
 
   defp append_layout(children, _), do: children
 
-  case Mix.env() do
-    :dev ->
-      @dev_layout "priv/still/dev.slime"
-
-      defp append_development_layout(content, preprocessors) do
-        last_preprocessor = preprocessors |> List.last()
-
-        if last_preprocessor.extension() == ".html" do
-          %{content: compiled} =
-            Application.app_dir(:still, @dev_layout)
-            |> File.read!()
-            |> render_template([Still.Preprocessor.Slime], %{
-              children: content,
-              file_path: @dev_layout
-            })
-
-          compiled
-        else
-          content
-        end
-      end
-
-    _ ->
-      defp append_development_layout(content, _preprocessor) do
-        content
-      end
+  if Mix.env() == :dev do
+    defp append_development_layout(content, ".html") do
+      Still.Compiler.File.DevLayout.wrap(content)
+    end
   end
 
-  defp render_template(content, preprocessors, variables) do
+  defp append_development_layout(content, _ext) do
+    content
+  end
+
+  defp render_template(content, [], variables) do
+    %{content: content, variables: variables}
+  end
+
+  defp render_template(content, [preprocessor | remaining_preprocessors], variables) do
+    %{content: content, variables: variables} =
+      preprocessor.run(content, Map.put(variables, :collections, Collections.all()))
+
+    render_template(content, remaining_preprocessors, variables)
+  catch
+    :error, %CompileError{description: description} ->
+      raise PreprocessorError,
+        message: description,
+        preprocessor: preprocessor,
+        remaining_preprocessors: remaining_preprocessors,
+        content: content,
+        variables: variables,
+        stacktrace: __STACKTRACE__
+  end
+
+  defp find_extension(_file, %{permalink: permalink}, _preprocessors) do
+    Path.extname(permalink)
+  end
+
+  defp find_extension(file, _data, preprocessors) do
     preprocessors
-    |> Enum.reduce(
-      %{content: content, variables: variables},
-      fn preprocessor, %{content: content, variables: variables} ->
-        preprocessor.run(content, Map.put(variables, :collections, Collections.all()))
-      end
-    )
+    |> Enum.reduce(Path.extname(file), fn p, acc ->
+      p.extension() || acc
+    end)
   end
 end

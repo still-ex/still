@@ -4,6 +4,7 @@ defmodule Still.Preprocessor do
     ".slime" => [__MODULE__.Frontmatter, __MODULE__.Slime],
     ".eex" => [__MODULE__.Frontmatter, __MODULE__.EEx],
     ".css" => [__MODULE__.EEx, __MODULE__.CSSMinify],
+    ".js" => [__MODULE__.EEx, __MODULE__.JS],
     ".md" => [__MODULE__.Frontmatter, __MODULE__.EEx, __MODULE__.Markdown]
   }
 

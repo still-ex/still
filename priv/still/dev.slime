@@ -1,7 +1,7 @@
 = children
 
 javascript:
-  window.socket = new WebSocket(`ws://${location.host}/ws`);
+  window.socket = new WebSocket('ws://' + location.host + '/ws');
 
   window.socket.onmessage = function(event) {
     console.log('received', event);
@@ -14,3 +14,41 @@ javascript:
   window.socket.onopen = () => {
     window.socket.send("subscribe");
   };
+
+css:
+  .dev-error, .dev-error * {
+    box-sizing: border-box;
+  }
+
+  .dev-error, body::after {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    z-index: 9999999;
+    background: white;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-family: sans-serif;
+    font-size: 18px;
+    padding: 2rem;
+    top: 0;
+    left: 0;
+  }
+
+  body::after {
+    font-size: 25px;
+  }
+
+  .dev-error details {
+    width: 100%;
+    border: 1px solid #333;
+    margin-bottom: 1rem;
+    padding: 1rem;
+  }
+
+  .dev-error details summary {
+    font-weight: bold
+  }

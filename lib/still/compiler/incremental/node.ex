@@ -26,6 +26,7 @@ defmodule Still.Compiler.Incremental.Node do
 
   alias Still.Web.BrowserSubscriptions
   alias Still.Compiler
+  alias Still.Compiler.PreprocessorError
   alias __MODULE__.Compile
 
   @default_compilation_timeout 5_000
@@ -67,6 +68,12 @@ defmodule Still.Compiler.Incremental.Node do
       BrowserSubscriptions.notify()
       {:reply, result, state}
     end
+  catch
+    :error, %PreprocessorError{} = e ->
+      PreprocessorError.handle_compile(e)
+      BrowserSubscriptions.notify()
+
+      {:reply, :ok, state}
   end
 
   @impl true
@@ -75,6 +82,9 @@ defmodule Still.Compiler.Incremental.Node do
     data = Map.put(data, :current_context, parent_file)
 
     {:reply, do_render(data, state), %{state | subscribers: subscribers}}
+  catch
+    :error, %PreprocessorError{} = e ->
+      {:reply, {:ok, PreprocessorError.handle_render(e), %{}}, state}
   end
 
   @impl true
