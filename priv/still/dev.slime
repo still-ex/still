@@ -39,7 +39,13 @@ css:
   }
 
   body::after {
-    font-size: 25px;
+    font-size: 30px;
+    font-weight: bold;
+  }
+
+  .dev-error h1 {
+    font-size: 30px;
+    font-weight: bold;
   }
 
   .dev-error details {
