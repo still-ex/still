@@ -7,14 +7,16 @@ defmodule Still.Preprocessor.Renderer do
 
   @optional_callbacks [ast: 0]
 
+  alias Still.SourceFile
+
   defmacro __using__(opts) do
     quote do
       @behaviour unquote(__MODULE__)
       @preprocessor Keyword.fetch!(unquote(opts), :preprocessor)
       @extensions Keyword.fetch!(unquote(opts), :extensions)
 
-      def create(content, variables) do
-        variables[:file_path]
+      def create(%SourceFile{input_file: input_file, content: content, variables: variables}) do
+        variables[:input_file]
         |> file_path_to_module_name()
         |> create_view_renderer(content, variables)
       end
@@ -109,7 +111,7 @@ defmodule Still.Preprocessor.Renderer do
       end
 
       defp ensure_current_context(variables) do
-        Map.put_new(variables, :current_context, variables[:file_path])
+        Map.put_new(variables, :current_context, variables[:input_file])
       end
 
       defp ensure_preprocessor(variables) do

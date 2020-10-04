@@ -37,7 +37,7 @@ defmodule Still.Compiler.Incremental.NodeTest do
 
       content = Node.render(pid, %{}, "about.slime")
 
-      assert {:ok, "<header><p>This is a header</p></header>", _} = content
+      assert %{content: "<header><p>This is a header</p></header>"} = content
     end
   end
 end

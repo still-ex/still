@@ -3,13 +3,13 @@ defmodule Still.Preprocessor.CSSMinify do
 
   use Preprocessor, ext: ".css"
 
-  def render(content, variables) do
+  def render(%{content: content} = file) do
     content =
       content
       |> String.split("\n")
       |> Enum.map(&Regex.replace(~r/^ */, &1, ""))
       |> Enum.join("")
 
-    %{content: content, variables: variables}
+    %{file | content: content}
   end
 end

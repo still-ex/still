@@ -1,7 +1,7 @@
 defmodule Still.Compiler.Incremental.Node.Compile do
   import Still.Utils
 
-  alias Still.{Compiler, Compiler.Incremental}
+  alias Still.{Compiler, Compiler.Incremental, Compiler.PassThroughCopy}
 
   def run(state) do
     with :ok <- try_pass_through_copy(state) do
@@ -12,7 +12,7 @@ defmodule Still.Compiler.Incremental.Node.Compile do
   end
 
   defp try_pass_through_copy(state) do
-    Compiler.PassThroughCopy.try(state.file)
+    PassThroughCopy.try(state.file)
   end
 
   defp do_compile(state) do

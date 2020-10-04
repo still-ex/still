@@ -1,4 +1,6 @@
 defmodule Still.Preprocessor do
+  alias Still.SourceFile
+
   @default_preprocessors %{
     ".slim" => [__MODULE__.Frontmatter, __MODULE__.Slime],
     ".slime" => [__MODULE__.Frontmatter, __MODULE__.Slime],
@@ -7,6 +9,8 @@ defmodule Still.Preprocessor do
     ".js" => [__MODULE__.EEx, __MODULE__.JS],
     ".md" => [__MODULE__.Frontmatter, __MODULE__.EEx, __MODULE__.Markdown]
   }
+
+  def for(%SourceFile{input_file: file}), do: __MODULE__.for(file)
 
   def for(file) do
     preprocessor = preprocessors()[Path.extname(file)]
@@ -31,16 +35,16 @@ defmodule Still.Preprocessor do
     Application.get_env(:still, :preprocessors, %{})
   end
 
-  @callback render(String.t(), map()) :: %{content: String.t(), variables: map()} | no_return()
+  @callback render(SourceFile.t()) :: SourceFile.t() | no_return()
 
   defmacro __using__(opts) do
     quote do
       @behaviour Still.Preprocessor
 
-      def run(content, variables \\ %{}) do
-        result = render(content, variables)
-
-        %{result | variables: result[:variables] |> set_extension()}
+      def run(file) do
+        file
+        |> set_extension()
+        |> render()
       end
 
       def extension do
@@ -48,12 +52,12 @@ defmodule Still.Preprocessor do
       end
 
       if not is_nil(unquote(opts)[:ext]) do
-        defp set_extension(variables = %{file_path: file_path}) do
-          Map.put(variables, :extension, unquote(opts)[:ext])
+        defp set_extension(file) do
+          file |> Map.put(:extension, unquote(opts)[:ext])
         end
+      else
+        defp set_extension(file), do: file
       end
-
-      defp set_extension(variables), do: variables
     end
   end
 end
