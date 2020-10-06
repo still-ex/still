@@ -66,7 +66,7 @@ Your website will be available in <a href="http://localhost:3000/">http://localh
 end
 </code></pre>
 
-<p>This preprocessor is a regular module that calls <code>use Still.Preprocessor</code> and implements the <code>render/2</code> function. The render function is used to transform the content and the variables of a file.</p>
+<p>This preprocessor is a module that calls <code>use Still.Preprocessor</code> and implements the <code>render/2</code> function. This function is used to transform the content and the variables of a file.</p>
 
 <p>Preprocessors are always part of a transformation chain, and each file will run through the chain, using the output of the one preprocessor as the input of the next. At the moment, the default transformation chains look like this:</p>
 
