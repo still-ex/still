@@ -179,7 +179,7 @@ title: A blog post
 ```
 
 Every file that specifies the `post` tag will be listed in the `post` collection.
-You can then iterate over this list doing something like this:
+You can then iterate over this list by accessing the `collections` variable:
 
 ```slime
 ul
