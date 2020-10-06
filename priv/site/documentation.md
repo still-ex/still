@@ -192,8 +192,14 @@ ul
 
 ### Including other files
 
-In any template you can access a `include` function that imports the contents
-of one file into another.
+In any file, you can use the `include` function to import the contents of a different file. As an example:
+
+```slim
+html
+  head
+    = include "_includes/head.slim"
+  body
+    = children
 
 ### Link to other files
 
