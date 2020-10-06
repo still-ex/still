@@ -129,7 +129,7 @@ config still,
   pass_through_copy: [~r/.*\.jpe?g/]
 ```
 
-The example above will will copy any file with a `.jpg` extension.
+The example above will will copy any file with a `.jpg` or `.jpeg` extension.
 
 There's another way, which is to specify a keyword, and the key will be used to match the input folder, and the value will be use to transform the input path:
 
