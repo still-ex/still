@@ -116,7 +116,7 @@ end
 
 <p>The example above will will copy any file with a <code>.jpg</code> or <code>.jpeg</code> extension.</p>
 
-<p>There&#39;s another way, which is to specify a keyword, and the key will be used to match the input folder, and the value will be use to transform the input path:</p>
+<p>Sometimes you want to alter the file name or path but keep the content of the files. The <code>:pass_through_copy</code> option allows if you use tuples. The key will be used to match the input folder, and the value will be used to transform the input path:</p>
 
 <pre><code class="language-elixir">config :still,
   pass_through_copy: [css: &quot;styles&quot;]
