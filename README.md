@@ -1,6 +1,6 @@
 # Still
 
-[Documentation](https://subvisual.github.io/still/)
+[Documentation][docs]
 
 Still is a static site generator for Elixir.
 
@@ -8,7 +8,7 @@ We designed Still to be simple to use and easy to extend.
 
 There's no JavaScript.
 
-For more information please read the <%= link "documentaton", to: "/docs" %>.
+For more information please read the [documentation][docs].
 
 ## Installation
 
@@ -46,8 +46,11 @@ For more information please visit the [website](https://subvisual.github.io/stil
 
 Still was created and is maintained with :heart: by [Subvisual](http://subvisual.com).
 
-![Subvisual](https://raw.githubusercontent.com/subvisual/guides/master/github/templates/logos/blue.png)
+![Subvisual][sub-logo]
 
 ## License
 
 Still is released under the [ISC License](./LICENSE).
+
+[docs]: https://subvisual.github.io/still/
+[sub-logo]: https://raw.githubusercontent.com/subvisual/guides/master/github/templates/logos/blue.png
