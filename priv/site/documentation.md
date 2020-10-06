@@ -136,7 +136,10 @@ Sometimes you want to alter the file name or path but keep the content of the fi
 ```elixir
 config :still,
   pass_through_copy: [css: "styles"]
-```
+  
+  # this is also valid:
+  # config :still,
+  #   pass_through_copy: [{"css", "styles"}]
 
 In the example above, the `css` folder from the input folder but will be renamed to `styles` in the output folder.
 
