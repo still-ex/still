@@ -177,11 +177,15 @@ of one file into another.</p>
 
 <h3>Link to other files</h3>
 
-<p>In any template you call the <code>link</code> function to create a link to somewhere
+<p>In any file you can call the <code>link</code> function to create a link to somewhere
 else. This function will already take care of specifying the <code>rel</code> and <code>target</code>
-when necessary.</p>
+when necessary. It supports both relative and absolute paths:</p>
 
-<h2>License</h2>
+<pre><code class="language-slim">= link &quot;Home&quot;, to: &quot;/&quot;
+= link &quot;Blog&quot;, to: &quot;https://example.org&quot;
 
-<p>Still is released under the <a href="./LICENSE">ISC License</a>.</p>
+## License
+
+Still is released under the [ISC License](./LICENSE).
+</code></pre>
 </div><div class="footer"><p>Still was created and is maintained by</p><img alt="Subvisual" src="https://subvisual.github.io/still//subvisual.png"></div></body></html>
