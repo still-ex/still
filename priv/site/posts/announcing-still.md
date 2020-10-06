@@ -18,7 +18,7 @@ necessary. We even built our CSS minifier!
 To be honest, the CSS minifier only removes newlines, but we believe that's
 enough for most people.
 
-Now the good stuff: its Elixir! And not just that, you can use Elixir to extend
+Now the good stuff: it's Elixir! And not just that, you can use Elixir to extend
 it! You can do everything you want in Elixir and call functions from the
 templates. The documentation is sparse, but have a look at the internals and
 our example websites.
