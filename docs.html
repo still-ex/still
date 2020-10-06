@@ -160,7 +160,7 @@ title: A blog post
 </code></pre>
 
 <p>Every file that specifies the <code>post</code> tag will be listed in the <code>post</code> collection.
-You can then iterate over this list doing something like this:</p>
+You can then iterate over this list by accessing the <code>collections</code> variable:</p>
 
 <pre><code class="language-slime">ul
   = Enum.map Map.get(collections, &quot;post&quot;, []), fn x -&gt;
