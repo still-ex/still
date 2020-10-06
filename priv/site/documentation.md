@@ -170,6 +170,8 @@ html
 Notice that `_layout.slime` starts with an underscore. This is because we don't
 want to compile the layout file to the output.
 
+In fact, any file starting with an underscore isn't compiled to the output, but is rendered and able to be imported.
+
 ## Collections
 
 Collections allow you to group multiple files. For instance:
