@@ -91,7 +91,7 @@ Preprocessors are always part of a transformation chain, and each file will run 
 
 You can see that some files go through a front matter preprocessor, and CSS goes through EEx, which allows for the interpolation mentioned above.
 
-For our example preprocessor, we can simply add it to the list in the configuration file:
+For the example preprocessor defined above, we can add it to the list in the configuration file:
 
 ```elixir
 config :still,
