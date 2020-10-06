@@ -197,9 +197,13 @@ of one file into another.
 
 ### Link to other files
 
-In any template you call the `link` function to create a link to somewhere
+In any file you can call the `link` function to create a link to somewhere
 else. This function will already take care of specifying the `rel` and `target`
-when necessary.
+when necessary. It supports both relative and absolute paths:
+
+```slim
+= link "Home", to: "/"
+= link "Blog", to: "https://example.org"
 
 ## License
 
