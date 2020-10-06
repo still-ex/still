@@ -8,7 +8,7 @@ date: 2020-10-01
 We are proud to announce Still! Over the years, we had to build plenty of
 static websites, and as time passes, the tooling around building websites got
 more and more complicated. It doesn't have to be. Most of the issues tools like
-Gatsby solve were introduced by using React and its ecosystem in the first
+Gatsby solve were introduced by using overly-complex libraries and frameworks, like React and its ecosystem in the first
 place!
 
 Still doesn't rely on JavaScript. You can use it, and we have a package to make
