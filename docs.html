@@ -172,16 +172,22 @@ You can then iterate over this list doing something like this:</p>
 
 <h3>Including other files</h3>
 
-<p>In any template you can access a <code>include</code> function that imports the contents
-of one file into another.</p>
+<p>In any file, you can use the <code>include</code> function to import the contents of a different file. As an example:</p>
 
-<h3>Link to other files</h3>
+<pre><code class="language-slim">html
+  head
+    = include &quot;_includes/head.slim&quot;
+  body
+    = children
 
-<p>In any file you can call the <code>link</code> function to create a link to somewhere
-else. This function will already take care of specifying the <code>rel</code> and <code>target</code>
-when necessary. It supports both relative and absolute paths:</p>
+### Link to other files
 
-<pre><code class="language-slim">= link &quot;Home&quot;, to: &quot;/&quot;
+In any file you can call the `link` function to create a link to somewhere
+else. This function will already take care of specifying the `rel` and `target`
+when necessary. It supports both relative and absolute paths:
+
+```slim
+= link &quot;Home&quot;, to: &quot;/&quot;
 = link &quot;Blog&quot;, to: &quot;https://example.org&quot;
 
 ## License
