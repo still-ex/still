@@ -9,7 +9,7 @@ We are proud to announce Still! Over the years, we had to build plenty of
 static websites and we still do. As time passes, the tooling around building websites got
 more and more complicated. It doesn't have to be. Most of the issues tools like
 Gatsby solve were introduced by using overly-complex libraries and frameworks, like React and its ecosystem in the first
-place!
+place! For a lot of use cases, they're great and we love using them. But a lot of times, especially when building static websites, we want the tools to be simple and easily extensible. We want minimal overhead and maximum extensibility. We want them to feel intuitive without having to scroll through pages of documentation to understand how to build them or how to add an RSS feed plugin.
 
 Still doesn't rely on JavaScript. You can use it, and we have a package to make
 it simple to integrate tools from the JS ecosystem into it, but it's not
