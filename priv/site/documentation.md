@@ -76,7 +76,7 @@ defmodule SiteTest.Js do
 end
 ```
 
-This preprocessor is a regular module that calls `use Still.Preprocessor` and implements the `render/2` function. The render function is used to transform the content and the variables of a file.
+This preprocessor is a module that calls `use Still.Preprocessor` and implements the `render/2` function. This function is used to transform the content and the variables of a file.
 
 Preprocessors are always part of a transformation chain, and each file will run through the chain, using the output of the one preprocessor as the input of the next. At the moment, the default transformation chains look like this:
 
