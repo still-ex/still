@@ -120,16 +120,20 @@ end
 
 <pre><code class="language-elixir">config :still,
   pass_through_copy: [css: &quot;styles&quot;]
-</code></pre>
+  
+  # this is also valid:
+  # config :still,
+  #   pass_through_copy: [{&quot;css&quot;, &quot;styles&quot;}]
 
-<p>In the example above, the <code>css</code> folder from the input folder but will be renamed to <code>styles</code> in the output folder.</p>
+In the example above, the `css` folder from the input folder but will be renamed to `styles` in the output folder.
 
-<h2>Layouts</h2>
+## Layouts
 
-<p>Layouts can be used to wrap other content. To wrap the contents of a file with
-a layout template, use the <code>layout</code> key in front matter. For instance:</p>
+Layouts can be used to wrap other content. To wrap the contents of a file with
+a layout template, use the `layout` key in front matter. For instance:
 
-<pre><code class="language-slime">---
+```slime
+---
 layout: _layout.slime
 ---
 
