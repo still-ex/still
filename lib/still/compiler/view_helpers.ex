@@ -4,7 +4,8 @@ defmodule Still.Compiler.ViewHelpers do
       alias Still.Compiler.{
         Context,
         Incremental,
-        ViewHelpers.Link
+        ViewHelpers.Link,
+        ViewHelpers.UrlFor
       }
 
       alias __MODULE__
@@ -38,6 +39,10 @@ defmodule Still.Compiler.ViewHelpers do
         ctx = @env[:current_context]
 
         Context.get(ctx, variable)
+      end
+
+      def url_for(relative_path) do
+        UrlFor.render(relative_path)
       end
 
       def link(content, opts) do

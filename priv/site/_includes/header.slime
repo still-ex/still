@@ -1,10 +1,33 @@
+---
+header_title: true
+---
+
 - set :css do
   css:
-    header {
-      color: red;
+    .header {
+      height: 80px;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      padding: 0 2rem;
+      justify-content: space-between;
     }
 
-header
-  p This is a header
+    .header-nav > a {
+      margin-left: 2rem;
+    }
+
+    .header a {
+      text-decoration: none;
+    }
+
+header.header
+  = if header_title do
+    = link "Still", to: "/"
+  - else
+    div
+  nav.header-nav
+    = link "Github", to: "https://github.com/subvisual/still"
+    = link "Docs", to: "/docs"
 
 = get(:css) |> cssmin()

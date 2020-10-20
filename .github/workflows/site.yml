@@ -1,0 +1,17 @@
+on: push
+
+jobs:
+  site:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-elixir@v1
+        with:
+          otp-version: '23.0'
+          elixir-version: '1.10.4'
+      - run: mix deps.get
+      - run: MIX_ENV=prod mix still.compile
+      - uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./_site

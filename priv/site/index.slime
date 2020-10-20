@@ -2,12 +2,16 @@
 layout: _layout.slime
 ---
 
-= include("_includes/header.slime")
+= include("_includes/header.slime", %{header_title: false})
 
-#id.class
-  h1 Home page
-  p Let's try to list some numbers:
+.main
+  h1.fancy-title Still
+  p Still is a static site generator for Elixir.
+  p We designed Still to be simple to use and easy to extend.
+  p There's no JavaScript.
+  p For more information please read the <%= link "documentaton", to: "/docs" %>.
+  h2 Blog
   ul
-    = Enum.map Map.get(collections, "post", []), fn x ->
+    = Enum.map Map.get(collections, "post", []), fn post ->
       li
-        = link x[:title], to: x[:permalink]
+        = link post[:date] <> " - " <> post[:title], to: post[:permalink]

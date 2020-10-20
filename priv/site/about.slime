@@ -11,7 +11,7 @@ p Hi! I like Elixir.
 
 br
 
-= link "Search", to: "https://duckduckgo.com"
+= link "Github", to: "https://github.com/subvisual/still"
 
 br
 
