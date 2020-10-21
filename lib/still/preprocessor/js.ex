@@ -3,7 +3,7 @@ defmodule Still.Preprocessor.JS do
 
   use Preprocessor, ext: ".js"
 
-  def render(content, variables) do
-    %{content: content, variables: variables}
+  def render(file) do
+    file
   end
 end

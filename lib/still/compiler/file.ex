@@ -75,15 +75,21 @@ defmodule Still.Compiler.File do
       handle_syntax_error(file, e)
   end
 
-  def get_output_file_name(_file, %{permalink: permalink}) do
-    permalink
+  defp set_output_file(%{variables: %{permalink: permalink}} = file) do
+    %{file | output_file: permalink}
   end
 
-  def get_output_file_name(file, %{extension: extension}) do
-    String.replace(file, Path.extname(file), extension)
+  defp set_output_file(%{input_file: input_file, extension: extension} = file) do
+    output_file =
+      input_file
+      |> String.replace(Path.extname(input_file), extension)
+
+    %{file | output_file: output_file}
   end
 
-  def get_output_file_name(file, _), do: file
+  defp set_output_file(%{input_file: input_file} = file) do
+    %{file | output_file: input_file}
+  end
 
   defp handle_syntax_error(file, e) do
     Logger.error("Syntax error in #{file}\n#{e.line_number}: #{e.line}\n#{e.message}",

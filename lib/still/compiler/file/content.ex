@@ -8,7 +8,6 @@ defmodule Still.Compiler.File.Content do
   }
 
   alias Still.SourceFile
-
   @spec render(SourceFile.t(), any()) :: SourceFile.t()
   def render(%SourceFile{} = file, preprocessors) do
     render_template(file, preprocessors)
@@ -44,33 +43,29 @@ defmodule Still.Compiler.File.Content do
   defp append_layout(file), do: file
 
   if Mix.env() == :dev do
-    defp append_development_layout(content, ".html") do
-      Still.Compiler.File.DevLayout.wrap(content)
+    @dev_layout "priv/still/dev.slime"
+
+    defp append_development_layout(%{variables: %{extension: ".html"}} = file) do
+      content = Application.app_dir(:still, @dev_layout) |> File.read!()
+
+      %{content: content} = Still.Compiler.File.DevLayout.wrap(Map.get(file, :content))
+
+      %{file | content: content}
     end
   end
 
-  defp append_development_layout(content, _ext) do
-    content
+  defp append_development_layout(file) do
+    file
   end
 
-  defp render_template(content, [], variables) do
-    %{content: content, variables: variables}
-  end
-
-  defp render_template(content, [preprocessor | remaining_preprocessors], variables) do
-    %{content: content, variables: variables} =
-      preprocessor.run(content, Map.put(variables, :collections, Collections.all()))
-
-    render_template(content, remaining_preprocessors, variables)
-  catch
-    :error, %CompileError{description: description} ->
-      raise PreprocessorError,
-        message: description,
-        preprocessor: preprocessor,
-        remaining_preprocessors: remaining_preprocessors,
-        content: content,
-        variables: variables,
-        stacktrace: __STACKTRACE__
+  defp render_template(file, preprocessors) do
+    preprocessors
+    |> Enum.reduce(
+      file,
+      fn preprocessor, file ->
+        preprocessor.run(file)
+      end
+    )
   end
 
   defp find_extension(_file, %{permalink: permalink}, _preprocessors) do

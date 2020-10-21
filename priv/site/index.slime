@@ -12,6 +12,6 @@ layout: _layout.slime
   p For more information please read the <%= link "documentaton", to: "/docs" %>.
   h2 Blog
   ul
-    = Enum.map Map.get(collections, "post", []), fn post ->
+    = Enum.map get_collections("post"), fn post ->
       li
-        = link post[:date] <> " - " <> post[:title], to: post[:output_file]
+        = link post[:variables][:title], to: post[:output_file]
