@@ -75,11 +75,11 @@ defmodule Still.Compiler.File do
       handle_syntax_error(file, e)
   end
 
-  defp set_output_file(%{variables: %{permalink: permalink}} = file) do
+  def set_output_file(%{variables: %{permalink: permalink}} = file) do
     %{file | output_file: permalink}
   end
 
-  defp set_output_file(%{input_file: input_file, extension: extension} = file) do
+  def set_output_file(%{input_file: input_file, extension: extension} = file) do
     output_file =
       input_file
       |> String.replace(Path.extname(input_file), extension)
@@ -87,7 +87,7 @@ defmodule Still.Compiler.File do
     %{file | output_file: output_file}
   end
 
-  defp set_output_file(%{input_file: input_file} = file) do
+  def set_output_file(%{input_file: input_file} = file) do
     %{file | output_file: input_file}
   end
 

@@ -28,7 +28,10 @@ defmodule Still.Compiler.PreprocessorError do
       )
 
     new_file_path =
-      Still.Compiler.File.get_output_file_name(e.variables.file_path, variables)
+      Still.Compiler.File.set_output_file(%{
+        input_fil: e.variables.file_path,
+        variables: variables
+      })
       |> get_output_path()
 
     File.mkdir_p!(Path.dirname(new_file_path))

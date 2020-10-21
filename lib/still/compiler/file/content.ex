@@ -1,15 +1,11 @@
 defmodule Still.Compiler.File.Content do
   require Logger
 
-  alias Still.Compiler.{
-    PreprocessorError,
-    Collections,
-    Incremental
-  }
-
+  alias Still.Compiler.Incremental
   alias Still.SourceFile
+
   @spec render(SourceFile.t(), any()) :: SourceFile.t()
-  def render(%SourceFile{} = file, preprocessors) do
+  def render(file, preprocessors) do
     render_template(file, preprocessors)
     |> append_layout()
   end
@@ -43,8 +39,6 @@ defmodule Still.Compiler.File.Content do
   defp append_layout(file), do: file
 
   if Mix.env() == :dev do
-    @dev_layout "priv/still/dev.slime"
-
     defp append_development_layout(%{variables: %{extension: ".html"}, content: content} = file) do
       %{content: content} = Still.Compiler.File.DevLayout.wrap(content)
 
@@ -64,16 +58,5 @@ defmodule Still.Compiler.File.Content do
         preprocessor.run(file)
       end
     )
-  end
-
-  defp find_extension(_file, %{permalink: permalink}, _preprocessors) do
-    Path.extname(permalink)
-  end
-
-  defp find_extension(file, _data, preprocessors) do
-    preprocessors
-    |> Enum.reduce(Path.extname(file), fn p, acc ->
-      p.extension() || acc
-    end)
   end
 end
