@@ -3,6 +3,7 @@ defmodule Still.Compiler.File.Content do
 
   alias Still.Compiler.Incremental
   alias Still.SourceFile
+  alias Still.Compiler.PreprocessorError
 
   @spec render(SourceFile.t(), any()) :: SourceFile.t()
   def render(file, preprocessors) do
@@ -39,7 +40,7 @@ defmodule Still.Compiler.File.Content do
   defp append_layout(file), do: file
 
   if Mix.env() == :dev do
-    defp append_development_layout(%{variables: %{extension: ".html"}, content: content} = file) do
+    defp append_development_layout(%{extension: ".html", content: content} = file) do
       %{content: content} = Still.Compiler.File.DevLayout.wrap(content)
 
       %{file | content: content}
@@ -50,13 +51,20 @@ defmodule Still.Compiler.File.Content do
     file
   end
 
-  defp render_template(file, preprocessors) do
-    preprocessors
-    |> Enum.reduce(
-      file,
-      fn preprocessor, file ->
-        preprocessor.run(file)
-      end
-    )
+  defp render_template(file, []) do
+    file
+  end
+
+  defp render_template(file, [preprocessor | remaining_preprocessors]) do
+    preprocessor.run(file)
+    |> render_template(remaining_preprocessors)
+  catch
+    :error, %CompileError{description: description} ->
+      raise PreprocessorError,
+        message: description,
+        preprocessor: preprocessor,
+        remaining_preprocessors: remaining_preprocessors,
+        source_file: file,
+        stacktrace: __STACKTRACE__
   end
 end

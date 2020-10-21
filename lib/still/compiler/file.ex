@@ -79,7 +79,8 @@ defmodule Still.Compiler.File do
     %{file | output_file: permalink}
   end
 
-  def set_output_file(%{input_file: input_file, extension: extension} = file) do
+  def set_output_file(%{input_file: input_file, extension: extension} = file)
+      when not is_nil(extension) do
     output_file =
       input_file
       |> String.replace(Path.extname(input_file), extension)
