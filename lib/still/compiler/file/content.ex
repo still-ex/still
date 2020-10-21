@@ -45,10 +45,8 @@ defmodule Still.Compiler.File.Content do
   if Mix.env() == :dev do
     @dev_layout "priv/still/dev.slime"
 
-    defp append_development_layout(%{variables: %{extension: ".html"}} = file) do
-      content = Application.app_dir(:still, @dev_layout) |> File.read!()
-
-      %{content: content} = Still.Compiler.File.DevLayout.wrap(Map.get(file, :content))
+    defp append_development_layout(%{variables: %{extension: ".html"}, content: content} = file) do
+      %{content: content} = Still.Compiler.File.DevLayout.wrap(content)
 
       %{file | content: content}
     end
