@@ -4,7 +4,10 @@ defmodule Still.Preprocessor.EEx do
   alias Still.Preprocessor
   alias Still.Preprocessor.EEx.Renderer
 
-  use Preprocessor, ext: ".html"
+  use Preprocessor
+
+  @impl true
+  def extension(_), do: ".html"
 
   @impl true
   def render(file) do

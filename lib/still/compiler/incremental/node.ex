@@ -29,7 +29,7 @@ defmodule Still.Compiler.Incremental.Node do
   alias Still.Compiler.PreprocessorError
   alias __MODULE__.Compile
 
-  @default_compilation_timeout 15_000
+  @default_compilation_timeout 5_000
 
   def start_link(file: file) do
     GenServer.start_link(__MODULE__, %{file: file}, name: file |> String.to_atom())

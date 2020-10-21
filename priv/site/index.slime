@@ -15,3 +15,5 @@ layout: _layout.slime
     = Enum.map get_collections("post"), fn post ->
       li
         = link post[:variables][:title], to: post[:output_file]
+
+= link_to_js "console.js"

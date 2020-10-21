@@ -11,7 +11,7 @@ defmodule Still.Compiler.File.Content do
     |> append_layout()
   end
 
-  @spec render(SourceFile.t(), any()) :: SourceFile.t()
+  @spec compile(SourceFile.t(), any()) :: SourceFile.t()
   def compile(file, preprocessors) do
     render(file, preprocessors)
     |> append_development_layout()

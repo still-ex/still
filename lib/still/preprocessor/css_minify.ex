@@ -1,8 +1,12 @@
 defmodule Still.Preprocessor.CSSMinify do
   alias Still.Preprocessor
 
-  use Preprocessor, ext: ".css"
+  use Preprocessor
 
+  @impl true
+  def extension(_), do: ".css"
+
+  @impl true
   def render(%{content: content} = file) do
     content =
       content

@@ -9,22 +9,18 @@ defmodule Still.Compiler.PreprocessorError do
 
   require Logger
 
-  alias Still.SourceFile
+  alias Still.{SourceFile, Preprocessor, Compiler}
 
   import Still.Utils
 
   def handle_compile(%__MODULE__{} = e) do
-    extension =
-      find_extension(e.source_file, [
-        e.preprocessor | e.remaining_preprocessors
-      ])
+    source_file = update_source_file(e.source_file, [e.preprocessor | e.remaining_preprocessors])
 
-    source_file = %{e.source_file | extension: extension}
-
-    content = handle_render(%{e | source_file: source_file}) |> add_dev_layout(extension)
+    content =
+      handle_render(%{e | source_file: source_file}) |> add_dev_layout(source_file.extension)
 
     new_file_path =
-      Still.Compiler.File.set_output_file(source_file)
+      source_file.output_file
       |> get_output_path()
 
     File.mkdir_p!(Path.dirname(new_file_path))
@@ -32,14 +28,11 @@ defmodule Still.Compiler.PreprocessorError do
   end
 
   def handle_render(%__MODULE__{} = e) do
-    extension =
-      find_extension(e.source_file, [
-        e.preprocessor | e.remaining_preprocessors
-      ])
+    source_file = update_source_file(e.source_file, [e.preprocessor | e.remaining_preprocessors])
 
     Logger.error("#{e.source_file.input_file} #{e.message}")
 
-    do_render(extension, e)
+    do_render(source_file.extension, e)
   end
 
   defp do_render(".html", %__MODULE__{} = e) do
@@ -86,22 +79,27 @@ defmodule Still.Compiler.PreprocessorError do
   end
 
   defp add_dev_layout(content, ".html") do
-    content |> Still.Compiler.File.DevLayout.wrap() |> Map.get(:content)
+    content |> Compiler.File.DevLayout.wrap() |> Map.get(:content)
   end
 
   defp add_dev_layout(content, _ext) do
     content
   end
 
-  defp find_extension(%SourceFile{output_file: output_file}, _preprocessors)
+  defp update_source_file(%SourceFile{output_file: output_file} = source_file, _preprocessors)
        when not is_nil(output_file) do
-    Path.extname(output_file)
+    source_file
   end
 
-  defp find_extension(%SourceFile{input_file: input_file}, preprocessors) do
-    preprocessors
-    |> Enum.reduce(Path.extname(input_file), fn p, acc ->
-      p.extension() || acc
-    end)
+  defp update_source_file(%SourceFile{input_file: input_file} = source_file, preprocessors) do
+    extension =
+      preprocessors
+      |> Enum.reduce(Path.extname(input_file), fn p, acc ->
+        p.extension() || acc
+      end)
+
+    %{source_file | extension: extension}
+    |> Preprocessor.OutputPath.run()
+    |> Preprocessor.URLFingerprinting.run()
   end
 end

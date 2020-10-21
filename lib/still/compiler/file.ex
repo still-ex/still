@@ -10,7 +10,6 @@ defmodule Still.Compiler.File do
       file =
       %SourceFile{input_file: input_file}
       |> compile_file()
-      |> set_output_file()
 
     with new_file_path <- get_output_path(file),
          _ <- File.mkdir_p!(Path.dirname(new_file_path)),
@@ -73,23 +72,6 @@ defmodule Still.Compiler.File do
   rescue
     e in Preprocessor.SyntaxError ->
       handle_syntax_error(file, e)
-  end
-
-  def set_output_file(%{variables: %{permalink: permalink}} = file) do
-    %{file | output_file: permalink}
-  end
-
-  def set_output_file(%{input_file: input_file, extension: extension} = file)
-      when not is_nil(extension) do
-    output_file =
-      input_file
-      |> String.replace(Path.extname(input_file), extension)
-
-    %{file | output_file: output_file}
-  end
-
-  def set_output_file(%{input_file: input_file} = file) do
-    %{file | output_file: input_file}
   end
 
   defp handle_syntax_error(file, e) do
