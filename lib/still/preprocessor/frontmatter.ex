@@ -7,7 +7,7 @@ defmodule Still.Preprocessor.Frontmatter do
   use Preprocessor
 
   @impl true
-  def render(content, variables) do
+  def render(%{content: content, variables: variables} = file) do
     [frontmatter, content] = parse_frontmatter(content)
 
     settings =
@@ -15,7 +15,7 @@ defmodule Still.Preprocessor.Frontmatter do
       |> parse_yaml()
       |> Map.merge(variables)
 
-    %{content: content, variables: settings}
+    %{file | content: content, variables: settings}
   end
 
   defp parse_frontmatter(content) do

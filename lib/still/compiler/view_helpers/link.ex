@@ -2,10 +2,18 @@ defmodule Still.Compiler.ViewHelpers.Link do
   import Still.Utils
 
   alias Still.Compiler.ViewHelpers.ContentTag
+  alias Still.SourceFile
 
   def render(opts, variables, do: markup) do
     preprocessor = variables[:preprocessor]
-    %{content: content} = preprocessor.render(markup, variables |> Enum.into(%{}))
+
+    %{content: content} =
+      preprocessor.render(%SourceFile{
+        content: markup,
+        input_file: variables[:input_file],
+        variables: variables |> Enum.into(%{})
+      })
+
     render(content, variables, opts)
   end
 

@@ -7,8 +7,8 @@ defmodule Still.Preprocessor.Slime do
   use Preprocessor, ext: ".html"
 
   @impl true
-  def render(content, variables) do
-    %{content: do_render(content, variables), variables: variables}
+  def render(file) do
+    %{file | content: do_render(file)}
   rescue
     e in Slime.TemplateSyntaxError ->
       raise Preprocessor.SyntaxError,
@@ -18,8 +18,12 @@ defmodule Still.Preprocessor.Slime do
         column: e.column
   end
 
-  defp do_render(content, variables) do
-    Renderer.create(content, variables)
+  defp do_render(%{variables: variables} = file) do
+    variables =
+      variables
+      |> Map.put(:input_file, Map.get(file, :input_file))
+
+    Renderer.create(%{file | variables: variables})
     |> apply(:render, variables |> Map.values())
   end
 end

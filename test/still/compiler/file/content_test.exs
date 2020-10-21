@@ -1,7 +1,8 @@
 defmodule Still.Compiler.File.ContentTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case
 
   alias Still.Compiler.{Collections, File.Content, Incremental}
+  alias Still.SourceFile
 
   @preprocessors [
     Still.Preprocessor.Frontmatter,
@@ -20,8 +21,8 @@ defmodule Still.Compiler.File.ContentTest do
       file = "index.slime"
       content = "p Hello"
 
-      assert {:ok, "<p>Hello</p>", %{file_path: file}} =
-               Content.compile(file, content, @preprocessors)
+      assert %{content: "<p>Hello</p>", input_file: file} =
+               Content.compile(%SourceFile{input_file: file, content: content}, @preprocessors)
     end
 
     test "returns the metadata" do
@@ -37,8 +38,8 @@ defmodule Still.Compiler.File.ContentTest do
       p Hello
       """
 
-      assert {:ok, "<p>Hello</p>", %{hello: "world", tags: ["post", "article"]}} =
-               Content.compile(file, content, @preprocessors)
+      assert %{content: "<p>Hello</p>", variables: %{hello: "world", tags: ["post", "article"]}} =
+               Content.compile(%SourceFile{input_file: file, content: content}, @preprocessors)
     end
 
     test "supports layout" do
@@ -51,7 +52,8 @@ defmodule Still.Compiler.File.ContentTest do
       p Hello
       """
 
-      {:ok, content, _} = Content.compile(file, content, @preprocessors)
+      %{content: content} =
+        Content.compile(%SourceFile{input_file: file, content: content}, @preprocessors)
 
       assert String.starts_with?(content, "<!DOCTYPE html><html><head><title>Still</title>")
       assert String.ends_with?(content, "<body><p>Hello</p></body></html>")

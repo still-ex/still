@@ -26,7 +26,7 @@ defmodule Still.Web.BrowserSubscriptions do
       Process.cancel_timer(state.timer_ref)
     end
 
-    timer_ref = Process.send_after(self(), :notify_subscribers, 400)
+    timer_ref = Process.send_after(self(), :notify_subscribers, 800)
 
     {:noreply, %{state | timer_ref: timer_ref}}
   end

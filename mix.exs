@@ -27,8 +27,10 @@ defmodule Still.MixProject do
     [
       {:cowboy, "~> 2.8"},
       {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
-      {:markdown, github: "subvisual/markdown", ref: "b5d1832"},
+      {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:file_system, "~> 0.2.8"},
+      {:markdown, github: "subvisual/markdown", ref: "b5d1832"},
+      {:mock, "~> 0.3.0", only: :test},
       {:plug, "~> 1.10"},
       {:plug_cowboy, "~> 2.3"},
       {:slime, "~> 1.2"},

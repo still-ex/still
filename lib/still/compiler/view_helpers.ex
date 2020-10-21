@@ -1,6 +1,8 @@
 defmodule Still.Compiler.ViewHelpers do
   defmacro __using__(variables) do
     quote do
+      alias Still.SourceFile
+
       alias Still.Compiler.{
         Context,
         Incremental,
@@ -16,8 +18,8 @@ defmodule Still.Compiler.ViewHelpers do
 
       def include(file, variables \\ %{}) do
         with pid when not is_nil(pid) <- Incremental.Registry.get_or_create_file_process(file),
-             {:ok, content, _settings} <-
-               Incremental.Node.render(pid, variables, @env[:file_path]) do
+             %SourceFile{content: content} <-
+               Incremental.Node.render(pid, variables, @env[:input_file]) do
           Incremental.Node.add_subscription(pid, file)
           content
         else
@@ -45,12 +47,21 @@ defmodule Still.Compiler.ViewHelpers do
         UrlFor.render(relative_path)
       end
 
+      def get_collections(collection) do
+        Still.Compiler.Collections.get(collection, @env[:input_file])
+      end
+
       def link(content, opts) do
         Link.render(content, @env, opts)
       end
 
       def cssmin(code) do
-        %{content: content} = Still.Preprocessor.CSSMinify.render(code, %{})
+        %{content: content} =
+          Still.Preprocessor.CSSMinify.render(%SourceFile{
+            content: code,
+            input_file: @env[:input_file]
+          })
+
         content
       end
     end

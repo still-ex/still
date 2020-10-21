@@ -1,10 +1,16 @@
 defmodule Still.Utils do
+  alias Still.SourceFile
+
+  def get_input_path(%SourceFile{input_file: file}), do: Path.join(get_input_path(), file)
+
   def get_input_path(file), do: Path.join(get_input_path(), file)
 
   def get_input_path() do
     config!(:input)
     |> Path.expand()
   end
+
+  def get_output_path(%SourceFile{output_file: file}), do: Path.join(get_output_path(), file)
 
   def get_output_path(file), do: Path.join(get_output_path(), file)
 

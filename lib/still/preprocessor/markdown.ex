@@ -3,9 +3,9 @@ defmodule Still.Preprocessor.Markdown do
 
   use Preprocessor, ext: ".html"
 
-  def render(content, variables) do
+  def render(%{content: content} = file) do
     html_doc = Markdown.to_html(content, fenced_code: true, quote: true)
 
-    %{content: html_doc, variables: variables}
+    %{file | content: html_doc}
   end
 end

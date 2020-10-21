@@ -1,81 +1,70 @@
 defmodule Still.Compiler.File.Content do
   require Logger
 
-  alias Still.Compiler.{
-    PreprocessorError,
-    Collections,
-    Incremental
-  }
+  alias Still.Compiler.Incremental
+  alias Still.SourceFile
+  alias Still.Compiler.PreprocessorError
 
-  def render(file, content, preprocessors, data \\ %{}) do
-    with %{content: compiled, variables: data} <-
-           render_template(content, preprocessors, Map.put(data, :file_path, file)),
-         compiled <- append_layout(compiled, data) do
-      {:ok, compiled, data}
-    end
+  @spec render(SourceFile.t(), any()) :: SourceFile.t()
+  def render(file, preprocessors) do
+    render_template(file, preprocessors)
+    |> append_layout()
   end
 
-  def compile(file, content, preprocessors, data \\ %{}) do
-    with {:ok, compiled, data} <- render(file, content, preprocessors, data),
-         ext <- find_extension(file, data, preprocessors),
-         compiled <- append_development_layout(compiled, ext) do
-      {:ok, compiled, data}
-    end
+  @spec render(SourceFile.t(), any()) :: SourceFile.t()
+  def compile(file, preprocessors) do
+    render(file, preprocessors)
+    |> append_development_layout()
   end
 
-  defp append_layout(children, data = %{layout: _layout}) do
-    with layout_data <-
-           data
-           |> Map.drop([:tag, :layout, :permalink, :file_path])
-           |> Map.put(:children, children),
-         {:ok, compiled, _} <-
-           data[:layout]
-           |> Incremental.Registry.get_or_create_file_process()
-           |> Incremental.Node.render(layout_data, data[:file_path]) do
-      compiled
-    end
+  defp append_layout(
+         %{
+           content: children,
+           input_file: input_file,
+           variables: %{layout: layout_file} = variables
+         } = file
+       ) do
+    layout_variables =
+      variables
+      |> Map.drop([:tag, :layout, :permalink, :input_file])
+      |> Map.put(:children, children)
+
+    %{content: content} =
+      layout_file
+      |> Incremental.Registry.get_or_create_file_process()
+      |> Incremental.Node.render(layout_variables, input_file)
+
+    %SourceFile{file | content: content}
   end
 
-  defp append_layout(children, _), do: children
+  defp append_layout(file), do: file
 
   if Mix.env() == :dev do
-    defp append_development_layout(content, ".html") do
-      Still.Compiler.File.DevLayout.wrap(content)
+    defp append_development_layout(%{extension: ".html", content: content} = file) do
+      %{content: content} = Still.Compiler.File.DevLayout.wrap(content)
+
+      %{file | content: content}
     end
   end
 
-  defp append_development_layout(content, _ext) do
-    content
+  defp append_development_layout(file) do
+    file
   end
 
-  defp render_template(content, [], variables) do
-    %{content: content, variables: variables}
+  defp render_template(file, []) do
+    file
   end
 
-  defp render_template(content, [preprocessor | remaining_preprocessors], variables) do
-    %{content: content, variables: variables} =
-      preprocessor.run(content, Map.put(variables, :collections, Collections.all()))
-
-    render_template(content, remaining_preprocessors, variables)
+  defp render_template(file, [preprocessor | remaining_preprocessors]) do
+    preprocessor.run(file)
+    |> render_template(remaining_preprocessors)
   catch
     :error, %CompileError{description: description} ->
       raise PreprocessorError,
         message: description,
         preprocessor: preprocessor,
         remaining_preprocessors: remaining_preprocessors,
-        content: content,
-        variables: variables,
+        source_file: file,
         stacktrace: __STACKTRACE__
-  end
-
-  defp find_extension(_file, %{permalink: permalink}, _preprocessors) do
-    Path.extname(permalink)
-  end
-
-  defp find_extension(file, _data, preprocessors) do
-    preprocessors
-    |> Enum.reduce(Path.extname(file), fn p, acc ->
-      p.extension() || acc
-    end)
   end
 end

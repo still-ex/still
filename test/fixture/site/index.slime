@@ -6,5 +6,5 @@ layout: _layout.slime
   h1 Home page
   p Let's try to list some numbers:
   ul
-    = Enum.map Map.get(collections, "post", []), fn x ->
+    = Enum.map get_collections("post"), fn x ->
       li = x["id"]

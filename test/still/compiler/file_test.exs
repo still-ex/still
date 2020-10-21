@@ -26,7 +26,7 @@ defmodule Still.Compiler.FileTest do
 
       content = Compiler.File.render(file, %{})
 
-      assert {:ok, "<header><p>This is a header</p></header>", %{file_path: ^file}} = content
+      assert %{content: "<header><p>This is a header</p></header>", input_file: ^file} = content
     end
   end
 end

@@ -1,8 +1,7 @@
 defmodule Still.Compiler.PreprocessorError do
   defexception [
     :message,
-    :content,
-    :variables,
+    :source_file,
     :preprocessor,
     :remaining_preprocessors,
     :stacktrace
@@ -10,25 +9,22 @@ defmodule Still.Compiler.PreprocessorError do
 
   require Logger
 
+  alias Still.SourceFile
+
   import Still.Utils
 
   def handle_compile(%__MODULE__{} = e) do
     extension =
-      find_extension(e.variables, [
+      find_extension(e.source_file, [
         e.preprocessor | e.remaining_preprocessors
       ])
 
-    content = handle_render(e) |> add_dev_layout(extension)
+    source_file = %{e.source_file | extension: extension}
 
-    variables =
-      e.variables
-      |> Map.put(
-        :extension,
-        extension
-      )
+    content = handle_render(%{e | source_file: source_file}) |> add_dev_layout(extension)
 
     new_file_path =
-      Still.Compiler.File.get_output_file_name(e.variables.file_path, variables)
+      Still.Compiler.File.set_output_file(source_file)
       |> get_output_path()
 
     File.mkdir_p!(Path.dirname(new_file_path))
@@ -37,11 +33,11 @@ defmodule Still.Compiler.PreprocessorError do
 
   def handle_render(%__MODULE__{} = e) do
     extension =
-      find_extension(e.variables, [
+      find_extension(e.source_file, [
         e.preprocessor | e.remaining_preprocessors
       ])
 
-    Logger.error("#{e.variables.file_path} #{e.message}")
+    Logger.error("#{e.source_file.input_file} #{e.message}")
 
     do_render(extension, e)
   end
@@ -56,7 +52,7 @@ defmodule Still.Compiler.PreprocessorError do
 
     """
     <div class='dev-error'>
-      <h1>#{e.variables.file_path} #{e.message}</h1>
+      <h1>#{e.source_file.input_file} #{e.message}</h1>
       <details>
         <summary>Stacktrace</summary>
         #{details}
@@ -72,7 +68,7 @@ defmodule Still.Compiler.PreprocessorError do
   defp do_render(".css", %__MODULE__{} = e) do
     """
     body::after {
-      content: '#{e.variables.file_path} #{e.message}';
+      content: '#{e.source_file.input_file} #{e.message}';
     }
     """
   end
@@ -81,25 +77,30 @@ defmodule Still.Compiler.PreprocessorError do
     html = do_render(".html", e)
 
     """
-    document.getElementsByTagName('body')[0].innerHTML = `#{html}`
+    window.addEventListener('load', () => {
+      let node = document.createElement("div");
+      document.body.appendChild(node);
+      node.innerHTML = `#{html}`
+    });
     """
   end
 
   defp add_dev_layout(content, ".html") do
-    content |> Still.Compiler.File.DevLayout.wrap()
+    content |> Still.Compiler.File.DevLayout.wrap() |> Map.get(:content)
   end
 
   defp add_dev_layout(content, _ext) do
     content
   end
 
-  defp find_extension(%{permalink: permalink}, _preprocessors) do
-    Path.extname(permalink)
+  defp find_extension(%SourceFile{output_file: output_file}, _preprocessors)
+       when not is_nil(output_file) do
+    Path.extname(output_file)
   end
 
-  defp find_extension(%{file_path: file}, preprocessors) do
+  defp find_extension(%SourceFile{input_file: input_file}, preprocessors) do
     preprocessors
-    |> Enum.reduce(Path.extname(file), fn p, acc ->
+    |> Enum.reduce(Path.extname(input_file), fn p, acc ->
       p.extension() || acc
     end)
   end
