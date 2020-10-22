@@ -89,25 +89,12 @@ defmodule Still.Preprocessor.Renderer do
       end
 
       defp user_view_helpers_asts do
-        :code.all_available()
-        |> Stream.map(fn {mod, _, _} -> :"#{mod}" end)
-        |> Stream.map(fn mod ->
-          try do
-            {mod, mod.module_info(:attributes)[:behaviour] || []}
-          rescue
-            UndefinedFunctionError ->
-              nil
+        Application.get_env(:still, :view_helpers, [])
+        |> Enum.map(fn module ->
+          quote do
+            import unquote(module)
           end
         end)
-        |> Stream.filter(& &1)
-        |> Stream.map(fn {module, behaviours} ->
-          if Still.ViewHelper in behaviours do
-            quote do
-              import unquote(module)
-            end
-          end
-        end)
-        |> Enum.filter(& &1)
       end
 
       defp ensure_current_context(variables) do

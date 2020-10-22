@@ -136,10 +136,11 @@ Sometimes you want to alter the file name or path but keep the content of the fi
 ```elixir
 config :still,
   pass_through_copy: [css: "styles"]
-  
+
   # this is also valid:
   # config :still,
   #   pass_through_copy: [{"css", "styles"}]
+```
 
 In the example above, the `css` folder from the input folder but will be renamed to `styles` in the output folder.
 
@@ -205,16 +206,26 @@ html
     = include "_includes/head.slim"
   body
     = children
+```
 
 ### Link to other files
 
 In any file you can call the `link` function to create a link to somewhere
-else. This function will already take care of specifying the `rel` and `target`
-when necessary. It supports both relative and absolute paths:
+else. This function will already take care of specifying the `rel` and `target` when necessary. It supports both relative and absolute paths:
 
 ```slim
 = link "Home", to: "/"
 = link "Blog", to: "https://example.org"
+```
+
+### Custom view helpers
+
+To call your own functions from the view files, register a module in the config:
+
+```elixir
+config :still,
+  view_helpers: [Your.Module]
+```
 
 ## License
 
