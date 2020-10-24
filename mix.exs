@@ -4,9 +4,12 @@ defmodule Still.MixProject do
   def project do
     [
       app: :still,
+      description: "A modern static site generator for the Elixir community",
       version: "0.1.0",
       elixir: "~> 1.10",
       elixirc_paths: ["lib"] ++ elixirc_paths(Mix.env()),
+      package: package(),
+      source_url: "https://github.com/subvisual/still",
       aliases: aliases(),
       deps: deps()
     ]
@@ -49,4 +52,11 @@ defmodule Still.MixProject do
   end
 
   defp elixirc_paths(_), do: []
+
+  defp package() do
+    [
+      licenses: ["ISC"],
+      links: %{"GitHub" => "https://github.com/subvisual/still"}
+    ]
+  end
 end
