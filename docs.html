@@ -1,4 +1,6 @@
-<!DOCTYPE html><html><head><title>Documentation</title><meta charset="UTF-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><link href="https://subvisual.github.io/still//css/theme.css" media="all" rel="stylesheet"><script src="https://subvisual.github.io/still//console.js"></script></head><body><header class="header"><a href="https://subvisual.github.io/still//">Still</a><nav class="header-nav"><a href="https://github.com/subvisual/still" rel="noopener noreferrer" target="_blank">Github</a><a href="https://subvisual.github.io/still//docs">Docs</a></nav></header><style type="text/css">.header {height: 80px;font-size: 1.2rem;display: flex;align-items: center;padding: 0 2rem;justify-content: space-between;}.header-nav > a {margin-left: 2rem;}.header a {text-decoration: none;}</style><h1 class="fancy-title">Documentation</h1><div class="main"><p>Still works by compiling files from an input directory into an output directory. By default, it looks for files with the extensions <code>.eex</code>, <code>.slime</code>, <code>.md</code> and <code>.css</code>, but continue reading to see how you set it up to your needs.</p>
+<!DOCTYPE html><html><head><title>Documentation</title><meta charset="UTF-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><script  src=https://subvisual.github.io/still//console-JTYDgyiOCto9iPvDoNqE2w==.js></script>
+<link rel="stylesheet" media=all href=https://subvisual.github.io/still//css/theme-D7L6xPAKFBwH_BryB6xhRw==.css />
+</head><body><header class="header"><a href="https://subvisual.github.io/still//">Still</a><nav class="header-nav"><a href="https://github.com/subvisual/still" rel="noopener noreferrer" target="_blank">Github</a><a href="https://subvisual.github.io/still//docs">Docs</a></nav></header><style type="text/css">.header {height: 80px;font-size: 1.2rem;display: flex;align-items: center;padding: 0 2rem;justify-content: space-between;}.header-nav > a {margin-left: 2rem;}.header a {text-decoration: none;}</style><h1 class="fancy-title">Documentation</h1><div class="main"><p>Still works by compiling files from an input directory into an output directory. By default, it looks for files with the extensions <code>.eex</code>, <code>.slime</code>, <code>.md</code> and <code>.css</code>, but continue reading to see how you set it up to your needs.</p>
 
 <p><em>This document is not complete, but <a href="./priv/site">our website</a> uses most of the features available in Still. Please have a look there if you can&#39;t find what you&#39;re looking for.</em></p>
 
@@ -120,20 +122,20 @@ end
 
 <pre><code class="language-elixir">config :still,
   pass_through_copy: [css: &quot;styles&quot;]
-
+  
   # this is also valid:
   # config :still,
   #   pass_through_copy: [{&quot;css&quot;, &quot;styles&quot;}]
-</code></pre>
 
-<p>In the example above, the <code>css</code> folder from the input folder but will be renamed to <code>styles</code> in the output folder.</p>
+In the example above, the `css` folder from the input folder but will be renamed to `styles` in the output folder.
 
-<h2>Layouts</h2>
+## Layouts
 
-<p>Layouts can be used to wrap other content. To wrap the contents of a file with
-a layout template, use the <code>layout</code> key in front matter. For instance:</p>
+Layouts can be used to wrap other content. To wrap the contents of a file with
+a layout template, use the `layout` key in front matter. For instance:
 
-<pre><code class="language-slime">---
+```slime
+---
 layout: _layout.slime
 ---
 
@@ -185,26 +187,19 @@ You can then iterate over this list by accessing the <code>collections</code> va
     = include &quot;_includes/head.slim&quot;
   body
     = children
-</code></pre>
 
-<h3>Link to other files</h3>
+### Link to other files
 
-<p>In any file you can call the <code>link</code> function to create a link to somewhere
-else. This function will already take care of specifying the <code>rel</code> and <code>target</code> when necessary. It supports both relative and absolute paths:</p>
+In any file you can call the `link` function to create a link to somewhere
+else. This function will already take care of specifying the `rel` and `target`
+when necessary. It supports both relative and absolute paths:
 
-<pre><code class="language-slim">= link &quot;Home&quot;, to: &quot;/&quot;
+```slim
+= link &quot;Home&quot;, to: &quot;/&quot;
 = link &quot;Blog&quot;, to: &quot;https://example.org&quot;
+
+## License
+
+Still is released under the [ISC License](./LICENSE).
 </code></pre>
-
-<h3>Custom view helpers</h3>
-
-<p>To call your own functions from the view files, register a module in the config:</p>
-
-<pre><code class="language-elixir">config :still,
-  view_helpers: [Your.Module]
-</code></pre>
-
-<h2>License</h2>
-
-<p>Still is released under the <a href="./LICENSE">ISC License</a>.</p>
 </div><div class="footer"><p>Still was created and is maintained by</p><img alt="Subvisual" src="https://subvisual.github.io/still//subvisual.png"></div></body></html>
