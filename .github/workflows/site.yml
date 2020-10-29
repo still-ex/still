@@ -1,4 +1,8 @@
-on: push
+name: Deploy Site
+
+on:
+  push:
+    branches: [ master ]
 
 jobs:
   site:
