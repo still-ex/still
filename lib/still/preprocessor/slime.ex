@@ -4,7 +4,10 @@ defmodule Still.Preprocessor.Slime do
   alias Still.Preprocessor
   alias Still.Preprocessor.Slime.Renderer
 
-  use Preprocessor, ext: ".html"
+  use Preprocessor
+
+  @impl true
+  def extension(_), do: ".html"
 
   @impl true
   def render(file) do

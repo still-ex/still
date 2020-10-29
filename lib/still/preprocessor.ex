@@ -1,13 +1,25 @@
 defmodule Still.Preprocessor do
   alias Still.SourceFile
 
+  alias __MODULE__.{
+    CSSMinify,
+    EEx,
+    Frontmatter,
+    JS,
+    Markdown,
+    OutputPath,
+    OutputPath,
+    Slime,
+    URLFingerprinting
+  }
+
   @default_preprocessors %{
-    ".slim" => [__MODULE__.Frontmatter, __MODULE__.Slime],
-    ".slime" => [__MODULE__.Frontmatter, __MODULE__.Slime],
-    ".eex" => [__MODULE__.Frontmatter, __MODULE__.EEx],
-    ".css" => [__MODULE__.EEx, __MODULE__.CSSMinify],
-    ".js" => [__MODULE__.EEx, __MODULE__.JS],
-    ".md" => [__MODULE__.Frontmatter, __MODULE__.EEx, __MODULE__.Markdown]
+    ".slim" => [Frontmatter, Slime, OutputPath],
+    ".slime" => [Frontmatter, Slime, OutputPath],
+    ".eex" => [Frontmatter, EEx, OutputPath],
+    ".css" => [EEx, CSSMinify, OutputPath, URLFingerprinting],
+    ".js" => [EEx, JS, OutputPath, URLFingerprinting],
+    ".md" => [Frontmatter, EEx, Markdown, OutputPath]
   }
 
   def for(%SourceFile{input_file: file}), do: __MODULE__.for(file)
@@ -35,29 +47,35 @@ defmodule Still.Preprocessor do
     Application.get_env(:still, :preprocessors, %{})
   end
 
-  @callback render(SourceFile.t()) :: SourceFile.t() | no_return()
+  @callback render(SourceFile.t()) :: SourceFile.t()
+  @callback extension(SourceFile.t()) :: String.t()
+  @optional_callbacks extension: 1
 
-  defmacro __using__(opts) do
+  defmacro __using__(_opts) do
     quote do
       @behaviour Still.Preprocessor
 
+      @spec run(SourceFile.t()) :: SourceFile.t()
       def run(file) do
         file
         |> set_extension()
         |> render()
       end
 
-      def extension do
-        unquote(opts)[:ext]
+      def set_extension(file) do
+        if Kernel.function_exported?(__MODULE__, :extension, 1) do
+          %{file | extension: extension(file)}
+        else
+          file
+        end
       end
 
-      if not is_nil(unquote(opts)[:ext]) do
-        defp set_extension(file) do
-          file |> Map.put(:extension, unquote(opts)[:ext])
-        end
-      else
-        defp set_extension(file), do: file
+      @spec extension(SourceFile.t()) :: String.t()
+      def extension(file) do
+        file.extension
       end
+
+      defoverridable(extension: 1)
     end
   end
 end

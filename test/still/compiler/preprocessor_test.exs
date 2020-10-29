@@ -4,7 +4,11 @@ defmodule Still.PreprocessorTest do
   alias Still.{Preprocessor, SourceFile}
 
   defmodule TestPreprocessorWithExt do
-    use Preprocessor, ext: ".css"
+    use Preprocessor
+
+    def extension(_) do
+      ".css"
+    end
 
     def render(file) do
       file

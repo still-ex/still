@@ -7,7 +7,9 @@ defmodule Still.Compiler.ViewHelpers do
         Context,
         Incremental,
         ViewHelpers.Link,
-        ViewHelpers.UrlFor
+        ViewHelpers.UrlFor,
+        ViewHelpers.LinkToCSS,
+        ViewHelpers.LinkToJS
       }
 
       alias __MODULE__
@@ -63,6 +65,14 @@ defmodule Still.Compiler.ViewHelpers do
           })
 
         content
+      end
+
+      def link_to_css(path, opts \\ []) do
+        LinkToCSS.render(path, opts, @env)
+      end
+
+      def link_to_js(path, opts \\ []) do
+        LinkToJS.render(path, opts, @env)
       end
     end
   end
