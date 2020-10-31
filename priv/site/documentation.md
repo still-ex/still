@@ -50,7 +50,7 @@ In development mode we will also show you compile time errors in the browser.
 
 ## Production
 
-To compile your site, run `mix still.compile` and the compiled  files will be in the output directory. If you're wondering about how to integrate this compilation step with your CI, checkout the []source code for the Github Action that deploys this site](https://github.com/subvisual/still/blob/master/.github/workflows/site.yml) you're reading.
+To compile your site, run `mix still.compile` and the compiled files will be in the output directory. If you're wondering about how to integrate this compilation step with your CI, checkout the []source code for the Github Action that deploys this site](https://github.com/subvisual/still/blob/master/.github/workflows/site.yml) you're reading.
 
 ## Preprocessors
 
@@ -61,10 +61,10 @@ The default preprocessors are declared in the [_Preprocessor_ module](https://gi
 Notice that many file types, such as markdown and CSS , run through EEx, which means you can use EEx syntax in those files. Here's an example of a CSS file that uses EEx interpolation:
 
 ```css
-html, body {
-  color: <%= Colors.body() %>    
+html,
+body {
+  color: <%%= Colors.white() %>;
 }
-
 ```
 
 **Files, or folders, that start with an underscore are ignored by the compilation step.** These files can be set to run through the pass-through copy, or used as layouts and partials for other files.
