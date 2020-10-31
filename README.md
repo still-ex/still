@@ -1,5 +1,7 @@
 # Still
 
+🚧 **This package is under construction**
+
 [Documentation][docs]
 
 Still is a static site generator for Elixir.
@@ -12,11 +14,15 @@ For more information please read the [documentation][docs].
 
 ## Installation
 
+To install Still you add it to your dependency list. You should be able to
+add it to any mix project.
+
 ### For new projects
 
-`mix archive.install hex still` to install it on your system. You only need to do this once.
+Run `mix archive.install hex still` to install the archive on your system.
 
-Then you can create new static websites by running `mix still.new my_site`. That's it!
+Afterwards, create a static site by running `mix still.new my_site`.
+That's it!
 
 ### Adding to an existing project
 
