@@ -1,20 +1,16 @@
 <!DOCTYPE html><html><head><title>Documentation</title><meta charset="UTF-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><script  src=https://subvisual.github.io/still//console-JTYDgyiOCto9iPvDoNqE2w==.js></script>
 <link rel="stylesheet" media=all href=https://subvisual.github.io/still//css/theme-D7L6xPAKFBwH_BryB6xhRw==.css />
-</head><body><header class="header"><a href="https://subvisual.github.io/still//">Still</a><nav class="header-nav"><a href="https://github.com/subvisual/still" rel="noopener noreferrer" target="_blank">Github</a><a href="https://subvisual.github.io/still//docs">Docs</a></nav></header><style type="text/css">.header {height: 80px;font-size: 1.2rem;display: flex;align-items: center;padding: 0 2rem;justify-content: space-between;}.header-nav > a {margin-left: 2rem;}.header a {text-decoration: none;}</style><h1 class="fancy-title">Documentation</h1><div class="main"><p>If you&#39;re here just to see some code, you can explore the <a href="https://github.com/subvisual/still/tree/master/priv/site">source code for this website</a>. You can also run it in your machine: clone the repository, install the dependencies <code>mix deps.get</code> and run the development server <code>iex -S mix still.dev</code>.</p>
+</head><body><header class="header"><a href="https://subvisual.github.io/still//">Still</a><nav class="header-nav"><a href="https://github.com/subvisual/still" rel="noopener noreferrer" target="_blank">Github</a><a href="https://subvisual.github.io/still//docs">Docs</a></nav></header><style type="text/css">.header {height: 80px;font-size: 1.2rem;display: flex;align-items: center;padding: 0 2rem;justify-content: space-between;}.header-nav > a {margin-left: 2rem;}.header a {text-decoration: none;}</style><h1 class="fancy-title">Documentation</h1><div class="main"><p>Still works by compiling files from an input directory into an output directory. By default, it looks for files with the extensions <code>.eex</code>, <code>.slime</code>, <code>.md</code> and <code>.css</code>, but continue reading to see how you set it up to your needs.</p>
 
-<p>Still takes files from a source directory, runs them through some preprocessors, and places them in an output directory.</p>
-
-<p>🚧 <em>This documentation is incomplete, but we built <a href="https://github.com/subvisual/still/tree/master/priv/site">this website you&#39;re reading</a> with Still to showcase some of its features. Have a look there if you can&#39;t find what you&#39;re looking for here.</em></p>
+<p><em>This document is not complete, but <a href="./priv/site">our website</a> uses most of the features available in Still. Please have a look there if you can&#39;t find what you&#39;re looking for.</em></p>
 
 <h2>Installation</h2>
 
-<p>To install Still you add it to your dependency list. You should be able to add it to any mix project.</p>
-
 <h3>For new projects</h3>
 
-<p>Run <code>mix archive.install hex still</code> to install the archive on your system.</p>
+<p>Run <code>mix archive.install hex still</code> to install Still in your system. You only need to do this once.</p>
 
-<p>Afterwards, create a site by running <code>mix still.new my_site</code>. That&#39;s it!</p>
+<p>Then you can create new static websites by running <code>mix still.new my_site</code>. That&#39;s it!</p>
 
 <h3>Adding to an existing project</h3>
 
@@ -38,58 +34,49 @@ end
 
 <h2>Development</h2>
 
-<p>While you&#39;re working on the website, run <code>iex -S mix still.dev</code> to start Still in development mode and your website will be available in <a href="http://localhost:3000/">http://localhost:3000</a>. Still will be watching the the input folder for changes, refreshing the browser when necessary.</p>
+<p>While you&#39;re developing the website, run <code>iex -S mix still.dev</code> to start Still in development mode.
+Your website will be available in <a href="http://localhost:3000/">http://localhost:3000</a> and Still will be watching the the input folder for changes, refreshing the browser when necessary.</p>
 
-<p>In development mode we will also show you compile time errors in the browser.</p>
+<h2>Compilation</h2>
 
-<h2>Production</h2>
-
-<p>To compile your site, run <code>mix still.compile</code> and the compiled files will be in the output directory. If you&#39;re wondering about how to integrate this compilation step with your CI, checkout the []source code for the Github Action that deploys this site](https://github.com/subvisual/still/blob/master/.github/workflows/site.yml) you&#39;re reading.</p>
+<p>To compile the site run <code>mix still.compile</code>.</p>
 
 <h2>Preprocessors</h2>
 
-<p>Preprocessors are the cornerstone of Still. A preprocessor chain can take a markdown file, execute its embedded Elixir, extract metadata from its front matter, transform it into HTML and wrap it in a layout.</p>
+<p>Any file with one of the extensions listed above will be compiled and placed in the same relative path (but with a different extension) in the output folder.</p>
 
-<p>The default preprocessors are declared in the <a href="https://github.com/subvisual/still/blob/master/lib/still/preprocessor.ex#L16"><em>Preprocessor</em> module</a>. Each file in your input directory with one of the declared extensions will be transformed and placed in the same relative directory in the output folder. For instance, the file <code>about.md</code> will become <code>about.html</code> in the output folder, and a file inside a folder <code>blog/post_1.md</code> will also be in the same folder on the output directory <code>blog/post_1.html</code>.</p>
+<p>Markdown and CSS files run through EEx first, which means you can use EEx syntax in those files. Here&#39;s an example of a markdown file that uses EEx interpolation:</p>
 
-<p>Notice that many file types, such as markdown and CSS , run through EEx, which means you can use EEx syntax in those files. Here&#39;s an example of a CSS file that uses EEx interpolation:</p>
+<pre><code class="language-markdown"># Some title
 
-<pre><code class="language-css">html,
-body {
-  color: &lt;%= Colors.white() %&gt;;
-}
+&lt;a href=&quot;https://subvisual.github.io/still//somewhere&quot;&gt;Some link&lt;/a&gt;
 </code></pre>
 
-<p><strong>Files, or folders, that start with an underscore are ignored by the compilation step.</strong> These files can be set to run through the pass-through copy, or used as layouts and partials for other files.</p>
+<p>Files, or folders, that start with an underscore are ignored by the compilation step.</p>
 
 <h3>Custom preprocessors</h3>
 
 <p>If the default preprocessors are not enough, you can extend Still with your own. Take the following example:</p>
 
-<pre><code class="language-elixir">defmodule YourSite.JPEG do
+<pre><code class="language-elixir">defmodule SiteTest.Js do
   use Still.Preprocessor
 
   @impl true
-  def extension(_), do: &quot;.jpeg&quot;
-
-  @impl true
-  def render(file) do
-    file
+  def render(content, variables) do
+    %{content: content, variables: variables}
   end
 end
 </code></pre>
 
-<p>This preprocessor is a module that calls <code>use Still.Preprocessor</code> and implements the <code>render/2</code> and <code>extension/1</code> functions. The <em>render</em> function is used to transform the content and the variables of a file, and the <em>extension</em> function is used to set the resulting content type. This <em>extension</em> function is not mandatory.</p>
+<p>This preprocessor is a module that calls <code>use Still.Preprocessor</code> and implements the <code>render/2</code> function. This function is used to transform the content and the variables of a file.</p>
 
 <p>Preprocessors are always part of a transformation chain, and each file will run through the chain, using the output of the one preprocessor as the input of the next. At the moment, the default transformation chains look like this:</p>
 
 <pre><code class="language-elixir">@default_preprocessors %{
-  &quot;.slim&quot; =&gt; [Frontmatter, Slime, OutputPath],
-  &quot;.slime&quot; =&gt; [Frontmatter, Slime, OutputPath],
-  &quot;.eex&quot; =&gt; [Frontmatter, EEx, OutputPath],
-  &quot;.css&quot; =&gt; [EEx, CSSMinify, OutputPath, URLFingerprinting],
-  &quot;.js&quot; =&gt; [EEx, JS, OutputPath, URLFingerprinting],
-  &quot;.md&quot; =&gt; [Frontmatter, EEx, Markdown, OutputPath]
+  &quot;.slim&quot; =&gt; [Preprocessor.Frontmatter, Preprocessor.Slime],
+  &quot;.slime&quot; =&gt; [Preprocessor.Frontmatter, Preprocessor.Slime],
+  &quot;.eex&quot; =&gt; [Preprocessor.Frontmatter, Preprocessor.EEx],
+  &quot;.css&quot; =&gt; [Preprocessor.EEx, Preprocessor.CSSMinify]
 }
 </code></pre>
 
@@ -99,7 +86,7 @@ end
 
 <pre><code class="language-elixir">config :still,
   preprocessors: %{
-    &quot;.jpeg&quot; =&gt; [YourSite.JPEG]
+    &quot;.js&quot; =&gt; [SiteTest.Js]
   }
 </code></pre>
 
@@ -107,9 +94,9 @@ end
 
 <h2>Pass through copy</h2>
 
-<p>Some files you don&#39;t need to transform, only to copy from the input to the output. That&#39;s what pass through copy is for.</p>
+<p>Some files you don&#39;t want to compile, only to copy from the input to the output. That&#39;s what pass through copy is for.</p>
 
-<p>In your configuration files, if you specify a string on the <code>pass_through_copy</code> key, any file, or folder, whose relative path starts with that same string will be copied over to the output.</p>
+<p>In your configuration files, if you specify add string on the <code>pass_through_copy</code> key, any file, or folder, whose relative path starts with that same string will be copied over to the output.</p>
 
 <pre><code class="language-elixir">config :still,
   pass_through_copy: [&quot;img/logo.png&quot;]
@@ -121,9 +108,9 @@ end
   pass_through_copy: [&quot;img&quot;]
 </code></pre>
 
-<p>Any file or folder that starts with the string <code>img</code> will be copied, which may include an <code>img</code> folder or a file named <code>img.png</code>. So you need to be mindful of that.</p>
+<p>Any file or folder that starts with the string <code>img</code> will be copied, which may include an <code>img</code> folder or a file named <code>img.png</code>. So you need to be mindfull of that.</p>
 
-<p>You can also use regular expressions:</p>
+<p>You can also use regular expression:</p>
 
 <pre><code class="language-elixir">config still,
   pass_through_copy: [~r/.*\.jpe?g/]
@@ -145,7 +132,8 @@ end
 
 <h2>Layouts</h2>
 
-<p>Layouts wrap other content. To use a layout, set the <code>layout</code> key in front matter. For instance:</p>
+<p>Layouts can be used to wrap other content. To wrap the contents of a file with
+a layout template, use the <code>layout</code> key in front matter. For instance:</p>
 
 <pre><code class="language-slime">---
 layout: _layout.slime
@@ -156,7 +144,7 @@ h1 About Page
 
 <p>This will look for <code>_layout.slime</code> in your input folder.</p>
 
-<p>The layout file must print the children variable. For instance:</p>
+<p>The layout file must print the children variable, for instance:</p>
 
 <pre><code class="language-slime">doctype html
 html
@@ -167,7 +155,7 @@ html
 <p>Notice that <code>_layout.slime</code> starts with an underscore. This is because we don&#39;t
 want to compile the layout file to the output.</p>
 
-<p>In fact, any file starting with an underscore isn&#39;t compiled to the output, but can be imported by other files.</p>
+<p>In fact, any file starting with an underscore isn&#39;t compiled to the output, but is rendered and able to be imported.</p>
 
 <h2>Collections</h2>
 
