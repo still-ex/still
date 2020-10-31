@@ -95,7 +95,7 @@ defmodule Still.Compiler.PreprocessorError do
     extension =
       preprocessors
       |> Enum.reduce(Path.extname(input_file), fn p, acc ->
-        p.extension() || acc
+        p.extension(source_file) || acc
       end)
 
     %{source_file | extension: extension}

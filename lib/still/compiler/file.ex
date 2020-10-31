@@ -48,7 +48,7 @@ defmodule Still.Compiler.File do
     with {:ok, content} <- File.read(get_input_path(file)),
          file <- %SourceFile{file | content: content},
          {:ok, preprocessor} <- Preprocessor.for(file) do
-      compile_content(file, preprocessor)
+      Compiler.File.Content.compile(file, preprocessor)
     end
   end
 
@@ -56,31 +56,7 @@ defmodule Still.Compiler.File do
     with {:ok, content} <- File.read(get_input_path(file)),
          file <- %SourceFile{file | content: content},
          {:ok, preprocessor} <- Preprocessor.for(file) do
-      render_content(file, preprocessor)
+      Compiler.File.Content.render(file, preprocessor)
     end
-  end
-
-  defp compile_content(file, preprocessor) do
-    Compiler.File.Content.compile(file, preprocessor)
-  rescue
-    e in Preprocessor.SyntaxError ->
-      handle_syntax_error(file, e)
-  end
-
-  defp render_content(file, preprocessor) do
-    Compiler.File.Content.render(file, preprocessor)
-  rescue
-    e in Preprocessor.SyntaxError ->
-      handle_syntax_error(file, e)
-  end
-
-  defp handle_syntax_error(file, e) do
-    Logger.error("Syntax error in #{file}\n#{e.line_number}: #{e.line}\n#{e.message}",
-      file: file,
-      line: e.line_number,
-      crash_reason: e.message
-    )
-
-    {:error, :syntax_error}
   end
 end
