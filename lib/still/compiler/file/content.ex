@@ -59,12 +59,26 @@ defmodule Still.Compiler.File.Content do
     preprocessor.run(file)
     |> render_template(remaining_preprocessors)
   catch
-    :error, %CompileError{description: description} ->
+    :error, %{description: description} ->
       raise PreprocessorError,
         message: description,
         preprocessor: preprocessor,
         remaining_preprocessors: remaining_preprocessors,
         source_file: file,
         stacktrace: __STACKTRACE__
+
+    :error, e ->
+      case e do
+        %PreprocessorError{} ->
+          raise e
+
+        _ ->
+          raise PreprocessorError,
+            message: inspect(e),
+            preprocessor: preprocessor,
+            remaining_preprocessors: remaining_preprocessors,
+            source_file: file,
+            stacktrace: __STACKTRACE__
+      end
   end
 end
