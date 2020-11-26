@@ -4,7 +4,6 @@ defmodule Still.Compiler.ViewHelpers do
       alias Still.SourceFile
 
       alias Still.Compiler.{
-        Context,
         Incremental,
         ViewHelpers.Link,
         ViewHelpers.UrlFor,
@@ -31,20 +30,6 @@ defmodule Still.Compiler.ViewHelpers do
         end
       end
 
-      def set(variable, do: content) do
-        ctx = @env[:current_context]
-
-        Context.put(ctx, variable, content)
-
-        :ok
-      end
-
-      def get(variable) do
-        ctx = @env[:current_context]
-
-        Context.get(ctx, variable)
-      end
-
       def url_for(relative_path) do
         UrlFor.render(relative_path)
       end
@@ -55,16 +40,6 @@ defmodule Still.Compiler.ViewHelpers do
 
       def link(content, opts) do
         Link.render(content, @env, opts)
-      end
-
-      def cssmin(code) do
-        %{content: content} =
-          Still.Preprocessor.CSSMinify.render(%SourceFile{
-            content: code,
-            input_file: @env[:input_file]
-          })
-
-        content
       end
 
       def link_to_css(path, opts \\ []) do
