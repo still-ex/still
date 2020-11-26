@@ -1,11 +1,13 @@
 defmodule Still.MixProject do
   use Mix.Project
 
+  @version "0.1.0"
+
   def project do
     [
       app: :still,
       description: "A modern static site generator for the Elixir community",
-      version: "0.1.0",
+      version: @version,
       elixir: "~> 1.10",
       elixirc_paths: ["lib"] ++ elixirc_paths(Mix.env()),
       package: package(),
@@ -43,7 +45,8 @@ defmodule Still.MixProject do
 
   defp aliases do
     [
-      test: "test --no-start"
+      test: "test --no-start",
+      build: [&build_releases/1]
     ]
   end
 
@@ -58,5 +61,13 @@ defmodule Still.MixProject do
       licenses: ["ISC"],
       links: %{"GitHub" => "https://github.com/subvisual/still"}
     ]
+  end
+
+  defp build_releases(_) do
+    Mix.Tasks.Compile.run([])
+    Mix.Tasks.Archive.Build.run([])
+    Mix.Tasks.Archive.Build.run(["--output=still.ez"])
+    File.rename("still.ez", "./archives/still.ez")
+    File.rename("still-#{@version}.ez", "./archives/still-#{@version}.ez")
   end
 end
