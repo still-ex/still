@@ -45,8 +45,7 @@ defmodule Still.MixProject do
 
   defp aliases do
     [
-      test: "test --no-start",
-      build: [&build_releases/1]
+      test: "test --no-start"
     ]
   end
 
@@ -61,13 +60,5 @@ defmodule Still.MixProject do
       licenses: ["ISC"],
       links: %{"GitHub" => "https://github.com/subvisual/still"}
     ]
-  end
-
-  defp build_releases(_) do
-    Mix.Tasks.Compile.run([])
-    Mix.Tasks.Archive.Build.run([])
-    Mix.Tasks.Archive.Build.run(["--output=still.ez"])
-    File.rename("still.ez", "./archives/still.ez")
-    File.rename("still-#{@version}.ez", "./archives/still-#{@version}.ez")
   end
 end
