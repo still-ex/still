@@ -2,7 +2,7 @@ defmodule Still.Watcher do
   use GenServer
 
   alias Still.Compiler
-  alias Still.{Compiler.Incremental, Compiler.Context}
+  alias Still.Compiler.Incremental
 
   import Still.Utils
 
@@ -29,7 +29,6 @@ defmodule Still.Watcher do
 
   def handle_info({:file_event, _watcher_pid, {file, [_, :removed]}}, state) do
     Incremental.Registry.terminate_file_process(file)
-    Context.Registry.terminate(file)
 
     {:noreply, state}
   end
@@ -64,8 +63,6 @@ defmodule Still.Watcher do
   defp compile_file("."), do: :ok
 
   defp compile_file(file) do
-    Context.Registry.get_or_start(file)
-
     Incremental.Registry.get_or_create_file_process(file)
     |> Incremental.Node.compile()
     |> case do
