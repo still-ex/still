@@ -13,7 +13,8 @@ defmodule Still.Compiler.Supervisor do
       Compiler.Collections,
       Compiler.Context.Registry,
       Compiler.Incremental.Registry,
-      Compiler.ErrorCache
+      Compiler.ErrorCache,
+      Compiler.CompilationQueue
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

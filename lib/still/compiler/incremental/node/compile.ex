@@ -1,7 +1,8 @@
 defmodule Still.Compiler.Incremental.Node.Compile do
   import Still.Utils
 
-  alias Still.{Compiler, Compiler.Incremental, Compiler.PassThroughCopy}
+  alias Still.Compiler
+  alias Still.Compiler.{Incremental, PassThroughCopy, CompilationQueue}
 
   def run(state) do
     with :ok <- try_pass_through_copy(state) do
@@ -39,11 +40,8 @@ defmodule Still.Compiler.Incremental.Node.Compile do
   end
 
   defp notify_subscribers(state) do
-    Task.start(fn ->
-      state.subscribers
-      |> Enum.map(&Incremental.Registry.get_or_create_file_process/1)
-      |> Enum.map(&Incremental.Node.compile/1)
-    end)
+    state.subscribers
+    |> CompilationQueue.compile()
   end
 
   defp should_be_ignored?(file) do

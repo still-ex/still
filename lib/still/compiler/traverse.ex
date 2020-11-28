@@ -1,9 +1,11 @@
 defmodule Still.Compiler.Traverse do
   import Still.Utils
 
-  alias Still.Compiler.Incremental
+  alias Still.Compiler.{Incremental, CompilationQueue}
 
   def run() do
+    Still.Compiler.Collections.reset()
+
     with true <- File.dir?(get_input_path()),
          _ <- File.rmdir(get_output_path()),
          :ok <- File.mkdir_p(get_output_path()) do
@@ -38,8 +40,6 @@ defmodule Still.Compiler.Traverse do
   end
 
   defp process_file(file) do
-    file
-    |> Incremental.Registry.get_or_create_file_process()
-    |> Incremental.Node.compile()
+    file |> CompilationQueue.compile()
   end
 end

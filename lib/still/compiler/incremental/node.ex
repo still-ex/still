@@ -24,7 +24,6 @@ defmodule Still.Compiler.Incremental.Node do
 
   use GenServer
 
-  alias Still.Web.BrowserSubscriptions
   alias Still.Compiler
   alias Still.Compiler.PreprocessorError
   alias Still.Compiler.ErrorCache
@@ -66,7 +65,6 @@ defmodule Still.Compiler.Incremental.Node do
   @impl true
   def handle_call(:compile, _from, state) do
     with {:ok, source_file} <- Compile.run(state) do
-      BrowserSubscriptions.notify()
       ErrorCache.set({:ok, source_file})
       {:reply, source_file, state}
     else
@@ -76,7 +74,6 @@ defmodule Still.Compiler.Incremental.Node do
   catch
     :error, %PreprocessorError{} = e ->
       ErrorCache.set({:error, e})
-      BrowserSubscriptions.notify()
 
       {:reply, :ok, state}
   end

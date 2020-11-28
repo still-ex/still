@@ -2,7 +2,7 @@ defmodule Still.Watcher do
   use GenServer
 
   alias Still.Compiler
-  alias Still.Compiler.Incremental
+  alias Still.Compiler.{Incremental, CompilationQueue}
 
   import Still.Utils
 
@@ -57,20 +57,6 @@ defmodule Still.Watcher do
 
   defp process_file(file) do
     get_relative_input_path(file)
-    |> compile_file()
-  end
-
-  defp compile_file("."), do: :ok
-
-  defp compile_file(file) do
-    Incremental.Registry.get_or_create_file_process(file)
-    |> Incremental.Node.compile()
-    |> case do
-      {:ok, _} ->
-        :ok
-
-      _ ->
-        file |> Path.dirname() |> compile_file()
-    end
+    |> CompilationQueue.compile()
   end
 end
