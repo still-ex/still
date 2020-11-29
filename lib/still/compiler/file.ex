@@ -16,7 +16,7 @@ defmodule Still.Compiler.File do
          :ok <- File.write(new_file_path, content),
          _ <- Collections.add(file) do
       Logger.info("Compiled #{input_file}")
-      :ok
+      {:ok, file}
     else
       msg = {:error, :preprocessor_not_found} ->
         msg

@@ -3,11 +3,16 @@
 javascript:
   window.socket = new WebSocket('ws://' + location.host + '/ws');
 
-  window.socket.onmessage = function(event) {
-    console.log('received', event);
+  window.socket.onmessage = function(e) {
+    const event = JSON.parse(e.data);
 
-    if (event.data === '#{Application.fetch_env!(:still, :reload_msg)}') {
+    if (event.type === 'reload') {
       location.reload();
+    } else if (event.type === 'error') {
+      document.getElementsByTagName("body")[0].classList.add("dev-error-disable-scroll");
+      let node = document.createElement("div");
+      document.body.appendChild(node);
+      node.innerHTML = event.data;
     }
   }
 
@@ -16,31 +21,32 @@ javascript:
   };
 
 css:
+  .dev-error-disable-scroll {
+      overflow: hidden;
+  }
+
   .dev-error, .dev-error * {
     box-sizing: border-box;
   }
 
-  .dev-error, body::after {
-    position: fixed;
-    height: 100%;
-    width: 100%;
-    z-index: 9999999;
+  .dev-error {
     background: white;
     color: #333;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
     font-family: sans-serif;
     font-size: 18px;
-    padding: 2rem;
-    top: 0;
+    height: 100%;
     left: 0;
+    padding: 2rem;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 9999999;
+    overflow-y: scroll;
   }
 
-  body::after {
-    font-size: 30px;
-    font-weight: bold;
+  .dev-error pre {
+    background: #eee;
+    overflow-x: scroll;
   }
 
   .dev-error h1 {
@@ -48,13 +54,13 @@ css:
     font-weight: bold;
   }
 
-  .dev-error details {
-    width: 100%;
-    border: 1px solid #333;
-    margin-bottom: 1rem;
-    padding: 1rem;
+  .dev-error h2 {
+    font-size: 22px;
+    font-weight: bold;
   }
 
-  .dev-error details summary {
-    font-weight: bold
+  .dev-error pre {
+    width: 100%;
+    margin-bottom: 1rem;
+    padding: 1rem;
   }

@@ -8,6 +8,7 @@ defmodule Still.SourceFile do
 
   @enforce_keys [:input_file]
 
+  @derive Jason.Encoder
   defstruct [:input_file, :output_file, content: nil, variables: %{}, extension: nil]
 
   @type t :: %__MODULE__{

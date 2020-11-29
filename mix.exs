@@ -22,7 +22,6 @@ defmodule Still.MixProject do
       extra_applications: [:logger],
       mod: {Still.Application, []},
       env: [
-        reload_msg: "reload",
         server: false
       ]
     ]
@@ -35,6 +34,7 @@ defmodule Still.MixProject do
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:file_system, "~> 0.2.8"},
       {:markdown, "~> 0.1.0", hex: :still_markdown},
+      {:jason, "~> 1.2"},
       {:mock, "~> 0.3.0", only: :test},
       {:plug, "~> 1.10"},
       {:plug_cowboy, "~> 2.3"},
