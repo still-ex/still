@@ -1,5 +1,5 @@
 defmodule Still.Preprocessor.SlimeTest do
-  use Still.Case
+  use Still.Case, async: false
 
   alias Still.Preprocessor.Slime
   alias Still.SourceFile
@@ -35,7 +35,8 @@ defmodule Still.Preprocessor.SlimeTest do
 
       Slime.render(%SourceFile{content: slime, input_file: input_file})
 
-      assert {:module, _} = Code.ensure_compiled(Still.Preprocessor.Slime.Posts.Index)
+      assert {:module, _} =
+               Code.ensure_compiled(Still.Preprocessor.Slime.Posts.Index) |> IO.inspect()
     end
   end
 end

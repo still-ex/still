@@ -6,16 +6,8 @@ defmodule Still.Compiler.CollectionsTest do
   alias Still.{
     Compiler.Collections,
     SourceFile,
-    Compiler.Incremental.Registry,
-    Compiler.CompilationStage
+    Compiler.Incremental.Registry
   }
-
-  setup do
-    {:ok, _pid} = Collections.start_link(%{})
-    {:ok, _pid} = CompilationStage.start_link(%{})
-
-    :ok
-  end
 
   describe "get/2" do
     test "retruns the files associated with a given collection" do

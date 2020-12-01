@@ -5,14 +5,6 @@ defmodule Still.Compiler.Incremental.NodeTest do
   alias Still.Compiler.Incremental.{Registry, Node}
   alias Still.Compiler.CompilationStage
 
-  setup do
-    {:ok, _pid} = Collections.start_link(%{})
-    {:ok, _pid} = Registry.start_link(%{})
-    {:ok, _pid} = CompilationStage.start_link(%{})
-
-    :ok
-  end
-
   describe "process" do
     test "compiles a file" do
       {:ok, pid} = Node.start_link(file: "index.slime")

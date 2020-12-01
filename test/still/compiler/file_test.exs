@@ -1,14 +1,7 @@
 defmodule Still.Compiler.FileTest do
   use Still.Case
 
-  alias Still.{Compiler, Compiler.Incremental, Compiler.Collections}
-
-  setup do
-    {:ok, _pid} = Collections.start_link(%{})
-    {:ok, _pid} = Incremental.Registry.start_link(%{})
-
-    :ok
-  end
+  alias Still.Compiler
 
   describe "compile" do
     test "compiles a slime template" do
@@ -26,7 +19,11 @@ defmodule Still.Compiler.FileTest do
 
       content = Compiler.File.render(file, %{})
 
-      assert %{content: "<header><p>This is a header</p></header>", input_file: ^file} = content
+      assert %{
+               content: "<header><p>This is a header</p></header>",
+               input_file: ^file,
+               variables: %{title: "Test title"}
+             } = content
     end
   end
 end

@@ -9,11 +9,19 @@ defmodule Still.SourceFile do
   @enforce_keys [:input_file]
 
   @derive Jason.Encoder
-  defstruct [:input_file, :output_file, content: nil, variables: %{}, extension: nil]
+  defstruct [
+    :input_file,
+    :output_file,
+    content: nil,
+    extension: nil,
+    variables: %{}
+  ]
 
   @type t :: %__MODULE__{
-          content: String.t(),
-          input_file: String.t(),
-          output_file: String.t()
+          content: binary() | nil,
+          extension: binary() | nil,
+          input_file: binary(),
+          output_file: binary() | nil,
+          variables: map()
         }
 end
