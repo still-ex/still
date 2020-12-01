@@ -39,16 +39,14 @@ defmodule Still.Compiler.File.Content do
 
   defp append_layout(file), do: file
 
-  if Mix.env() == :dev do
-    defp append_development_layout(%{extension: ".html", content: content} = file) do
+  defp append_development_layout(%{extension: ".html", content: content} = file) do
+    if Application.get_env(:still, :dev_layout, false) do
       %{content: content} = Still.Compiler.File.DevLayout.wrap(content)
 
       %{file | content: content}
+    else
+      file
     end
-  end
-
-  defp append_development_layout(file) do
-    file
   end
 
   defp render_template(file, []) do
