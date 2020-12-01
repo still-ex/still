@@ -18,11 +18,20 @@ defmodule Still.Compiler.ViewHelpers do
 
       @env unquote(variables)
 
-      def include(file, variables \\ %{}) do
-        with pid when not is_nil(pid) <- Incremental.Registry.get_or_create_file_process(file),
+      def include(file) do
+        include(file, %{})
+      end
+
+      def include(file, variables) when is_list(variables) do
+        include(file, variables |> Enum.into(%{}))
+      end
+
+      def include(file, variables) do
+        with pid when not is_nil(pid) <-
+               Incremental.Registry.get_or_create_file_process(file),
              %SourceFile{content: content} <-
                Incremental.Node.render(pid, variables, @env[:input_file]) do
-          Incremental.Node.add_subscription(pid, file)
+          Incremental.Node.add_subscription(self(), file)
           content
         else
           _ ->
