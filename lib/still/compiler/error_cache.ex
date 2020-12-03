@@ -1,4 +1,4 @@
-defmodule Still.Compiler.FileErrorsCache do
+defmodule Still.Compiler.ErrorCache do
   use GenServer
 
   def start_link(_) do

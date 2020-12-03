@@ -3,7 +3,7 @@ defmodule Still.Web.SocketHandler do
 
   require Logger
 
-  alias Still.Compiler.FileErrorsCache
+  alias Still.Compiler.ErrorCache
   alias Still.Web.BrowserSubscriptions
 
   def init(request, _state) do
@@ -21,7 +21,7 @@ defmodule Still.Web.SocketHandler do
       Logger.debug("Browser subscribing for changes")
       BrowserSubscriptions.add(self())
 
-      FileErrorsCache.get_errors()
+      ErrorCache.get_errors()
       |> Enum.map(fn {_k, v} -> v end)
       |> Enum.reject(&is_nil(&1))
       |> case do
