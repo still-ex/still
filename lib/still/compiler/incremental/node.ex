@@ -79,7 +79,6 @@ defmodule Still.Compiler.Incremental.Node do
   @impl true
   def handle_call({:render, data, parent_file}, _from, state) do
     subscribers = [parent_file | state.subscribers] |> Enum.uniq()
-    data = Map.put(data, :current_context, parent_file)
 
     {:reply, do_render(data, state), %{state | subscribers: subscribers}}
   catch

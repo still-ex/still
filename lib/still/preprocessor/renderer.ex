@@ -41,7 +41,6 @@ defmodule Still.Preprocessor.Renderer do
 
         module_variables =
           variables
-          |> ensure_current_context()
           |> ensure_preprocessor()
           |> Map.to_list()
 
@@ -95,10 +94,6 @@ defmodule Still.Preprocessor.Renderer do
             import unquote(module)
           end
         end)
-      end
-
-      defp ensure_current_context(variables) do
-        Map.put_new(variables, :current_context, variables[:input_file])
       end
 
       defp ensure_preprocessor(variables) do
