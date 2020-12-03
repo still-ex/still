@@ -1,11 +1,13 @@
 defmodule Still.MixProject do
   use Mix.Project
 
+  @version "0.1.0"
+
   def project do
     [
       app: :still,
       description: "A modern static site generator for the Elixir community",
-      version: "0.1.0",
+      version: @version,
       elixir: "~> 1.10",
       elixirc_paths: ["lib"] ++ elixirc_paths(Mix.env()),
       package: package(),

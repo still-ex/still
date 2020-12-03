@@ -1,4 +1,4 @@
-defmodule Mix.Still.Generator do
+defmodule Still.New.Generator do
   @root Path.expand("../../..", __DIR__)
 
   def run(project) do

@@ -19,7 +19,7 @@ defmodule Mix.Tasks.Still.New do
     module: :string
   ]
 
-  alias Mix.Still.{Generator, Project}
+  alias Still.New.{Generator, Project}
 
   @doc false
   def run(args) do

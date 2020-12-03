@@ -1,4 +1,4 @@
-defmodule Mix.Still.Project do
+defmodule Still.New.Project do
   defstruct [:name, :module, :path, :version]
 
   @still_version Mix.Project.config()[:version]
