@@ -1,5 +1,5 @@
 defmodule Still.Compiler.FileTest do
-  use Still.Case
+  use Still.Case, async: false
 
   alias Still.Compiler
 

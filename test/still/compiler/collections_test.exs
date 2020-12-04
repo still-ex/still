@@ -1,5 +1,5 @@
 defmodule Still.Compiler.CollectionsTest do
-  use ExUnit.Case
+  use Still.Case, async: false
 
   import Mock
 

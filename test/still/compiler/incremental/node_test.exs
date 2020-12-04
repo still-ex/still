@@ -1,5 +1,5 @@
 defmodule Still.Compiler.Incremental.NodeTest do
-  use Still.Case
+  use Still.Case, async: false
 
   alias Still.Compiler.Collections
   alias Still.Compiler.Incremental.{Registry, Node}
@@ -7,7 +7,7 @@ defmodule Still.Compiler.Incremental.NodeTest do
 
   describe "process" do
     test "compiles a file" do
-      {:ok, pid} = Node.start_link(file: "index.slime")
+      pid = Registry.get_or_create_file_process("index.slime")
 
       Node.compile(pid)
 
@@ -16,7 +16,9 @@ defmodule Still.Compiler.Incremental.NodeTest do
 
     test "notifies subscribers" do
       Process.register(self(), :"about.slime")
-      {:ok, pid} = Node.start_link(file: "_includes/header.slime")
+
+      pid = Registry.get_or_create_file_process("_includes/header.slime")
+
       Node.render(pid, %{}, "about.slime")
 
       Node.compile(pid)
@@ -27,7 +29,7 @@ defmodule Still.Compiler.Incremental.NodeTest do
 
   describe "render" do
     test "renders a file" do
-      {:ok, pid} = Node.start_link(file: "_includes/header.slime")
+      pid = Registry.get_or_create_file_process("_includes/header.slime")
 
       content = Node.render(pid, %{}, "about.slime")
 

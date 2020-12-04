@@ -1,5 +1,5 @@
 defmodule Still.Compiler.File.ContentTest do
-  use ExUnit.Case
+  use Still.Case, async: false
 
   alias Still.Compiler.File.Content
   alias Still.Compiler.PreprocessorError

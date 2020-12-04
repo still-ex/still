@@ -1,5 +1,5 @@
 defmodule Still.PreprocessorTest do
-  use ExUnit.Case
+  use Still.Case, async: false
 
   alias Still.{Preprocessor, SourceFile}
   alias Still.Preprocessor.{EEx, CSSMinify, OutputPath, URLFingerprinting}
