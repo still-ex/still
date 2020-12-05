@@ -66,7 +66,7 @@ defmodule Still.Watcher do
     Incremental.Registry.get_or_create_file_process(file)
     |> Incremental.Node.compile()
     |> case do
-      :ok ->
+      {:ok, _} ->
         :ok
 
       _ ->

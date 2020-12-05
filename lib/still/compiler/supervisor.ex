@@ -11,7 +11,9 @@ defmodule Still.Compiler.Supervisor do
   def init(_) do
     children = [
       Compiler.Collections,
-      Compiler.Incremental.Registry
+      Compiler.Context.Registry,
+      Compiler.Incremental.Registry,
+      Compiler.ErrorCache
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

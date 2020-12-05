@@ -26,9 +26,9 @@ defmodule Still.Compiler.Incremental.Node.Compile do
 
       true ->
         remove_all_subscriptions(state)
-        Compiler.File.compile(state.file)
+        response = Compiler.File.compile(state.file)
         notify_subscribers(state)
-        :ok
+        response
     end
   end
 

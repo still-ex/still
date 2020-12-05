@@ -27,6 +27,7 @@ defmodule Still.Compiler.Incremental.Node do
   alias Still.Web.BrowserSubscriptions
   alias Still.Compiler
   alias Still.Compiler.PreprocessorError
+  alias Still.Compiler.ErrorCache
   alias __MODULE__.Compile
 
   @default_compilation_timeout 5_000
@@ -64,13 +65,17 @@ defmodule Still.Compiler.Incremental.Node do
 
   @impl true
   def handle_call(:compile, _from, state) do
-    with result <- Compile.run(state) do
+    with {:ok, source_file} <- Compile.run(state) do
       BrowserSubscriptions.notify()
-      {:reply, result, state}
+      ErrorCache.set({:ok, source_file})
+      {:reply, source_file, state}
+    else
+      other ->
+        {:reply, other, state}
     end
   catch
     :error, %PreprocessorError{} = e ->
-      PreprocessorError.handle_compile(e)
+      ErrorCache.set({:error, e})
       BrowserSubscriptions.notify()
 
       {:reply, :ok, state}
@@ -79,11 +84,15 @@ defmodule Still.Compiler.Incremental.Node do
   @impl true
   def handle_call({:render, data, parent_file}, _from, state) do
     subscribers = [parent_file | state.subscribers] |> Enum.uniq()
+    data = Map.put(data, :current_context, parent_file)
+    source_file = do_render(data, state)
+    ErrorCache.set({:ok, source_file})
 
-    {:reply, do_render(data, state), %{state | subscribers: subscribers}}
+    {:reply, source_file, %{state | subscribers: subscribers}}
   catch
     :error, %PreprocessorError{} = e ->
-      {:reply, {:ok, PreprocessorError.handle_render(e), %{}}, state}
+      ErrorCache.set({:error, e})
+      {:reply, %Still.SourceFile{content: "", input_file: state.file}, state}
   end
 
   @impl true

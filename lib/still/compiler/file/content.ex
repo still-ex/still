@@ -49,6 +49,8 @@ defmodule Still.Compiler.File.Content do
     end
   end
 
+  defp append_development_layout(file), do: file
+
   defp render_template(file, []) do
     file
   end

@@ -33,7 +33,7 @@ defmodule Still.Web.BrowserSubscriptions do
 
   def handle_info(:notify_subscribers, state) do
     state.subscribers
-    |> Enum.each(&send(&1, Application.fetch_env!(:still, :reload_msg)))
+    |> Enum.each(&send(&1, Jason.encode!(%{type: "reload"})))
 
     {:noreply, state}
   end

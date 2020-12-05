@@ -32,7 +32,7 @@ defmodule Still.Compiler.Traverse do
     |> Incremental.Registry.get_or_create_file_process()
     |> Incremental.Node.compile()
     |> case do
-      :ok -> :ok
+      {:ok, _} -> :ok
       _ -> do_run(folder)
     end
   end
