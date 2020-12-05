@@ -16,7 +16,7 @@ defmodule Still.Compiler.Collections do
   end
 
   def add(file) do
-    GenServer.call(__MODULE__, {:add, file |> Map.from_struct()}, :infinity)
+    GenServer.call(__MODULE__, {:add, file |> Map.from_struct()})
   end
 
   def init(_) do
