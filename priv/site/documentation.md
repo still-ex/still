@@ -4,17 +4,21 @@ permalink: docs.html
 title: "Documentation"
 ---
 
-Still works by compiling files from an input directory into an output directory. By default, it looks for files with the extensions `.eex`, `.slime`, `.md` and `.css`, but continue reading to see how you set it up to your needs.
+If you're here just to see some code, you can explore the [source code for this website](https://github.com/subvisual/still/tree/master/priv/site). You can also run it in your machine: clone the repository, install the dependencies `mix deps.get` and run the development server `iex -S mix still.dev`.
 
-_This document is not complete, but [our website](./priv/site) uses most of the features available in Still. Please have a look there if you can't find what you're looking for._
+Still takes files from a source directory, runs them through some preprocessors, and places them in an output directory.
+
+🚧 _This documentation is incomplete, but we built [this website you're reading](https://github.com/subvisual/still/tree/master/priv/site) with Still to showcase some of its features. Have a look there if you can't find what you're looking for here._
 
 ## Installation
 
+To install Still you add it to your dependency list. You should be able to add it to any mix project.
+
 ### For new projects
 
-Run `mix archive.install hex still` to install Still in your system. You only need to do this once.
+Run `mix archive.install hex still` to install the archive on your system.
 
-Then you can create new static websites by running `mix still.new my_site`. That's it!
+Afterwards, create a site by running `mix still.new my_site`. That's it!
 
 ### Adding to an existing project
 
@@ -40,52 +44,61 @@ Create a file `index.slime` in the input folder.
 
 ## Development
 
-While you're developing the website, run `iex -S mix still.dev` to start Still in development mode.
-Your website will be available in [http://localhost:3000](http://localhost:3000/) and Still will be watching the the input folder for changes, refreshing the browser when necessary.
+While you're working on the website, run `iex -S mix still.dev` to start Still in development mode and your website will be available in [http://localhost:3000](http://localhost:3000/). Still will be watching the the input folder for changes, refreshing the browser when necessary.
 
-## Compilation
+In development mode we will also show you compile time errors in the browser.
 
-To compile the site run `mix still.compile`.
+## Production
+
+To compile your site, run `mix still.compile` and the compiled files will be in the output directory. If you're wondering about how to integrate this compilation step with your CI, checkout the []source code for the Github Action that deploys this site](https://github.com/subvisual/still/blob/master/.github/workflows/site.yml) you're reading.
 
 ## Preprocessors
 
-Any file with one of the extensions listed above will be compiled and placed in the same relative path (but with a different extension) in the output folder.
+Preprocessors are the cornerstone of Still. A preprocessor chain can take a markdown file, execute its embedded Elixir, extract metadata from its front matter, transform it into HTML and wrap it in a layout.
 
-Markdown and CSS files run through EEx first, which means you can use EEx syntax in those files. Here's an example of a markdown file that uses EEx interpolation:
+The default preprocessors are declared in the [_Preprocessor_ module](https://github.com/subvisual/still/blob/master/lib/still/preprocessor.ex#L16). Each file in your input directory with one of the declared extensions will be transformed and placed in the same relative directory in the output folder. For instance, the file `about.md` will become `about.html` in the output folder, and a file inside a folder `blog/post_1.md` will also be in the same folder on the output directory `blog/post_1.html`.
 
-```markdown
-# Some title
+Notice that many file types, such as markdown and CSS , run through EEx, which means you can use EEx syntax in those files. Here's an example of a CSS file that uses EEx interpolation:
 
-<%= link "Some link", to: "somewhere" %>
+```css
+html,
+body {
+  color: <%%= Colors.white() %>;
+}
 ```
 
-Files, or folders, that start with an underscore are ignored by the compilation step.
+**Files, or folders, that start with an underscore are ignored by the compilation step.** These files can be set to run through the pass-through copy, or used as layouts and partials for other files.
 
 ### Custom preprocessors
 
 If the default preprocessors are not enough, you can extend Still with your own. Take the following example:
 
 ```elixir
-defmodule SiteTest.Js do
+defmodule YourSite.JPEG do
   use Still.Preprocessor
 
   @impl true
-  def render(content, variables) do
-    %{content: content, variables: variables}
+  def extension(_), do: ".jpeg"
+
+  @impl true
+  def render(file) do
+    file
   end
 end
 ```
 
-This preprocessor is a module that calls `use Still.Preprocessor` and implements the `render/2` function. This function is used to transform the content and the variables of a file.
+This preprocessor is a module that calls `use Still.Preprocessor` and implements the `render/2` and `extension/1` functions. The _render_ function is used to transform the content and the variables of a file, and the _extension_ function is used to set the resulting content type. This _extension_ function is not mandatory.
 
 Preprocessors are always part of a transformation chain, and each file will run through the chain, using the output of the one preprocessor as the input of the next. At the moment, the default transformation chains look like this:
 
 ```elixir
 @default_preprocessors %{
-  ".slim" => [Preprocessor.Frontmatter, Preprocessor.Slime],
-  ".slime" => [Preprocessor.Frontmatter, Preprocessor.Slime],
-  ".eex" => [Preprocessor.Frontmatter, Preprocessor.EEx],
-  ".css" => [Preprocessor.EEx, Preprocessor.CSSMinify]
+  ".slim" => [Frontmatter, Slime, OutputPath],
+  ".slime" => [Frontmatter, Slime, OutputPath],
+  ".eex" => [Frontmatter, EEx, OutputPath],
+  ".css" => [EEx, CSSMinify, OutputPath, URLFingerprinting],
+  ".js" => [EEx, JS, OutputPath, URLFingerprinting],
+  ".md" => [Frontmatter, EEx, Markdown, OutputPath]
 }
 ```
 
@@ -96,7 +109,7 @@ For the example preprocessor defined above, we can add it to the list in the con
 ```elixir
 config :still,
   preprocessors: %{
-    ".js" => [SiteTest.Js]
+    ".jpeg" => [YourSite.JPEG]
   }
 ```
 
@@ -104,9 +117,9 @@ This preprocessor doesn't do anything to the contents of a file, so the file on 
 
 ## Pass through copy
 
-Some files you don't want to compile, only to copy from the input to the output. That's what pass through copy is for.
+Some files you don't need to transform, only to copy from the input to the output. That's what pass through copy is for.
 
-In your configuration files, if you specify add string on the `pass_through_copy` key, any file, or folder, whose relative path starts with that same string will be copied over to the output.
+In your configuration files, if you specify a string on the `pass_through_copy` key, any file, or folder, whose relative path starts with that same string will be copied over to the output.
 
 ```elixir
 config :still,
@@ -120,9 +133,9 @@ config :still,
   pass_through_copy: ["img"]
 ```
 
-Any file or folder that starts with the string `img` will be copied, which may include an `img` folder or a file named `img.png`. So you need to be mindfull of that.
+Any file or folder that starts with the string `img` will be copied, which may include an `img` folder or a file named `img.png`. So you need to be mindful of that.
 
-You can also use regular expression:
+You can also use regular expressions:
 
 ```elixir
 config still,
@@ -146,8 +159,7 @@ In the example above, the `css` folder from the input folder but will be renamed
 
 ## Layouts
 
-Layouts can be used to wrap other content. To wrap the contents of a file with
-a layout template, use the `layout` key in front matter. For instance:
+Layouts wrap other content. To use a layout, set the `layout` key in front matter. For instance:
 
 ```slime
 ---
@@ -159,7 +171,7 @@ h1 About Page
 
 This will look for `_layout.slime` in your input folder.
 
-The layout file must print the children variable, for instance:
+The layout file must print the children variable. For instance:
 
 ```slime
 doctype html
@@ -171,7 +183,7 @@ html
 Notice that `_layout.slime` starts with an underscore. This is because we don't
 want to compile the layout file to the output.
 
-In fact, any file starting with an underscore isn't compiled to the output, but is rendered and able to be imported.
+In fact, any file starting with an underscore isn't compiled to the output, but can be imported by other files.
 
 ## Collections
 
