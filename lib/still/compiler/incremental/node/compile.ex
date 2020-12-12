@@ -2,7 +2,7 @@ defmodule Still.Compiler.Incremental.Node.Compile do
   import Still.Utils
 
   alias Still.Compiler
-  alias Still.Compiler.{Incremental, PassThroughCopy, CompilationQueue}
+  alias Still.Compiler.{Incremental, PassThroughCopy, CompilationStage}
 
   def run(state) do
     with :ok <- try_pass_through_copy(state) do
@@ -41,7 +41,7 @@ defmodule Still.Compiler.Incremental.Node.Compile do
 
   defp notify_subscribers(state) do
     state.subscribers
-    |> CompilationQueue.compile()
+    |> CompilationStage.compile()
   end
 
   defp should_be_ignored?(file) do

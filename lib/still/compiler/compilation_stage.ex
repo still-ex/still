@@ -1,4 +1,4 @@
-defmodule Still.Compiler.CompilationQueue do
+defmodule Still.Compiler.CompilationStage do
   @moduledoc """
   There are many events that lead to a file being compiled:
 
@@ -7,7 +7,7 @@ defmodule Still.Compiler.CompilationQueue do
   * files that include files that have changed are compiled;
   * any many more.
 
-  Every compilation request goes through the `CompilationQueue`. Subscribers
+  Every compilation request goes through the `CompilationStage`. Subscribers
   to this process are notified when the queue is empty, which is usefull to
   refresh the browser or finish the compilation task in production.
   """

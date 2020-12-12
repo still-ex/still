@@ -1,7 +1,7 @@
 defmodule Still.Compiler.Traverse do
   import Still.Utils
 
-  alias Still.Compiler.{Incremental, CompilationQueue}
+  alias Still.Compiler.{Incremental, CompilationStage}
 
   def run() do
     Still.Compiler.Collections.reset()
@@ -40,6 +40,6 @@ defmodule Still.Compiler.Traverse do
   end
 
   defp process_file(file) do
-    file |> CompilationQueue.compile()
+    file |> CompilationStage.compile()
   end
 end

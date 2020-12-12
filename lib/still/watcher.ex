@@ -2,7 +2,7 @@ defmodule Still.Watcher do
   use GenServer
 
   alias Still.Compiler
-  alias Still.Compiler.{Incremental, CompilationQueue}
+  alias Still.Compiler.{Incremental, CompilationStage}
 
   import Still.Utils
 
@@ -57,6 +57,6 @@ defmodule Still.Watcher do
 
   defp process_file(file) do
     get_relative_input_path(file)
-    |> CompilationQueue.compile()
+    |> CompilationStage.compile()
   end
 end

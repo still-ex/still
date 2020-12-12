@@ -5,7 +5,7 @@ defmodule Mix.Tasks.Still.Compile do
   def run(_) do
     {:ok, _} = Application.ensure_all_started(:still)
 
-    Still.Compiler.CompilationQueue.subscribe()
+    Still.Compiler.CompilationStage.subscribe()
 
     Application.put_env(:still, :url_fingerprinting, true)
     Application.put_env(:still, :dev_layout, false)

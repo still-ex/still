@@ -3,12 +3,12 @@ defmodule Still.Compiler.Incremental.NodeTest do
 
   alias Still.Compiler.Collections
   alias Still.Compiler.Incremental.{Registry, Node}
-  alias Still.Compiler.CompilationQueue
+  alias Still.Compiler.CompilationStage
 
   setup do
     {:ok, _pid} = Collections.start_link(%{})
     {:ok, _pid} = Registry.start_link(%{})
-    {:ok, _pid} = CompilationQueue.start_link(%{})
+    {:ok, _pid} = CompilationStage.start_link(%{})
 
     :ok
   end

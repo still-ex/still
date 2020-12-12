@@ -1,7 +1,7 @@
 defmodule Still.Web.BrowserSubscriptions do
   use GenServer
 
-  alias Still.Compiler.CompilationQueue
+  alias Still.Compiler.CompilationStage
 
   def start_link(_) do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
@@ -28,7 +28,7 @@ defmodule Still.Web.BrowserSubscriptions do
   end
 
   def handle_info(:subscribe, state) do
-    CompilationQueue.subscribe()
+    CompilationStage.subscribe()
     {:noreply, state}
   end
 end

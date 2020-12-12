@@ -7,12 +7,12 @@ defmodule Still.Compiler.CollectionsTest do
     Compiler.Collections,
     SourceFile,
     Compiler.Incremental.Registry,
-    Compiler.CompilationQueue
+    Compiler.CompilationStage
   }
 
   setup do
     {:ok, _pid} = Collections.start_link(%{})
-    {:ok, _pid} = CompilationQueue.start_link(%{})
+    {:ok, _pid} = CompilationStage.start_link(%{})
 
     :ok
   end

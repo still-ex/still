@@ -1,7 +1,7 @@
 defmodule Still.Compiler.Collections do
   use GenServer
 
-  alias Still.Compiler.CompilationQueue
+  alias Still.Compiler.CompilationStage
 
   def start_link(_) do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
@@ -69,7 +69,7 @@ defmodule Still.Compiler.Collections do
     |> Map.get(:tag, [])
     |> Enum.map(fn tag ->
       Map.get(state.subscribers, tag, [])
-      |> CompilationQueue.compile()
+      |> CompilationStage.compile()
     end)
   end
 end
