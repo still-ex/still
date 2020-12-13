@@ -1,6 +1,8 @@
 defmodule Still.Web.BrowserSubscriptions do
   use GenServer
 
+  alias Still.Compiler.CompilationStage
+
   def start_link(_) do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
   end
@@ -9,11 +11,8 @@ defmodule Still.Web.BrowserSubscriptions do
     GenServer.cast(__MODULE__, {:add, pid})
   end
 
-  def notify do
-    GenServer.cast(__MODULE__, :notify)
-  end
-
   def init(_) do
+    Process.send_after(self(), :subscribe, 100)
     {:ok, %{subscribers: [], timer_ref: nil}}
   end
 
@@ -21,20 +20,15 @@ defmodule Still.Web.BrowserSubscriptions do
     {:noreply, %{state | subscribers: [pid | state.subscribers]}}
   end
 
-  def handle_cast(:notify, state) do
-    if not is_nil(state.timer_ref) do
-      Process.cancel_timer(state.timer_ref)
-    end
-
-    timer_ref = Process.send_after(self(), :notify_subscribers, 800)
-
-    {:noreply, %{state | timer_ref: timer_ref}}
-  end
-
-  def handle_info(:notify_subscribers, state) do
+  def handle_info(:bus_empty, state) do
     state.subscribers
     |> Enum.each(&send(&1, Jason.encode!(%{type: "reload"})))
 
+    {:noreply, state}
+  end
+
+  def handle_info(:subscribe, state) do
+    CompilationStage.subscribe()
     {:noreply, state}
   end
 end

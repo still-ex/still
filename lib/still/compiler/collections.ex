@@ -1,10 +1,14 @@
 defmodule Still.Compiler.Collections do
   use GenServer
 
-  alias Still.Compiler.Incremental
+  alias Still.Compiler.CompilationStage
 
   def start_link(_) do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
+  end
+
+  def reset do
+    GenServer.call(__MODULE__, :reset)
   end
 
   def get(collection, parent_file) do
@@ -12,19 +16,23 @@ defmodule Still.Compiler.Collections do
   end
 
   def add(file) do
-    GenServer.cast(__MODULE__, {:add, file |> Map.from_struct()})
+    GenServer.call(__MODULE__, {:add, file |> Map.from_struct()})
   end
 
   def init(_) do
     {:ok, %{files: [], subscribers: %{}}}
   end
 
-  def handle_cast({:add, file}, state) do
+  def handle_call({:add, file}, _, state) do
     notify_subscribers(file, state)
 
     files = insert_file(file, state.files)
 
-    {:noreply, %{state | files: files}}
+    {:reply, :ok, %{state | files: files}}
+  end
+
+  def handle_call(:reset, _from, _state) do
+    {:reply, :ok, %{files: [], subscribers: %{}}}
   end
 
   def handle_call({:get, collection, parent_file}, _from, state) do
@@ -60,11 +68,8 @@ defmodule Still.Compiler.Collections do
     |> Map.get(:variables)
     |> Map.get(:tag, [])
     |> Enum.map(fn tag ->
-      Task.start(fn ->
-        Map.get(state.subscribers, tag, [])
-        |> Enum.map(&Incremental.Registry.get_or_create_file_process/1)
-        |> Enum.map(&Incremental.Node.compile/1)
-      end)
+      Map.get(state.subscribers, tag, [])
+      |> CompilationStage.compile()
     end)
   end
 end

@@ -3,10 +3,16 @@ defmodule Still.Compiler.CollectionsTest do
 
   import Mock
 
-  alias Still.{Compiler.Collections, SourceFile, Compiler.Incremental.Registry}
+  alias Still.{
+    Compiler.Collections,
+    SourceFile,
+    Compiler.Incremental.Registry,
+    Compiler.CompilationStage
+  }
 
   setup do
     {:ok, _pid} = Collections.start_link(%{})
+    {:ok, _pid} = CompilationStage.start_link(%{})
 
     :ok
   end
@@ -30,7 +36,7 @@ defmodule Still.Compiler.CollectionsTest do
 
         Collections.add(file)
 
-        assert_receive {_, _, :compile}
+        assert_receive {_, _, :compile}, 200
       end
     end
   end
