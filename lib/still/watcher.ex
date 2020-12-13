@@ -27,26 +27,17 @@ defmodule Still.Watcher do
     {:noreply, state}
   end
 
-  def handle_info({:file_event, _watcher_pid, {file, [_, :removed]}}, state) do
-    Incremental.Registry.terminate_file_process(file)
+  def handle_info({:file_event, _watcher_pid, {file, events}}, state) do
+    cond do
+      Enum.member?(events, :modified) ->
+        process_file(file)
 
-    {:noreply, state}
-  end
+      Enum.member?(events, :created) ->
+        process_file(file)
 
-  def handle_info({:file_event, _watcher_pid, {file, [:created]}}, state) do
-    process_file(file)
-
-    {:noreply, state}
-  end
-
-  def handle_info({:file_event, _watcher_pid, {file, [_, :modified, _]}}, state) do
-    process_file(file)
-
-    {:noreply, state}
-  end
-
-  def handle_info({:file_event, _watcher_pid, {_file, _events}}, state) do
-    Compiler.Traverse.run()
+      Enum.member?(events, :removed) ->
+        Incremental.Registry.terminate_file_process(file)
+    end
 
     {:noreply, state}
   end
