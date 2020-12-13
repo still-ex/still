@@ -4,7 +4,8 @@ layout: _layout.slime
 = include("_includes/header.slime")
 
 h1.fancy-title
-  = title
+  = @title
 
-.main
-  = children
+= if assigns[:children] do
+  .main
+    = @children

@@ -1,4 +1,4 @@
-= children
+= @children
 
 javascript:
   window.socket = new WebSocket('ws://' + location.host + '/ws');

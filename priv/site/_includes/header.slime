@@ -3,7 +3,7 @@ header_title: true
 ---
 
 header.header
-  = if header_title do
+  = if @header_title do
     = link "Still", to: "/"
   - else
     div
