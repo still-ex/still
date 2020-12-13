@@ -1,21 +1,11 @@
 defmodule Still.Compiler.Incremental.NodeTest do
-  use Still.Case
+  use Still.Case, async: false
 
-  alias Still.Compiler.Collections
   alias Still.Compiler.Incremental.{Registry, Node}
-  alias Still.Compiler.CompilationStage
-
-  setup do
-    {:ok, _pid} = Collections.start_link(%{})
-    {:ok, _pid} = Registry.start_link(%{})
-    {:ok, _pid} = CompilationStage.start_link(%{})
-
-    :ok
-  end
 
   describe "process" do
     test "compiles a file" do
-      {:ok, pid} = Node.start_link(file: "index.slime")
+      pid = Registry.get_or_create_file_process("index.slime")
 
       Node.compile(pid)
 
@@ -23,19 +13,22 @@ defmodule Still.Compiler.Incremental.NodeTest do
     end
 
     test "notifies subscribers" do
-      Process.register(self(), :"about.slime")
-      {:ok, pid} = Node.start_link(file: "_includes/header.slime")
-      Node.render(pid, %{}, "about.slime")
+      file_pid = Registry.get_or_create_file_process("about.slime")
+      :erlang.trace(file_pid, true, [:receive])
 
-      Node.compile(pid)
+      other_pid = Registry.get_or_create_file_process("_includes/header.slime")
 
-      assert_receive {_, _, :compile}, 200
+      Node.render(other_pid, %{}, "about.slime")
+
+      Node.compile(other_pid)
+
+      assert_receive {:trace, ^file_pid, :receive, {:"$gen_call", _, :compile}}, 500
     end
   end
 
   describe "render" do
     test "renders a file" do
-      {:ok, pid} = Node.start_link(file: "_includes/header.slime")
+      pid = Registry.get_or_create_file_process("_includes/header.slime")
 
       content = Node.render(pid, %{}, "about.slime")
 

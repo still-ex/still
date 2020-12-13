@@ -1,20 +1,14 @@
 defmodule Still.Compiler.File.ContentTest do
-  use ExUnit.Case
+  use Still.Case, async: false
 
-  alias Still.Compiler.{Collections, File.Content, Incremental}
+  alias Still.Compiler.File.Content
+  alias Still.Compiler.PreprocessorError
   alias Still.SourceFile
 
   @preprocessors [
     Still.Preprocessor.Frontmatter,
     Still.Preprocessor.Slime
   ]
-
-  setup do
-    {:ok, _pid} = Collections.start_link(%{})
-    {:ok, _pid} = Incremental.Registry.start_link(%{})
-
-    :ok
-  end
 
   describe "compile" do
     test "compiles a file" do
@@ -57,6 +51,22 @@ defmodule Still.Compiler.File.ContentTest do
 
       assert String.starts_with?(content, "<!DOCTYPE html><html><head><title>Still</title>")
       assert String.ends_with?(content, "<body><p>Hello</p></body></html>")
+    end
+
+    test "raises a Compiler.PreprocessorError" do
+      file = "index.slime"
+
+      content = """
+      ---
+      layout: _layout.slime
+      ---
+      p = test("args")
+      """
+
+      assert_raise PreprocessorError, "undefined function test/1", fn ->
+        %SourceFile{input_file: file, content: content}
+        |> Content.compile(@preprocessors)
+      end
     end
   end
 end

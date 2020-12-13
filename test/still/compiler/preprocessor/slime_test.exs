@@ -1,5 +1,5 @@
 defmodule Still.Preprocessor.SlimeTest do
-  use Still.Case
+  use Still.Case, async: false
 
   alias Still.Preprocessor.Slime
   alias Still.SourceFile

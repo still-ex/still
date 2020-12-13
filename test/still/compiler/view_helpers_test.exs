@@ -1,17 +1,10 @@
 defmodule Still.Compiler.ViewHelpersTest do
-  use Still.Case
+  use Still.Case, async: false
 
-  alias Still.Compiler.{ViewHelpers, Incremental}
-  alias Still.Compiler.Incremental.Node
+  alias Still.Compiler.ViewHelpers
 
   defmodule View do
     use ViewHelpers
-  end
-
-  setup do
-    {:ok, _pid} = Incremental.Registry.start_link(%{})
-
-    :ok
   end
 
   describe "include/2" do

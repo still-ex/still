@@ -1,4 +1,10 @@
-{:ok, _} = Still.Compiler.ErrorCache.start_link(%{})
+alias Still.Compiler.{Incremental, Collections, ErrorCache, CompilationStage}
+
+{:ok, _pid} = ErrorCache.start_link(%{})
+{:ok, _pid} = Incremental.Registry.start_link(%{})
+{:ok, _pid} = Collections.start_link(%{})
+{:ok, _pid} = CompilationStage.start_link(%{})
+
 ExUnit.start()
 
 # Some templating engines need to redefine a module every time a particular

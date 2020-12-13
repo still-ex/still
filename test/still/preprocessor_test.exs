@@ -1,7 +1,8 @@
 defmodule Still.PreprocessorTest do
-  use ExUnit.Case
+  use Still.Case, async: false
 
   alias Still.{Preprocessor, SourceFile}
+  alias Still.Preprocessor.{EEx, CSSMinify, OutputPath, URLFingerprinting}
 
   defmodule TestPreprocessorWithExt do
     use Preprocessor
@@ -20,6 +21,14 @@ defmodule Still.PreprocessorTest do
 
     def render(file) do
       file
+    end
+  end
+
+  describe "for/1" do
+    test "returns the preprocessors for a source_file" do
+      assert {:ok, [EEx, CSSMinify, OutputPath, URLFingerprinting]} ==
+               %SourceFile{input_file: "app.css"}
+               |> Preprocessor.for()
     end
   end
 

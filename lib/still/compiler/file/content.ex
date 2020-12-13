@@ -5,13 +5,13 @@ defmodule Still.Compiler.File.Content do
   alias Still.SourceFile
   alias Still.Compiler.PreprocessorError
 
-  @spec render(SourceFile.t(), any()) :: SourceFile.t()
+  @spec render(SourceFile.t(), [module()]) :: SourceFile.t()
   def render(file, preprocessors) do
     render_template(file, preprocessors)
     |> append_layout()
   end
 
-  @spec compile(SourceFile.t(), any()) :: SourceFile.t()
+  @spec compile(SourceFile.t(), [module()]) :: SourceFile.t()
   def compile(file, preprocessors) do
     render(file, preprocessors)
     |> append_development_layout()

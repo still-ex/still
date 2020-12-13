@@ -22,9 +22,8 @@ defmodule Still.Preprocessor do
     ".md" => [Frontmatter, EEx, Markdown, OutputPath]
   }
 
-  def for(%SourceFile{input_file: file}), do: __MODULE__.for(file)
-
-  def for(file) do
+  @spec for(SourceFile.t() | binary()) :: {:ok, [module()]} | {:error, any()}
+  def for(%SourceFile{input_file: file}) do
     preprocessor = preprocessors()[Path.extname(file)]
 
     if preprocessor do
