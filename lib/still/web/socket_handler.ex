@@ -43,9 +43,29 @@ defmodule Still.Web.SocketHandler do
   defp format_error(e) do
     details =
       e.stacktrace
-      |> Enum.reduce("", fn {mod, fun, arity, args}, acc ->
-        acc <>
-          "<div><strong>#{mod}</strong> #{fun} #{arity} <em>#{inspect(args, pretty: true)}</em></div>"
+      |> Enum.reduce("", fn
+        {mod, fun, args, meta}, acc when is_list(args) ->
+          formatted_args =
+            args
+            |> Enum.map(&inspect/1)
+            |> Enum.join(", ")
+
+          acc <>
+            """
+              <div class="dev-stack-item">
+                <div><strong>#{mod}</strong>.#{fun}(#{formatted_args})</div>
+                <div><em>#{Keyword.get(meta, :file)}:#{Keyword.get(meta, :line)}</em></div>
+              </div>
+            """
+
+        {mod, fun, arity, meta}, acc when is_integer(arity) ->
+          acc <>
+            """
+              <div class="dev-stack-item">
+                <div><strong>#{mod}</strong>.#{fun}/#{arity}</div>
+                <div><em>#{Keyword.get(meta, :file)}:#{Keyword.get(meta, :line)}</em></div>
+              </div>
+            """
       end)
 
     """
@@ -59,12 +79,12 @@ defmodule Still.Web.SocketHandler do
       </pre>
       <h2>Context</h2>
       <pre>
-        <code>
-    #{inspect(e, pretty: true) |> String.trim()}
-        </code>
+        <code>#{inspect(e, pretty: true) |> String.trim()}</code>
       </pre>
       </details>
     </div>
     """
+    |> Floki.parse_fragment!()
+    |> Floki.raw_html()
   end
 end

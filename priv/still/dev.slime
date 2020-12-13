@@ -25,6 +25,10 @@ css:
       overflow: hidden;
   }
 
+  .dev-error .dev-stack-item:not(:last-child) {
+    margin-bottom: 1rem;
+  }
+
   .dev-error, .dev-error * {
     box-sizing: border-box;
   }
@@ -52,6 +56,7 @@ css:
   .dev-error h1 {
     font-size: 30px;
     font-weight: bold;
+    margin-bottom: 1rem;
   }
 
   .dev-error h2 {
