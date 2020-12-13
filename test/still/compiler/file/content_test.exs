@@ -4,22 +4,33 @@ defmodule Still.Compiler.File.ContentTest do
   alias Still.Compiler.File.Content
   alias Still.Compiler.PreprocessorError
   alias Still.SourceFile
+  alias Still.Preprocessor.{Frontmatter, Slime, AddLayout, AddContent}
 
   @preprocessors [
-    Still.Preprocessor.Frontmatter,
-    Still.Preprocessor.Slime
+    AddContent,
+    Frontmatter,
+    Slime,
+    AddLayout
   ]
 
   describe "compile" do
     test "compiles a file" do
+      Application.put_env(:still, :preprocessors, %{
+        ".slime" => @preprocessors
+      })
+
       file = "index.slime"
       content = "p Hello"
 
       assert %{content: "<p>Hello</p>", input_file: file} =
-               Content.compile(%SourceFile{input_file: file, content: content}, @preprocessors)
+               Content.compile(%SourceFile{input_file: file, content: content})
     end
 
     test "returns the metadata" do
+      Application.put_env(:still, :preprocessors, %{
+        ".slime" => @preprocessors
+      })
+
       file = "index.slime"
 
       content = """
@@ -33,10 +44,14 @@ defmodule Still.Compiler.File.ContentTest do
       """
 
       assert %{content: "<p>Hello</p>", variables: %{hello: "world", tags: ["post", "article"]}} =
-               Content.compile(%SourceFile{input_file: file, content: content}, @preprocessors)
+               Content.compile(%SourceFile{input_file: file, content: content})
     end
 
     test "supports layout" do
+      Application.put_env(:still, :preprocessors, %{
+        ".slime" => @preprocessors
+      })
+
       file = "index.slime"
 
       content = """
@@ -46,8 +61,7 @@ defmodule Still.Compiler.File.ContentTest do
       p Hello
       """
 
-      %{content: content} =
-        Content.compile(%SourceFile{input_file: file, content: content}, @preprocessors)
+      %{content: content} = Content.compile(%SourceFile{input_file: file, content: content})
 
       assert String.starts_with?(content, "<!DOCTYPE html><html><head><title>Still</title>")
       assert String.ends_with?(content, "<body><p>Hello</p></body></html>")

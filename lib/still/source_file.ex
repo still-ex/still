@@ -13,11 +13,13 @@ defmodule Still.SourceFile do
     :input_file,
     :output_file,
     content: nil,
+    variables: %{},
     extension: nil,
-    variables: %{}
+    run_type: :render
   ]
 
   @type t :: %__MODULE__{
+          run_type: :render | :compile,
           content: binary() | nil,
           extension: binary() | nil,
           input_file: binary(),
