@@ -28,7 +28,7 @@ defmodule Still.Compiler.ViewHelpers.Link do
 
     case URI.parse(to) do
       %URI{host: nil, scheme: nil, path: path} when not is_nil(path) ->
-        to = add_base_url(to)
+        to = to |> add_base_url() |> modernize()
         {to, opts}
 
       %URI{scheme: scheme} when scheme in ["http", "https"] ->
@@ -47,5 +47,9 @@ defmodule Still.Compiler.ViewHelpers.Link do
     opts
     |> Keyword.put_new(:target, "_blank")
     |> Keyword.put_new(:rel, "noopener noreferrer")
+  end
+
+  defp modernize(path) do
+    path |> String.replace_suffix("index.html", "")
   end
 end

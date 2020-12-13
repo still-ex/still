@@ -4,7 +4,7 @@ defmodule Still.Compiler.ViewHelpersTest do
   alias Still.Compiler.ViewHelpers
 
   defmodule View do
-    use ViewHelpers
+    use ViewHelpers, input_file: "some_file.slime"
   end
 
   describe "include/2" do
@@ -28,7 +28,7 @@ defmodule Still.Compiler.ViewHelpersTest do
 
       View.include(file)
 
-      assert_receive {_, {:add_subscription, file}}
+      assert_receive {_, {:add_subscription, file}}, 200
     end
   end
 end

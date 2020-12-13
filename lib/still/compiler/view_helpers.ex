@@ -18,24 +18,38 @@ defmodule Still.Compiler.ViewHelpers do
       @env unquote(variables)
 
       def include(file) do
-        include(file, %{})
-      end
-
-      def include(file, variables) when is_list(variables) do
-        include(file, variables |> Enum.into(%{}))
+        include(file, %{}, [])
       end
 
       def include(file, variables) do
-        with pid when not is_nil(pid) <-
-               Incremental.Registry.get_or_create_file_process(file),
-             %SourceFile{content: content} <-
-               Incremental.Node.render(pid, variables, @env[:input_file]) do
-          Incremental.Node.add_subscription(self(), file)
+        include(file, variables, [])
+      end
+
+      def include(file, variables, opts) when is_list(variables) do
+        include(file, variables |> Enum.into(%{}), opts)
+      end
+
+      def include(file, variables, opts) do
+        with pid when not is_nil(pid) <- Incremental.Registry.get_or_create_file_process(file),
+             subscriber <- include_subscriber(opts),
+             %SourceFile{content: content} <- Incremental.Node.render(pid, variables, subscriber) do
+          if subscriber do
+            Incremental.Node.add_subscription(self(), file)
+          end
+
           content
         else
           _ ->
             Logger.error("File process not found for #{file}")
             ""
+        end
+      end
+
+      defp include_subscriber(opts) do
+        if Keyword.get(opts, :subscribe, true) do
+          @env[:input_file]
+        else
+          nil
         end
       end
 
