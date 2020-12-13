@@ -11,7 +11,6 @@ defmodule Still.Compiler.Supervisor do
   def init(_) do
     children = [
       Compiler.Collections,
-      Compiler.Context.Registry,
       Compiler.Incremental.Registry,
       Compiler.ErrorCache
     ]
