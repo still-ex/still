@@ -19,16 +19,17 @@ defmodule Still.Compiler.CollectionsTest do
     end
 
     test "subscribes for changes to the given collection" do
-      pid = self()
+      file_pid = Registry.get_or_create_file_process("about.slime")
+      :erlang.trace(file_pid, true, [:receive])
 
-      with_mock Registry, get_or_create_file_process: fn _ -> pid end do
+      with_mock Registry, get_or_create_file_process: fn _ -> file_pid end do
         file = %SourceFile{input_file: "file", variables: %{tag: ["post"]}}
         Collections.add(file)
         Collections.get("post", "file")
 
         Collections.add(file)
 
-        assert_receive {_, _, :compile}, 200
+        assert_receive {:trace, ^file_pid, :receive, {:"$gen_call", _, :compile}}, 500
       end
     end
   end

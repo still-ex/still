@@ -13,15 +13,16 @@ defmodule Still.Compiler.Incremental.NodeTest do
     end
 
     test "notifies subscribers" do
-      Process.register(self(), :"about.slime")
+      file_pid = Registry.get_or_create_file_process("about.slime")
+      :erlang.trace(file_pid, true, [:receive])
 
-      pid = Registry.get_or_create_file_process("_includes/header.slime")
+      other_pid = Registry.get_or_create_file_process("_includes/header.slime")
 
-      Node.render(pid, %{}, "about.slime")
+      Node.render(other_pid, %{}, "about.slime")
 
-      Node.compile(pid)
+      Node.compile(other_pid)
 
-      assert_receive {_, _, :compile}, 200
+      assert_receive {:trace, ^file_pid, :receive, {:"$gen_call", _, :compile}}, 500
     end
   end
 
