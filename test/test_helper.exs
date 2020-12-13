@@ -1,8 +1,9 @@
-alias Still.Compiler.{Incremental, Collections, ErrorCache}
+alias Still.Compiler.{Incremental, Collections, ErrorCache, CompilationStage}
 
-{:ok, _pid} = Still.Compiler.ErrorCache.start_link(%{})
+{:ok, _pid} = ErrorCache.start_link(%{})
 {:ok, _pid} = Incremental.Registry.start_link(%{})
 {:ok, _pid} = Collections.start_link(%{})
+{:ok, _pid} = CompilationStage.start_link(%{})
 
 ExUnit.start()
 

@@ -83,7 +83,8 @@ defmodule Still.Compiler.Incremental.Node do
     {:reply, do_render(data, state), state}
   catch
     :error, %PreprocessorError{} = e ->
-      {:reply, {:ok, PreprocessorError.handle_render(e), %{}}, state}
+      ErrorCache.set({:error, e})
+      {:reply, %Still.SourceFile{content: "", input_file: state.file}, state}
   end
 
   @impl true

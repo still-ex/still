@@ -1,9 +1,7 @@
 defmodule Still.Compiler.Incremental.NodeTest do
   use Still.Case, async: false
 
-  alias Still.Compiler.Collections
   alias Still.Compiler.Incremental.{Registry, Node}
-  alias Still.Compiler.CompilationStage
 
   describe "process" do
     test "compiles a file" do
