@@ -33,11 +33,7 @@ defmodule Still.Preprocessor.Renderer do
       end
 
       defp create_view_renderer(name, content, variables) do
-        compiled =
-          compile(content, variables)
-          |> ignore_unused_variables(variables)
-
-        args = get_args(variables)
+        compiled = compile(content, variables)
 
         module_variables =
           variables
@@ -60,7 +56,13 @@ defmodule Still.Preprocessor.Renderer do
 
             use Still.Compiler.ViewHelpers, unquote(Macro.escape(module_variables))
 
-            def render(unquote_splicing(args)) do
+            Enum.map(unquote(Macro.escape(variables)), fn {k, v} ->
+              Module.put_attribute(__MODULE__, k, v)
+            end)
+
+            def render() do
+              var!(unquote(Macro.var(:assigns, __MODULE__))) = unquote(Macro.escape(variables))
+              _ = var!(unquote(Macro.var(:assigns, __MODULE__)))
               unquote(compiled)
             end
           end
@@ -68,23 +70,6 @@ defmodule Still.Preprocessor.Renderer do
         with {:module, mod, _, _} <- Module.create(name, ast, Macro.Env.location(__ENV__)) do
           mod
         end
-      end
-
-      defp get_args(variables) do
-        info = [file: __ENV__.file, line: __ENV__.line]
-
-        Enum.map(Map.new(variables) |> Map.keys(), fn arg ->
-          {arg, [line: info[:line]], nil}
-        end)
-      end
-
-      defp ignore_unused_variables(ast, variables) do
-        Enum.reduce(variables, ast, fn {k, _v}, memo ->
-          quote do
-            _ = var!(unquote(Macro.var(k, __MODULE__)))
-            unquote(memo)
-          end
-        end)
       end
 
       defp user_view_helpers_asts do

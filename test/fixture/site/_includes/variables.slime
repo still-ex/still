@@ -1,1 +1,1 @@
-nav This include has variables: #{variable}
+nav This include has variables: #{@variable}

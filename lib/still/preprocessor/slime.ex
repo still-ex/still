@@ -27,6 +27,6 @@ defmodule Still.Preprocessor.Slime do
       |> Map.put(:input_file, Map.get(file, :input_file))
 
     Renderer.create(%{file | variables: variables})
-    |> apply(:render, variables |> Map.values())
+    |> apply(:render, [])
   end
 end

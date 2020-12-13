@@ -15,7 +15,7 @@ defmodule Still.Preprocessor.SlimeTest do
     end
 
     test "passes variables to the template" do
-      slime = "p = title"
+      slime = "p = @title"
       input_file = "index.slime"
       title = "This is a test"
 
