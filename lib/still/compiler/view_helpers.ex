@@ -17,13 +17,7 @@ defmodule Still.Compiler.ViewHelpers do
 
       @env unquote(variables)
 
-      def include(file) do
-        include(file, %{}, [])
-      end
-
-      def include(file, variables) do
-        include(file, variables, [])
-      end
+      def include(file, variables \\ %{}, opts \\ [])
 
       def include(file, variables, opts) when is_list(variables) do
         include(file, variables |> Enum.into(%{}), opts)
