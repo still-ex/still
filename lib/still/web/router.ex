@@ -17,15 +17,20 @@ defmodule Still.Web.Router do
   end
 
   get "*path" do
-    file = "#{Path.join(get_output_path(), Path.join(path))}.html"
+    with :error <- send_file(conn, "#{get_output_path(path)}/index.html"),
+         :error <- send_file(conn, "#{get_output_path(path)}.html") do
+      conn
+      |> send_resp(404, "File not found")
+    end
+  end
 
+  defp send_file(conn, file) do
     if File.exists?(file) do
       conn
       |> put_resp_header("Content-Type", "text/html; charset=UTF-8")
       |> send_file(200, file)
     else
-      conn
-      |> send_resp(404, "File not found")
+      :error
     end
   end
 end

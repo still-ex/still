@@ -39,8 +39,8 @@ defmodule Still.Compiler.Incremental.Node do
     GenServer.call(pid, :compile, compilation_timeout())
   end
 
-  def render(pid, data, parent_file) do
-    GenServer.call(pid, {:render, data, parent_file}, compilation_timeout())
+  def render(pid, data, subscriber \\ nil) do
+    GenServer.call(pid, {:render, data, subscriber}, compilation_timeout())
   end
 
   def add_subscription(pid, file) do
@@ -88,9 +88,8 @@ defmodule Still.Compiler.Incremental.Node do
   end
 
   @impl true
-  def handle_call({:render, data, parent_file}, _from, state) do
-    subscribers = [parent_file | state.subscribers] |> Enum.uniq()
-    data = Map.put(data, :current_context, parent_file)
+  def handle_call({:render, data, subscriber}, _from, state) do
+    subscribers = [subscriber | state.subscribers] |> Enum.uniq() |> Enum.reject(&is_nil/1)
     source_file = do_render(data, state)
     ErrorCache.set({:ok, source_file})
 

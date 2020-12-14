@@ -14,7 +14,7 @@ defmodule Still.Compiler.ViewHelpers.LinkToCSS do
       |> Enum.join(" ")
 
     with pid when not is_nil(pid) <- Incremental.Registry.get_or_create_file_process(file),
-         %{output_file: output_file} <- Incremental.Node.render(pid, %{}, env[:input_file]) do
+         %{output_file: output_file} <- Incremental.Node.render(pid, %{}) do
       """
       <link rel="stylesheet" #{link_opts} href=#{UrlFor.render(output_file)} />
       """
