@@ -25,7 +25,7 @@ defmodule Still.Compiler.CollectionsTest do
       with_mock Registry, get_or_create_file_process: fn _ -> file_pid end do
         file = %SourceFile{input_file: "file", variables: %{tag: ["post"]}}
         Collections.add(file)
-        Collections.get("post", "file")
+        Collections.get("post", "about.slime")
 
         Collections.add(file)
 

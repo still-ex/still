@@ -13,12 +13,14 @@ defmodule Still.Compiler.File.ContentTest do
     AddLayout
   ]
 
+  setup do
+    Application.put_env(:still, :preprocessors, %{
+      ".slime" => @preprocessors
+    })
+  end
+
   describe "compile" do
     test "compiles a file" do
-      Application.put_env(:still, :preprocessors, %{
-        ".slime" => @preprocessors
-      })
-
       file = "index.slime"
       content = "p Hello"
 
@@ -27,10 +29,6 @@ defmodule Still.Compiler.File.ContentTest do
     end
 
     test "returns the metadata" do
-      Application.put_env(:still, :preprocessors, %{
-        ".slime" => @preprocessors
-      })
-
       file = "index.slime"
 
       content = """
@@ -48,10 +46,6 @@ defmodule Still.Compiler.File.ContentTest do
     end
 
     test "supports layout" do
-      Application.put_env(:still, :preprocessors, %{
-        ".slime" => @preprocessors
-      })
-
       file = "index.slime"
 
       content = """
@@ -79,7 +73,7 @@ defmodule Still.Compiler.File.ContentTest do
 
       assert_raise PreprocessorError, "undefined function test/1", fn ->
         %SourceFile{input_file: file, content: content}
-        |> Content.compile(@preprocessors)
+        |> Content.compile()
       end
     end
   end

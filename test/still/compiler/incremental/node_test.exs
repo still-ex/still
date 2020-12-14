@@ -2,14 +2,33 @@ defmodule Still.Compiler.Incremental.NodeTest do
   use Still.Case, async: false
 
   alias Still.Compiler.Incremental.{Registry, Node}
+  alias Still.Compiler.CompilationStage
+
+  alias Still.Preprocessor.{Frontmatter, Slime, AddLayout, AddContent, Save, OutputPath}
+
+  @preprocessors [
+    AddContent,
+    Frontmatter,
+    Slime,
+    AddLayout,
+    OutputPath,
+    Save
+  ]
+
+  setup do
+    Application.put_env(:still, :preprocessors, %{
+      ".slime" => @preprocessors
+    })
+  end
 
   describe "process" do
     test "compiles a file" do
-      pid = Registry.get_or_create_file_process("index.slime")
+      CompilationStage.subscribe()
+      pid = Registry.get_or_create_file_process("about.slime")
 
       Node.compile(pid)
 
-      assert File.exists?(get_output_path("index.html"))
+      assert File.exists?(get_output_path("about.html"))
     end
 
     test "notifies subscribers" do
