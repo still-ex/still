@@ -1,5 +1,8 @@
 defmodule Still.Preprocessor do
   alias Still.SourceFile
+  alias Still.Compiler.PreprocessorError
+
+  require Logger
 
   alias __MODULE__.{
     CSSMinify,
@@ -10,20 +13,64 @@ defmodule Still.Preprocessor do
     OutputPath,
     OutputPath,
     Slime,
-    URLFingerprinting
+    URLFingerprinting,
+    Save,
+    AddLayout,
+    AddContent
   }
 
   @default_preprocessors %{
-    ".slim" => [Frontmatter, Slime, OutputPath],
-    ".slime" => [Frontmatter, Slime, OutputPath],
-    ".eex" => [Frontmatter, EEx, OutputPath],
-    ".css" => [EEx, CSSMinify, OutputPath, URLFingerprinting],
-    ".js" => [EEx, JS, OutputPath, URLFingerprinting],
-    ".md" => [Frontmatter, EEx, Markdown, OutputPath]
+    ".slim" => [AddContent, Frontmatter, Slime, OutputPath, AddLayout, Save],
+    ".slime" => [AddContent, Frontmatter, Slime, OutputPath, AddLayout, Save],
+    ".eex" => [AddContent, Frontmatter, EEx, OutputPath, AddLayout, Save],
+    ".css" => [AddContent, EEx, CSSMinify, OutputPath, URLFingerprinting, AddLayout, Save],
+    ".js" => [AddContent, EEx, JS, OutputPath, URLFingerprinting, AddLayout, Save],
+    ".md" => [AddContent, Frontmatter, EEx, Markdown, OutputPath, AddLayout, Save]
   }
 
-  @spec for(SourceFile.t() | binary()) :: {:ok, [module()]} | {:error, any()}
-  def for(%SourceFile{input_file: file}) do
+  @spec for(SourceFile.t()) :: SourceFile.t()
+  def run(file) do
+    {:ok, preprocessors} = __MODULE__.for(file)
+
+    run(file, preprocessors)
+  end
+
+  def run(file, []) do
+    file
+  end
+
+  def run(file, [preprocessor | remaining_preprocessors]) do
+    preprocessor.run(file)
+    |> run(remaining_preprocessors)
+  catch
+    :error, %{description: description} ->
+      raise PreprocessorError,
+        message: description,
+        preprocessor: preprocessor,
+        remaining_preprocessors: remaining_preprocessors,
+        source_file: file,
+        stacktrace: __STACKTRACE__
+
+    :error, e ->
+      Logger.error(inspect(e))
+
+      case e do
+        %PreprocessorError{} ->
+          raise e
+
+        e ->
+          raise PreprocessorError,
+            message: inspect(e),
+            preprocessor: preprocessor,
+            remaining_preprocessors: remaining_preprocessors,
+            source_file: file,
+            stacktrace: __STACKTRACE__
+      end
+  end
+
+  def for(%SourceFile{input_file: file}), do: __MODULE__.for(file)
+
+  def for(file) do
     preprocessor = preprocessors()[Path.extname(file)]
 
     if preprocessor do

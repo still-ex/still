@@ -2,6 +2,21 @@ defmodule Still.Compiler.FileTest do
   use Still.Case, async: false
 
   alias Still.Compiler
+  alias Still.Preprocessor.{Frontmatter, Slime, OutputPath, Save, AddContent}
+
+  setup do
+    Application.put_env(:still, :preprocessors, %{
+      ".slime" => [
+        AddContent,
+        Frontmatter,
+        Slime,
+        OutputPath,
+        Save
+      ]
+    })
+
+    :ok
+  end
 
   describe "compile" do
     test "compiles a slime template" do
