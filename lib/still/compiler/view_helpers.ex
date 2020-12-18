@@ -41,8 +41,23 @@ defmodule Still.Compiler.ViewHelpers do
 
       def responsive_image(file, metadata \\ %{}) do
         with pid when not is_nil(pid) <- Incremental.Registry.get_or_create_file_process(file),
-             %{output_file: output_file} <- Incremental.Node.render(pid, metadata) do
-          "<img src=#{output_file |> url_for()} />"
+             %{output_file: output_file, metadata: %{image_sizes: sizes}} <-
+               Incremental.Node.render(pid, metadata) do
+          {_, biggest} = sizes |> List.last()
+
+          srcset =
+            sizes
+            |> Enum.map(fn {size, file} ->
+              "#{file |> url_for()} #{size}w"
+            end)
+            |> Enum.join(", ")
+
+          """
+            <img
+              src=#{biggest |> url_for()}
+              srcset="#{srcset}"
+            />
+          """
         else
           _ ->
             Logger.error("File process not found for #{file}")
