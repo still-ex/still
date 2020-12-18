@@ -4,7 +4,7 @@ defmodule Still.Preprocessor.EEx.Renderer do
     preprocessor: Still.Preprocessor.EEx
 
   @impl true
-  def compile(content, _variables) do
+  def compile(content, _metadata) do
     info = [file: __ENV__.file, line: __ENV__.line]
 
     EEx.compile_string(content, info)

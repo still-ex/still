@@ -14,12 +14,12 @@ defmodule Still.Preprocessor.Slime do
     %{file | content: do_render(file)}
   end
 
-  defp do_render(%{variables: variables} = file) do
-    variables =
-      variables
+  defp do_render(%{metadata: metadata} = file) do
+    metadata =
+      metadata
       |> Map.put(:input_file, Map.get(file, :input_file))
 
-    Renderer.create(%{file | variables: variables})
+    Renderer.create(%{file | metadata: metadata})
     |> apply(:render, [])
   end
 end

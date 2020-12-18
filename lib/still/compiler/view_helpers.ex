@@ -1,5 +1,5 @@
 defmodule Still.Compiler.ViewHelpers do
-  defmacro __using__(variables) do
+  defmacro __using__(metadata) do
     quote do
       alias Still.SourceFile
 
@@ -15,18 +15,18 @@ defmodule Still.Compiler.ViewHelpers do
 
       require Logger
 
-      @env unquote(variables)
+      @env unquote(metadata)
 
-      def include(file, variables \\ %{}, opts \\ [])
+      def include(file, metadata \\ %{}, opts \\ [])
 
-      def include(file, variables, opts) when is_list(variables) do
-        include(file, variables |> Enum.into(%{}), opts)
+      def include(file, metadata, opts) when is_list(metadata) do
+        include(file, metadata |> Enum.into(%{}), opts)
       end
 
-      def include(file, variables, opts) do
+      def include(file, metadata, opts) do
         with pid when not is_nil(pid) <- Incremental.Registry.get_or_create_file_process(file),
              subscriber <- include_subscriber(opts),
-             %SourceFile{content: content} <- Incremental.Node.render(pid, variables, subscriber) do
+             %SourceFile{content: content} <- Incremental.Node.render(pid, metadata, subscriber) do
           if subscriber do
             Incremental.Node.add_subscription(self(), file)
           end
@@ -39,12 +39,19 @@ defmodule Still.Compiler.ViewHelpers do
         end
       end
 
-      defp include_subscriber(opts) do
-        if Keyword.get(opts, :subscribe, true) do
-          @env[:input_file]
+      def responsive_image(file, metadata \\ %{}) do
+        with pid when not is_nil(pid) <- Incremental.Registry.get_or_create_file_process(file),
+             %{output_file: output_file} <- Incremental.Node.render(pid, metadata) do
+          "<img src=#{output_file |> url_for()} />"
         else
-          nil
+          _ ->
+            Logger.error("File process not found for #{file}")
+            ""
         end
+      end
+
+      def expand_file(file) do
+        Path.join(Path.dirname(@env[:input_file]), file)
       end
 
       def url_for(relative_path) do
@@ -60,11 +67,19 @@ defmodule Still.Compiler.ViewHelpers do
       end
 
       def link_to_css(path, opts \\ []) do
-        LinkToCSS.render(path, opts, @env)
+        LinkToCSS.render(path, opts)
       end
 
       def link_to_js(path, opts \\ []) do
-        LinkToJS.render(path, opts, @env)
+        LinkToJS.render(path, opts)
+      end
+
+      defp include_subscriber(opts) do
+        if Keyword.get(opts, :subscribe, true) do
+          @env[:input_file]
+        else
+          nil
+        end
       end
     end
   end

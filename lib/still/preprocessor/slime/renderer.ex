@@ -4,7 +4,7 @@ defmodule Still.Preprocessor.Slime.Renderer do
     preprocessor: Still.Preprocessor.Slime
 
   @impl true
-  def compile(content, _variables) do
+  def compile(content, _metadata) do
     info = [file: __ENV__.file, line: __ENV__.line]
 
     Slime.Renderer.precompile(content)

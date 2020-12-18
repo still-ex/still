@@ -11,19 +11,19 @@ defmodule Still.Preprocessor.AddLayout do
         %{
           content: children,
           input_file: input_file,
-          variables: %{layout: layout_file} = variables
+          metadata: %{layout: layout_file} = metadata
         } = file
       )
       when not is_nil(layout_file) do
-    layout_variables =
-      variables
+    layout_metadata =
+      metadata
       |> Map.drop([:tag, :layout, :permalink, :input_file])
       |> Map.put(:children, children)
 
     %{content: content} =
       layout_file
       |> Incremental.Registry.get_or_create_file_process()
-      |> Incremental.Node.render(layout_variables, input_file)
+      |> Incremental.Node.render(layout_metadata, input_file)
 
     %{file | content: content}
   end

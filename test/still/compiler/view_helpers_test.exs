@@ -14,12 +14,12 @@ defmodule Still.Compiler.ViewHelpersTest do
       assert "<header><p>This is a header</p></header>" == View.include(file)
     end
 
-    test "variables can be a map or a keyword list" do
-      file = "_includes/variables.slime"
+    test "metadata can be a map or a keyword list" do
+      file = "_includes/metadata.slime"
 
-      assert "<nav>This include has variables: Test</nav>" == View.include(file, variable: "Test")
+      assert "<nav>This include has metadata: Test</nav>" == View.include(file, variable: "Test")
 
-      assert "<nav>This include has variables: Test</nav>" ==
+      assert "<nav>This include has metadata: Test</nav>" ==
                View.include(file, %{variable: "Test"})
     end
 

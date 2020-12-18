@@ -41,7 +41,7 @@ defmodule Still.Compiler.File.ContentTest do
       p Hello
       """
 
-      assert %{content: "<p>Hello</p>", variables: %{hello: "world", tags: ["post", "article"]}} =
+      assert %{content: "<p>Hello</p>", metadata: %{hello: "world", tags: ["post", "article"]}} =
                Content.compile(%SourceFile{input_file: file, content: content})
     end
 

@@ -7,15 +7,15 @@ defmodule Still.Preprocessor.Frontmatter do
   use Preprocessor
 
   @impl true
-  def render(%{content: content, variables: variables} = file) do
+  def render(%{content: content, metadata: metadata} = file) do
     [frontmatter, content] = parse_frontmatter(content)
 
     settings =
       frontmatter
       |> parse_yaml()
-      |> Map.merge(variables)
+      |> Map.merge(metadata)
 
-    %{file | content: content, variables: settings}
+    %{file | content: content, metadata: settings}
   end
 
   defp parse_frontmatter(content) do
@@ -29,8 +29,8 @@ defmodule Still.Preprocessor.Frontmatter do
 
   defp parse_yaml(yaml) do
     case YamlElixir.read_from_string(yaml, atoms: true) do
-      {:ok, variables} ->
-        Utils.Map.deep_atomify_keys(variables)
+      {:ok, metadata} ->
+        Utils.Map.deep_atomify_keys(metadata)
 
       _ ->
         Logger.error("Failed parsing frontmatter\n#{yaml}")

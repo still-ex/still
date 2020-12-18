@@ -45,7 +45,7 @@ defmodule Still.Compiler.Collections do
 
   defp find_files(collection, files) do
     files
-    |> Enum.filter(&Enum.member?(Map.get(&1[:variables], :tag, []), collection))
+    |> Enum.filter(&Enum.member?(Map.get(&1[:metadata], :tag, []), collection))
   end
 
   defp insert_subscriber(collection, new_subscriber, subscribers) do
@@ -65,7 +65,7 @@ defmodule Still.Compiler.Collections do
 
   defp notify_subscribers(file, state) do
     file
-    |> Map.get(:variables)
+    |> Map.get(:metadata)
     |> Map.get(:tag, [])
     |> Enum.map(fn tag ->
       Map.get(state.subscribers, tag, [])

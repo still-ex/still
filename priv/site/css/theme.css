@@ -79,6 +79,10 @@ a {
   padding: 2rem 1rem 0;
 }
 
+.main img {
+  max-width: 100%;
+}
+
 .footer {
   max-width: calc(600px + 1rem);
   padding: 0 1rem;

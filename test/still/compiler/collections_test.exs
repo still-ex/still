@@ -11,7 +11,7 @@ defmodule Still.Compiler.CollectionsTest do
 
   describe "get/2" do
     test "retruns the files associated with a given collection" do
-      file = %SourceFile{input_file: "file", variables: %{tag: ["post"]}}
+      file = %SourceFile{input_file: "file", metadata: %{tag: ["post"]}}
 
       Collections.add(file)
 
@@ -23,7 +23,7 @@ defmodule Still.Compiler.CollectionsTest do
       :erlang.trace(file_pid, true, [:receive])
 
       with_mock Registry, get_or_create_file_process: fn _ -> file_pid end do
-        file = %SourceFile{input_file: "file", variables: %{tag: ["post"]}}
+        file = %SourceFile{input_file: "file", metadata: %{tag: ["post"]}}
         Collections.add(file)
         Collections.get("post", "about.slime")
 

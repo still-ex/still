@@ -17,8 +17,10 @@ defmodule Still.Web.Router do
   end
 
   get "*path" do
-    with :error <- send_file(conn, "#{get_output_path(path)}/index.html"),
-         :error <- send_file(conn, "#{get_output_path(path)}.html") do
+    full_path = path |> Enum.join("/") |> get_output_path()
+
+    with :error <- send_file(conn, "#{full_path}/index.html"),
+         :error <- send_file(conn, "#{full_path}.html") do
       conn
       |> send_resp(404, "File not found")
     end

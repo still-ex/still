@@ -42,12 +42,12 @@ defmodule Still.New.Generator do
   end
 
   defp process_eex(project, content) do
-    variables = project_to_eex_variables(project)
+    metadata = project_to_eex_metadata(project)
 
-    EEx.eval_string(content, variables)
+    EEx.eval_string(content, metadata)
   end
 
-  defp project_to_eex_variables(project) do
+  defp project_to_eex_metadata(project) do
     [
       app_module: project.module,
       app_name: project.name,

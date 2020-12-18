@@ -87,7 +87,7 @@ defmodule YourSite.JPEG do
 end
 ```
 
-This preprocessor is a module that calls `use Still.Preprocessor` and implements the `render/2` and `extension/1` functions. The _render_ function is used to transform the content and the variables of a file, and the _extension_ function is used to set the resulting content type. This _extension_ function is not mandatory.
+This preprocessor is a module that calls `use Still.Preprocessor` and implements the `render/2` and `extension/1` functions. The _render_ function is used to transform the content and the metadata of a file, and the _extension_ function is used to set the resulting content type. This _extension_ function is not mandatory.
 
 Preprocessors are always part of a transformation chain, and each file will run through the chain, using the output of the one preprocessor as the input of the next. At the moment, the default transformation chains look like this:
 

@@ -4,11 +4,12 @@ defmodule Still.Preprocessor.OutputPath do
   use Preprocessor
 
   @impl true
-  def render(%{variables: %{permalink: permalink}} = file) do
+  def render(%{metadata: %{permalink: permalink}} = file) do
     %{file | output_file: permalink}
   end
 
-  def render(%{input_file: input_file, extension: extension} = file) do
+  def render(%{input_file: input_file, extension: extension} = file)
+      when not is_nil(extension) do
     output_file =
       input_file
       |> String.replace(Path.extname(input_file), extension)

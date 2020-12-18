@@ -12,8 +12,8 @@ layout: _layout.slime
   p For more information please read the <%= link "documentaton", to: "/docs" %>.
   h2 Blog
   ul
-    = Enum.map get_collections2("post"), fn post ->
+    = Enum.map get_collections("post"), fn post ->
       li
-        = link post[:variables][:title], to: post[:output_file]
+        = link post[:metadata][:title], to: post[:output_file]
 
 = link_to_js "console.js"

@@ -16,23 +16,25 @@ defmodule Still.Preprocessor do
     URLFingerprinting,
     Save,
     AddLayout,
-    AddContent
+    AddContent,
+    ResponsiveImage
   }
 
   @default_preprocessors %{
-    ".slim" => [AddContent, Frontmatter, Slime, OutputPath, AddLayout, Save],
-    ".slime" => [AddContent, Frontmatter, Slime, OutputPath, AddLayout, Save],
-    ".eex" => [AddContent, Frontmatter, EEx, OutputPath, AddLayout, Save],
+    ".slim" => [AddContent, EEx, Frontmatter, Slime, OutputPath, AddLayout, Save],
+    ".slime" => [AddContent, EEx, Frontmatter, Slime, OutputPath, AddLayout, Save],
+    ".eex" => [AddContent, EEx, Frontmatter, EEx, OutputPath, AddLayout, Save],
     ".css" => [AddContent, EEx, CSSMinify, OutputPath, URLFingerprinting, AddLayout, Save],
     ".js" => [AddContent, EEx, JS, OutputPath, URLFingerprinting, AddLayout, Save],
-    ".md" => [AddContent, Frontmatter, EEx, Markdown, OutputPath, AddLayout, Save]
+    ".md" => [AddContent, EEx, Frontmatter, Markdown, OutputPath, AddLayout, Save],
+    ".jpg" => [OutputPath, ResponsiveImage],
+    ".png" => [OutputPath, ResponsiveImage]
   }
 
   @spec for(SourceFile.t()) :: SourceFile.t()
   def run(file) do
-    {:ok, preprocessors} = __MODULE__.for(file)
-
-    run(file, preprocessors)
+    file
+    |> run(__MODULE__.for(file))
   end
 
   def run(file, []) do
@@ -68,15 +70,16 @@ defmodule Still.Preprocessor do
       end
   end
 
-  def for(%SourceFile{input_file: file}), do: __MODULE__.for(file)
+  def for(%{input_file: file} = source_file) do
+    preprocessors()[Path.extname(file)]
+    |> case do
+      nil ->
+        raise PreprocessorError,
+          message: "Preprocessors not found for #{file}",
+          source_file: source_file
 
-  def for(file) do
-    preprocessor = preprocessors()[Path.extname(file)]
-
-    if preprocessor do
-      {:ok, preprocessor}
-    else
-      {:error, :preprocessor_not_found}
+      preprocessors ->
+        preprocessors
     end
   end
 
