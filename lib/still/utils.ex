@@ -50,6 +50,11 @@ defmodule Still.Utils do
     |> File.mkdir_p!()
   end
 
+  def mk_output_dir(path) do
+    get_output_path(path)
+    |> File.mkdir_p!()
+  end
+
   def config!(key), do: Application.fetch_env!(:still, key)
   def config(key, default), do: Application.get_env(:still, key, default)
 end

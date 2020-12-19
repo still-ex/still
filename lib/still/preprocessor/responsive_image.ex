@@ -13,7 +13,7 @@ defmodule Still.Preprocessor.ResponsiveImage do
         }
 
   @impl true
-  def render(%{metadata: %{responsive_image_opts: opts}} = source_file) do
+  def render(%{metadata: %{responsive_image_opts: opts} = metadata} = source_file) do
     input_file_path =
       source_file.input_file
       |> Still.Utils.get_input_path()
@@ -32,19 +32,17 @@ defmodule Still.Preprocessor.ResponsiveImage do
 
     %{
       source_file
-      | metadata: Map.put(source_file.metadata, :responsive_image_output_files, output_files)
+      | metadata: Map.put(metadata, :responsive_image_output_files, output_files)
     }
   end
 
   @impl true
   def render(%{input_file: input_file, output_file: output_file} = source_file) do
-    output_file_path = get_output_path(output_file)
-
-    output_file_path |> Path.dirname() |> File.mkdir_p!()
+    mk_output_dir(output_file)
 
     input_file
     |> get_input_path()
-    |> File.cp!(output_file_path)
+    |> File.cp!(get_output_path(output_file))
 
     source_file
   end
