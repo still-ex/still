@@ -34,4 +34,6 @@ to feel like a modern development environment. You don't have to feel like
 you're building websites in 2010 just because you're not relying on the
 JavaScript tooling.
 
-<%= "_example.jpg" |> expand_file() |> responsive_image(%{image_transformations: [color_filter: "grayscale_bt709"]}) %>
+**Responsive Images**
+
+<%= "\_example.jpg" |> expand_file() |> responsive_image(image_opts: %{transformations: [color_filter: "grayscale_bt709"]}) %>

@@ -1,5 +1,16 @@
 defmodule Still.Utils do
   alias Still.SourceFile
+  alias Imageflow.Native
+
+  def get_image_info(file) do
+    job = Native.create!()
+
+    with :ok <- Native.add_input_file(job, 0, file),
+         {:ok, %{"code" => 200, "data" => %{"image_info" => image_info}}} <-
+           Native.message(job, "v0.1/get_image_info", %{io_id: 0}) do
+      image_info
+    end
+  end
 
   def get_input_path(%SourceFile{input_file: file}), do: Path.join(get_input_path(), file)
 
@@ -32,6 +43,11 @@ defmodule Still.Utils do
   def rm_output_dir() do
     get_output_path()
     |> File.rm_rf()
+  end
+
+  def mk_output_dir() do
+    get_output_path()
+    |> File.mkdir_p!()
   end
 
   def config!(key), do: Application.fetch_env!(:still, key)

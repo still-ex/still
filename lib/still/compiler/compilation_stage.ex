@@ -94,7 +94,9 @@ defmodule Still.Compiler.CompilationStage do
         compile_file(file)
       end)
     end)
-    |> Enum.map(&Task.await/1)
+    |> Enum.map(fn task ->
+      Task.await(task, 35000)
+    end)
 
     Process.send_after(self(), :run, 900)
 

@@ -31,12 +31,13 @@ defmodule Still.Preprocessor do
     ".png" => [OutputPath, ResponsiveImage]
   }
 
-  @spec for(SourceFile.t()) :: SourceFile.t()
+  @spec run(SourceFile.t()) :: SourceFile.t()
   def run(file) do
     file
     |> run(__MODULE__.for(file))
   end
 
+  @spec run(SourceFile.t(), list(module())) :: SourceFile.t()
   def run(file, []) do
     file
   end

@@ -8,7 +8,9 @@ defmodule Still.Compiler.ViewHelpers do
         ViewHelpers.Link,
         ViewHelpers.UrlFor,
         ViewHelpers.LinkToCSS,
-        ViewHelpers.LinkToJS
+        ViewHelpers.LinkToJS,
+        ViewHelpers.ContentTag,
+        ViewHelpers.ResponsiveImage
       }
 
       alias __MODULE__
@@ -39,31 +41,9 @@ defmodule Still.Compiler.ViewHelpers do
         end
       end
 
-      def responsive_image(file, metadata \\ %{}) do
-        with pid when not is_nil(pid) <- Incremental.Registry.get_or_create_file_process(file),
-             %{output_file: output_file, metadata: %{image_sizes: sizes}} <-
-               Incremental.Node.render(pid, metadata) do
-          {_, biggest} = sizes |> List.last()
-
-          srcset =
-            sizes
-            |> Enum.map(fn {size, file} ->
-              "#{file |> url_for()} #{size}w"
-            end)
-            |> Enum.join(", ")
-
-          """
-            <img
-              src=#{biggest |> url_for()}
-              srcset="#{srcset}"
-            />
-          """
-        else
-          _ ->
-            Logger.error("File process not found for #{file}")
-            ""
-        end
-      end
+      defdelegate responsive_image(file, opts \\ []),
+        to: ResponsiveImage,
+        as: :render
 
       def expand_file(file) do
         Path.join(Path.dirname(@env[:input_file]), file)
