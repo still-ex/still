@@ -27,6 +27,8 @@ defmodule Still.Preprocessor.Image do
 
   import Still.Utils
 
+  @ouput_render_timeout 10000
+
   @type sizes :: list(integer())
   @type transformations :: list({atom(), any()})
   @type opts :: %{
@@ -74,20 +76,13 @@ defmodule Still.Preprocessor.Image do
     input_mtime =
       input_file
       |> get_input_path()
-      |> File.stat!()
-      |> Map.get(:mtime)
-      |> Timex.to_datetime()
+      |> get_modified_time!()
 
     output_file
     |> get_output_path()
-    |> File.stat()
+    |> get_modified_time()
     |> case do
-      {:ok, stat} ->
-        output_mtime =
-          stat
-          |> Map.get(:mtime)
-          |> Timex.to_datetime()
-
+      {:ok, output_mtime} ->
         Timex.compare(input_mtime, output_mtime) != -1
 
       _ ->
@@ -121,7 +116,7 @@ defmodule Still.Preprocessor.Image do
           |> Graph.run()
       end)
     end)
-    |> Enum.map(&Task.await/1)
+    |> Enum.map(&Task.await(&1, @ouput_render_timeout))
   end
 
   defp set_output(graph, {size, file_name}) do

@@ -2,6 +2,28 @@ defmodule Still.Utils do
   alias Still.SourceFile
   alias Imageflow.Native
 
+  def get_modified_time!(path) do
+    path
+    |> File.stat!()
+    |> Map.get(:mtime)
+    |> Timex.to_datetime()
+  end
+
+  def get_modified_time(path) do
+    path
+    |> File.stat()
+    |> case do
+      {:ok, stat} ->
+        {:ok,
+         stat
+         |> Map.get(:mtime)
+         |> Timex.to_datetime()}
+
+      _ ->
+        :error
+    end
+  end
+
   def get_image_info(file) do
     job = Native.create!()
 

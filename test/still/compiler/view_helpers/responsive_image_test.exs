@@ -42,7 +42,7 @@ defmodule Still.Compiler.ViewHelpers.ResponsiveImageTest do
         |> ResponsiveImage.render()
 
       assert output ==
-               "<img src=\"/img/bg-4692w.jpg\" srcset=\"/img/bg-1173w.jpg 1173w, /img/bg-2346w.jpg 2346w, /img/bg-3519w.jpg 3519w, /img/bg-4692w.jpg 4692w\"/>"
+               "<img src=\"/img/bg-79356388-4692w.jpg\" srcset=\"/img/bg-79356388-1173w.jpg 1173w, /img/bg-79356388-2346w.jpg 2346w, /img/bg-79356388-3519w.jpg 3519w, /img/bg-79356388-4692w.jpg 4692w\"/>"
     end
   end
 end

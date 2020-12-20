@@ -46,18 +46,14 @@ defmodule Still.Preprocessor.ImageTest do
 
       mtime =
         get_output_path(@output_file_100)
-        |> File.stat!()
-        |> Map.get(:mtime)
-        |> Timex.to_datetime()
+        |> get_modified_time!()
 
       source_file
       |> Image.render()
 
       new_mtime =
         get_output_path(@output_file_100)
-        |> File.stat!()
-        |> Map.get(:mtime)
-        |> Timex.to_datetime()
+        |> get_modified_time!()
 
       assert Timex.compare(mtime, new_mtime) == 0
     end
@@ -74,9 +70,7 @@ defmodule Still.Preprocessor.ImageTest do
 
       mtime =
         get_output_path(@output_file_100)
-        |> File.stat!()
-        |> Map.get(:mtime)
-        |> Timex.to_datetime()
+        |> get_modified_time!()
 
       source_file.input_file
       |> get_input_path()
@@ -87,9 +81,7 @@ defmodule Still.Preprocessor.ImageTest do
 
       new_mtime =
         get_output_path(@output_file_100)
-        |> File.stat!()
-        |> Map.get(:mtime)
-        |> Timex.to_datetime()
+        |> get_modified_time!()
 
       assert Timex.compare(mtime, new_mtime) == -1
     end
@@ -106,18 +98,14 @@ defmodule Still.Preprocessor.ImageTest do
 
       mtime =
         get_output_path(@output_file_100)
-        |> File.stat!()
-        |> Map.get(:mtime)
-        |> Timex.to_datetime()
+        |> get_modified_time!()
 
       source_file
       |> Image.render()
 
       new_mtime =
         get_output_path(@output_file_100)
-        |> File.stat!()
-        |> Map.get(:mtime)
-        |> Timex.to_datetime()
+        |> get_modified_time!()
 
       assert Timex.compare(mtime, new_mtime) == 0
     end

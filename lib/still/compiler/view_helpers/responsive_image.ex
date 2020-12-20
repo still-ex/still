@@ -9,6 +9,14 @@ defmodule Still.Compiler.ViewHelpers.ResponsiveImage do
 
   @default_nr_of_sizes 4
 
+  @doc """
+  Returns an image tag with the `src` and `srcset`.
+
+  If the `:image_opts` is set in `opts`, it will be passed on to #{Preprocessor.Image}.
+
+  If the `:sizes` is not set in the `:image_opts` map, it sets the sizes as as
+  25%, 50%, 75% and 100% of the input file's width.
+  """
   @spec render(file :: String.t(), list()) :: String.t()
   def render(file, opts \\ []) do
     {image_opts, opts} = Keyword.pop(opts, :image_opts, %{})
