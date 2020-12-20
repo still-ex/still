@@ -28,9 +28,12 @@ defmodule Still.Compiler.ViewHelpers.ResponsiveImageTest do
           }
         )
 
-      src = "/img/bg-#{width}w.jpg"
+      src = "/img/bg-40934728-#{width}w.jpg"
 
-      srcset = "/img/bg-#{half_width}w.jpg #{half_width}w, /img/bg-#{width}w.jpg #{width}w"
+      srcset =
+        "/img/bg-40934728-#{half_width}w.jpg #{half_width}w, /img/bg-40934728-#{width}w.jpg #{
+          width
+        }w"
 
       assert output ==
                "<img src=\"#{src}\" srcset=\"#{srcset}\" class=\"cover\"/>"
