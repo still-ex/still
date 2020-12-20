@@ -1,4 +1,4 @@
-defmodule Still.Preprocessor.ResponsiveImage do
+defmodule Still.Preprocessor.Image do
   use Still.Preprocessor
 
   alias Imageflow.Graph

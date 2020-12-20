@@ -1,7 +1,7 @@
-defmodule Still.Preprocessor.ResponsiveImageTest do
+defmodule Still.Preprocessor.ImageTest do
   use Still.Case, async: false
 
-  alias Still.Preprocessor.ResponsiveImage
+  alias Still.Preprocessor.Image
   alias Still.SourceFile
 
   @input_file "img/bg.jpg"
@@ -28,7 +28,7 @@ defmodule Still.Preprocessor.ResponsiveImageTest do
                  }
              } ==
                source_file
-               |> ResponsiveImage.render()
+               |> Image.render()
 
       assert File.exists?(get_output_path(@output_file_100))
       assert File.exists?(get_output_path(@output_file_200))
@@ -42,7 +42,7 @@ defmodule Still.Preprocessor.ResponsiveImageTest do
       }
 
       source_file
-      |> ResponsiveImage.render()
+      |> Image.render()
 
       mtime =
         get_output_path(@output_file_100)
@@ -51,7 +51,7 @@ defmodule Still.Preprocessor.ResponsiveImageTest do
         |> Timex.to_datetime()
 
       source_file
-      |> ResponsiveImage.render()
+      |> Image.render()
 
       new_mtime =
         get_output_path(@output_file_100)
@@ -70,7 +70,7 @@ defmodule Still.Preprocessor.ResponsiveImageTest do
       }
 
       source_file
-      |> ResponsiveImage.render()
+      |> Image.render()
 
       mtime =
         get_output_path(@output_file_100)
@@ -83,7 +83,7 @@ defmodule Still.Preprocessor.ResponsiveImageTest do
       |> File.touch!()
 
       source_file
-      |> ResponsiveImage.render()
+      |> Image.render()
 
       new_mtime =
         get_output_path(@output_file_100)
@@ -102,7 +102,7 @@ defmodule Still.Preprocessor.ResponsiveImageTest do
       }
 
       source_file
-      |> ResponsiveImage.render()
+      |> Image.render()
 
       mtime =
         get_output_path(@output_file_100)
@@ -111,7 +111,7 @@ defmodule Still.Preprocessor.ResponsiveImageTest do
         |> Timex.to_datetime()
 
       source_file
-      |> ResponsiveImage.render()
+      |> Image.render()
 
       new_mtime =
         get_output_path(@output_file_100)
@@ -129,7 +129,7 @@ defmodule Still.Preprocessor.ResponsiveImageTest do
           input_file: @input_file,
           output_file: @output_file
         }
-        |> ResponsiveImage.render()
+        |> Image.render()
 
       %{metadata: %{responsive_image_output_files: outputs2}} =
         %SourceFile{
@@ -142,7 +142,7 @@ defmodule Still.Preprocessor.ResponsiveImageTest do
           input_file: @input_file,
           output_file: @output_file
         }
-        |> ResponsiveImage.render()
+        |> Image.render()
 
       assert outputs1 != outputs2
     end

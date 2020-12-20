@@ -17,7 +17,7 @@ defmodule Still.Preprocessor do
     Save,
     AddLayout,
     AddContent,
-    ResponsiveImage
+    Image
   }
 
   @default_preprocessors %{
@@ -27,8 +27,8 @@ defmodule Still.Preprocessor do
     ".css" => [AddContent, EEx, CSSMinify, OutputPath, URLFingerprinting, AddLayout, Save],
     ".js" => [AddContent, EEx, JS, OutputPath, URLFingerprinting, AddLayout, Save],
     ".md" => [AddContent, EEx, Frontmatter, Markdown, OutputPath, AddLayout, Save],
-    ".jpg" => [OutputPath, ResponsiveImage],
-    ".png" => [OutputPath, ResponsiveImage]
+    ".jpg" => [OutputPath, Image],
+    ".png" => [OutputPath, Image]
   }
 
   @spec run(SourceFile.t()) :: SourceFile.t()

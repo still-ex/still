@@ -45,8 +45,24 @@ defmodule Still.Compiler.ViewHelpers do
         to: ResponsiveImage,
         as: :render
 
-      def expand_file(file) do
-        Path.join(Path.dirname(@env[:input_file]), file)
+      @doc """
+      Converts a relative path to an absolute one.
+
+
+      ## Examples
+
+      File paths are always relative to the root folder, but sometimes it's too
+      cumbersome, and we need to reference a file relative to the current
+      folder.
+
+      For instance, when called inside the file "blog/post/index.md":
+
+          path_expand("./cover.png")
+          # "blog/post/./cover.png"
+
+      """
+      def path_expand(path) do
+        Path.join(Path.dirname(@env[:input_file]), path)
       end
 
       def url_for(relative_path) do
