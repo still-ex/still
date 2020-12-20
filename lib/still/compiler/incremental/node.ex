@@ -29,7 +29,7 @@ defmodule Still.Compiler.Incremental.Node do
   alias Still.Compiler.ErrorCache
   alias __MODULE__.Compile
 
-  @default_compilation_timeout 35_000
+  @default_compilation_timeout 15_000
 
   def start_link(file: file) do
     GenServer.start_link(__MODULE__, %{file: file}, name: file |> String.to_atom())
@@ -49,6 +49,10 @@ defmodule Still.Compiler.Incremental.Node do
 
   def remove_subscriber(pid, file) do
     GenServer.cast(pid, {:remove_subscriber, file})
+  end
+
+  def compilation_timeout do
+    Still.Utils.config(:compilation_timeout, @default_compilation_timeout)
   end
 
   @impl true
@@ -116,9 +120,5 @@ defmodule Still.Compiler.Incremental.Node do
 
   defp do_render(data, state) do
     Compiler.File.render(state.file, data)
-  end
-
-  defp compilation_timeout do
-    Still.Utils.config(:compilation_timeout, @default_compilation_timeout)
   end
 end

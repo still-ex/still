@@ -13,22 +13,26 @@ defmodule Still.Preprocessor.ResponsiveImage do
         }
 
   @impl true
-  def render(%{metadata: %{responsive_image_opts: opts} = metadata} = source_file) do
-    input_file_path =
-      source_file.input_file
-      |> Still.Utils.get_input_path()
-
+  def render(
+        %{
+          metadata: %{responsive_image_opts: opts} = metadata,
+          input_file: input_file,
+          output_file: output_file
+        } = source_file
+      ) do
     output_files =
       opts
       |> Map.get(:sizes, [])
-      |> get_output_files_with_sizes(source_file.output_file)
+      |> get_output_files_with_sizes(output_file, opts)
 
-    :ok =
-      Graph.new()
-      |> Graph.decode_file(input_file_path)
-      |> apply_transformations(Map.get(opts, :transformations))
-      |> branch_by_size(output_files)
-      |> Graph.run()
+    if input_changed?(input_file, output_files) do
+      :ok =
+        Graph.new()
+        |> Graph.decode_file(get_input_path(input_file))
+        |> apply_transformations(Map.get(opts, :transformations))
+        |> branch_by_size(output_files)
+        |> Graph.run()
+    end
 
     %{
       source_file
@@ -38,7 +42,9 @@ defmodule Still.Preprocessor.ResponsiveImage do
 
   @impl true
   def render(%{input_file: input_file, output_file: output_file} = source_file) do
-    mk_output_dir(output_file)
+    output_file
+    |> Path.dirname()
+    |> mk_output_dir()
 
     input_file
     |> get_input_path()
@@ -47,13 +53,38 @@ defmodule Still.Preprocessor.ResponsiveImage do
     source_file
   end
 
+  defp input_changed?(input_file, [{_, output_file} | _]) do
+    input_mtime =
+      input_file
+      |> get_input_path()
+      |> File.stat!()
+      |> Map.get(:mtime)
+      |> Timex.to_datetime()
+
+    output_file
+    |> get_output_path()
+    |> File.stat()
+    |> case do
+      {:ok, stat} ->
+        output_mtime =
+          stat
+          |> Map.get(:mtime)
+          |> Timex.to_datetime()
+
+        Timex.compare(input_mtime, output_mtime) != -1
+
+      _ ->
+        true
+    end
+  end
+
   @spec branch_by_size(Graph.t(), sizes()) :: Graph.t()
   defp branch_by_size(graph, sizes) do
     sizes
     |> Enum.reduce(graph, fn {size, file_name}, graph ->
       graph
       |> Graph.branch(fn graph ->
-        file_path = file_name |> Still.Utils.get_output_path()
+        file_path = file_name |> get_output_path()
 
         file_path |> Path.dirname() |> File.mkdir_p!()
 
@@ -64,13 +95,14 @@ defmodule Still.Preprocessor.ResponsiveImage do
     end)
   end
 
-  defp get_output_files_with_sizes(sizes, output_file_path) do
+  defp get_output_files_with_sizes(sizes, output_file_path, opts) do
     extname = Path.extname(output_file_path)
     base_name = String.replace(output_file_path, extname, "")
+    hash = :erlang.phash2(opts)
 
     sizes
     |> Enum.map(fn size ->
-      {size, "#{base_name}-#{size}w#{extname}"}
+      {size, "#{base_name}-#{hash}-#{size}w#{extname}"}
     end)
   end
 

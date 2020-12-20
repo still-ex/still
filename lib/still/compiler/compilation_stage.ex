@@ -95,7 +95,7 @@ defmodule Still.Compiler.CompilationStage do
       end)
     end)
     |> Enum.map(fn task ->
-      Task.await(task, 35000)
+      Task.await(task, Incremental.Node.compilation_timeout())
     end)
 
     Process.send_after(self(), :run, 900)
