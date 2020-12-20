@@ -1,4 +1,26 @@
 defmodule Still.Preprocessor.Image do
+  @moduledoc """
+  This preprocessor handles image transormation. To configure
+  it, set the `:image_opts` in the metadata:
+
+    %{
+      image_opts: %{
+        sizes: [100, 200],
+        transformations: [color_filter: "grayscale_bt709"]
+      }
+    }
+
+  The `:sizes` defines the widths of the output files to create.
+
+  The `:transformations` defines the function name and arguments to call on the
+  imageflow wrapper. See [Imageflow's
+  docs](https://docs.imageflow.io/introduction.html) and
+  [`imageflow_ex`](https://github.com/naps62/imageflow_ex) for more information.
+
+  When the `:image_opts` is not set, it copies the input file to the output
+  file as it is.
+  """
+
   use Still.Preprocessor
 
   alias Imageflow.Graph
@@ -15,7 +37,7 @@ defmodule Still.Preprocessor.Image do
   @impl true
   def render(
         %{
-          metadata: %{responsive_image_opts: opts} = metadata,
+          metadata: %{image_opts: opts} = metadata,
           input_file: input_file,
           output_file: output_file
         } = source_file
@@ -31,7 +53,7 @@ defmodule Still.Preprocessor.Image do
 
     %{
       source_file
-      | metadata: Map.put(metadata, :responsive_image_output_files, output_files)
+      | metadata: Map.put(metadata, :image_output_files, output_files)
     }
   end
 

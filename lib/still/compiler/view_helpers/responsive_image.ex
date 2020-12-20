@@ -29,7 +29,7 @@ defmodule Still.Compiler.ViewHelpers.ResponsiveImage do
     |> Incremental.Node.render(get_render_data(file, image_opts))
   end
 
-  defp get_output_files(%{metadata: %{responsive_image_output_files: output_files}}) do
+  defp get_output_files(%{metadata: %{image_output_files: output_files}}) do
     output_files |> Enum.sort_by(&elem(&1, 0))
   end
 
@@ -47,10 +47,10 @@ defmodule Still.Compiler.ViewHelpers.ResponsiveImage do
   end
 
   @spec get_render_data(String.t(), any()) :: %{
-          responsive_image_opts: Preprocessor.ResponsiveImage.opts()
+          image_opts: Preprocessor.ResponsiveImage.opts()
         }
   defp get_render_data(_, %{sizes: _} = image_opts) do
-    %{responsive_image_opts: image_opts}
+    %{image_opts: image_opts}
   end
 
   defp get_render_data(file, image_opts) do
@@ -70,6 +70,6 @@ defmodule Still.Compiler.ViewHelpers.ResponsiveImage do
         |> Enum.map(&(&1 * step_width))
       )
 
-    %{responsive_image_opts: image_opts}
+    %{image_opts: image_opts}
   end
 end

@@ -12,7 +12,7 @@ defmodule Still.Preprocessor.ImageTest do
   describe "render/1" do
     test "places an image in the output folder for each size and returns the paths" do
       source_file = %SourceFile{
-        metadata: %{responsive_image_opts: %{sizes: [100, 200]}},
+        metadata: %{image_opts: %{sizes: [100, 200]}},
         input_file: @input_file,
         output_file: @output_file
       }
@@ -20,11 +20,11 @@ defmodule Still.Preprocessor.ImageTest do
       assert %SourceFile{
                source_file
                | metadata: %{
-                   responsive_image_output_files: [
+                   image_output_files: [
                      {100, @output_file_100},
                      {200, @output_file_200}
                    ],
-                   responsive_image_opts: %{sizes: [100, 200]}
+                   image_opts: %{sizes: [100, 200]}
                  }
              } ==
                source_file
@@ -36,7 +36,7 @@ defmodule Still.Preprocessor.ImageTest do
 
     test "does not run if the input file's mtime didn't change" do
       source_file = %SourceFile{
-        metadata: %{responsive_image_opts: %{sizes: [100, 200]}},
+        metadata: %{image_opts: %{sizes: [100, 200]}},
         input_file: @input_file,
         output_file: @output_file
       }
@@ -64,7 +64,7 @@ defmodule Still.Preprocessor.ImageTest do
 
     test "runs if the input file's mtime changed" do
       source_file = %SourceFile{
-        metadata: %{responsive_image_opts: %{sizes: [100, 200]}},
+        metadata: %{image_opts: %{sizes: [100, 200]}},
         input_file: @input_file,
         output_file: @output_file
       }
@@ -96,7 +96,7 @@ defmodule Still.Preprocessor.ImageTest do
 
     test "doens't run if the options didn't change" do
       source_file = %SourceFile{
-        metadata: %{responsive_image_opts: %{sizes: [100, 200]}},
+        metadata: %{image_opts: %{sizes: [100, 200]}},
         input_file: @input_file,
         output_file: @output_file
       }
@@ -123,18 +123,18 @@ defmodule Still.Preprocessor.ImageTest do
     end
 
     test "runs if the options changed" do
-      %{metadata: %{responsive_image_output_files: outputs1}} =
+      %{metadata: %{image_output_files: outputs1}} =
         %SourceFile{
-          metadata: %{responsive_image_opts: %{sizes: [100, 200]}},
+          metadata: %{image_opts: %{sizes: [100, 200]}},
           input_file: @input_file,
           output_file: @output_file
         }
         |> Image.render()
 
-      %{metadata: %{responsive_image_output_files: outputs2}} =
+      %{metadata: %{image_output_files: outputs2}} =
         %SourceFile{
           metadata: %{
-            responsive_image_opts: %{
+            image_opts: %{
               sizes: [100, 200],
               transformations: [color_filter: "grayscale_bt709"]
             }
