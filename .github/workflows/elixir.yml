@@ -11,6 +11,15 @@ jobs:
     name: Build and test
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        otp:
+          - 23
+        elixir:
+          - 1.10.4
+        rust:
+          - stable
+
     steps:
     - uses: actions/checkout@v2
 
