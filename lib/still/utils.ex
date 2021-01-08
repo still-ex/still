@@ -77,6 +77,14 @@ defmodule Still.Utils do
     |> File.mkdir_p!()
   end
 
+  def clean_output_dir() do
+    File.rm_rf(Path.join(get_output_path(), "*"))
+  end
+
+  def clean_output_dir(path) do
+    File.rm_rf(Path.join(path, "*"))
+  end
+
   def config!(key), do: Application.fetch_env!(:still, key)
   def config(key, default), do: Application.get_env(:still, key, default)
 end
