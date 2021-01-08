@@ -23,7 +23,7 @@ defmodule Still.Preprocessor do
   @default_preprocessors %{
     ".slim" => [AddContent, EEx, Frontmatter, Slime, OutputPath, AddLayout, Save],
     ".slime" => [AddContent, EEx, Frontmatter, Slime, OutputPath, AddLayout, Save],
-    ".eex" => [AddContent, EEx, Frontmatter, EEx, OutputPath, AddLayout, Save],
+    ".eex" => [AddContent, EEx, Frontmatter, OutputPath, AddLayout, Save],
     ".css" => [AddContent, EEx, CSSMinify, OutputPath, URLFingerprinting, AddLayout, Save],
     ".js" => [AddContent, EEx, JS, OutputPath, URLFingerprinting, AddLayout, Save],
     ".md" => [AddContent, EEx, Frontmatter, Markdown, OutputPath, AddLayout, Save],

@@ -1,7 +1,7 @@
 defmodule Still.Preprocessor.Image do
   @moduledoc """
-  This preprocessor handles image transormation. To configure
-  it, set the `:image_opts` in the metadata:
+  This preprocessor handles image transformation. To configure
+  it, set `:image_opts` in the metadata:
 
     %{
       image_opts: %{
@@ -10,14 +10,14 @@ defmodule Still.Preprocessor.Image do
       }
     }
 
-  The `:sizes` defines the widths of the output files to create.
+  `:sizes` defines the widths of the output files to create.
 
-  The `:transformations` defines the function name and arguments to call on the
+  `:transformations` defines the function name and arguments to call on the
   imageflow wrapper. See [Imageflow's
   docs](https://docs.imageflow.io/introduction.html) and
   [`imageflow_ex`](https://github.com/naps62/imageflow_ex) for more information.
 
-  When the `:image_opts` is not set, it copies the input file to the output
+  When `:image_opts` is not set, it copies the input file to the output
   file as it is.
   """
 

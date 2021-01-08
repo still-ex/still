@@ -77,13 +77,9 @@ defmodule Still.Compiler.ViewHelpers do
         Link.render(content, @env, opts)
       end
 
-      def link_to_css(path, opts \\ []) do
-        LinkToCSS.render(path, opts)
-      end
+      defdelegate link_to_css(path, opts \\ []), to: LinkToCSS, as: :render
 
-      def link_to_js(path, opts \\ []) do
-        LinkToJS.render(path, opts)
-      end
+      defdelegate link_to_js(path, opts \\ []), to: LinkToJS, as: :render
 
       defp include_subscriber(opts) do
         if Keyword.get(opts, :subscribe, true) do

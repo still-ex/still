@@ -12,9 +12,9 @@ defmodule Still.Compiler.ViewHelpers.ResponsiveImage do
   @doc """
   Returns an image tag with the `src` and `srcset`.
 
-  If the `:image_opts` is set in `opts`, it will be passed on to #{Preprocessor.Image}.
+  If `:image_opts` is set in `opts`, it will be passed on to #{Preprocessor.Image}.
 
-  If the `:sizes` is not set in the `:image_opts` map, it sets the sizes as as
+  If `:sizes` is not set in `:image_opts` map, it sets sizes as as
   25%, 50%, 75% and 100% of the input file's width.
   """
   @spec render(file :: String.t(), list()) :: String.t()
@@ -54,9 +54,6 @@ defmodule Still.Compiler.ViewHelpers.ResponsiveImage do
     |> Enum.join(", ")
   end
 
-  @spec get_render_data(String.t(), any()) :: %{
-          image_opts: Preprocessor.ResponsiveImage.opts()
-        }
   defp get_render_data(_, %{sizes: _} = image_opts) do
     %{image_opts: image_opts}
   end
