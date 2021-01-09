@@ -94,14 +94,19 @@ defmodule Still.Compiler.Incremental.Node do
   @impl true
   def handle_call({:render, data, subscriber}, _from, state) do
     subscribers = [subscriber | state.subscribers] |> Enum.uniq() |> Enum.reject(&is_nil/1)
-    source_file = do_render(data, state)
-    ErrorCache.set({:ok, source_file})
 
-    {:reply, source_file, %{state | subscribers: subscribers}}
-  catch
-    :error, %PreprocessorError{} = e ->
-      ErrorCache.set({:error, e})
-      {:reply, %Still.SourceFile{content: "", input_file: state.file}, state}
+    try do
+      source_file = do_render(data, state)
+      ErrorCache.set({:ok, source_file})
+
+      {:reply, source_file, %{state | subscribers: subscribers}}
+    catch
+      :error, %PreprocessorError{} = e ->
+        ErrorCache.set({:error, e})
+
+        {:reply, %Still.SourceFile{content: "", input_file: state.file},
+         %{state | subscribers: subscribers}}
+    end
   end
 
   @impl true
