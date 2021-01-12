@@ -59,11 +59,10 @@ defmodule Still.Compiler.ViewHelpers.ResponsiveImage do
   end
 
   defp get_render_data(file, image_opts) do
-    width =
+    {:ok, %{width: width}} =
       file
       |> get_input_path()
       |> get_image_info()
-      |> Map.get("image_width")
 
     step_width = Integer.floor_div(width, @default_nr_of_sizes)
 

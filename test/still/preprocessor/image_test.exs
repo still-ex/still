@@ -124,7 +124,7 @@ defmodule Still.Preprocessor.ImageTest do
           metadata: %{
             image_opts: %{
               sizes: [100, 200],
-              transformations: [color_filter: "grayscale_bt709"]
+              transformations: []
             }
           },
           input_file: @input_file,

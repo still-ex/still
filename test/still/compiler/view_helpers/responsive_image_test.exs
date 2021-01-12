@@ -14,7 +14,7 @@ defmodule Still.Compiler.ViewHelpers.ResponsiveImageTest do
     test "returns the HTML for a responsive image" do
       file = "img/bg.jpg"
 
-      %{"image_width" => width} = file |> Utils.get_input_path() |> Utils.get_image_info()
+      {:ok, %{width: width}} = file |> Utils.get_input_path() |> Utils.get_image_info()
 
       half_width = Integer.floor_div(width, 2)
 
@@ -24,14 +24,14 @@ defmodule Still.Compiler.ViewHelpers.ResponsiveImageTest do
           class: "cover",
           image_opts: %{
             sizes: [width, half_width],
-            transformations: [color_filter: "grayscale_bt709"]
+            transformations: []
           }
         )
 
-      src = "/img/bg-40934728-#{width}w.jpg"
+      src = "/img/bg-14881671-#{width}w.jpg"
 
       srcset =
-        "/img/bg-40934728-#{half_width}w.jpg #{half_width}w, /img/bg-40934728-#{width}w.jpg #{
+        "/img/bg-14881671-#{half_width}w.jpg #{half_width}w, /img/bg-14881671-#{width}w.jpg #{
           width
         }w"
 

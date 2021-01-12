@@ -15,11 +15,10 @@ defmodule Still.Compiler.Incremental.Node do
   * Render - rendering a file means that the current file is being
   included by another file. Template files may return HTML and images could return a path.
 
-  Incremental nodes attempt to compile/render files synchronously. If a file
-  takes longer than 5 seconds to be compiled, this process will crash. Although
-  not a common occurence, this can be configured by setting the
-  `:compilation_timeout` key in your `config/config.exs`. Default is `5_000`
-  (in milliseconds).
+  Incremental nodes attempt to compile/render files synchronously.  This
+  process can take a long time, which is usually fine, but it can be
+  changed by setting the `:compilation_timeout` key in your
+  `config/config.exs`. Default is `:infinity`.
   """
 
   use GenServer
@@ -29,7 +28,7 @@ defmodule Still.Compiler.Incremental.Node do
   alias Still.Compiler.ErrorCache
   alias __MODULE__.Compile
 
-  @default_compilation_timeout 20_000
+  @default_compilation_timeout :infinity
 
   def start_link(file: file) do
     GenServer.start_link(__MODULE__, %{file: file}, name: file |> String.to_atom())
@@ -76,9 +75,18 @@ defmodule Still.Compiler.Incremental.Node do
         {:reply, other, state}
     end
   catch
+    :exit, {e, _} ->
+      error = %PreprocessorError{
+        message: inspect(e),
+        stacktrace: __STACKTRACE__,
+        source_file: %Still.SourceFile{input_file: state.file, run_type: :compile}
+      }
+
+      ErrorCache.set({:error, error})
+      {:reply, :ok, state}
+
     :error, %PreprocessorError{} = e ->
       ErrorCache.set({:error, e})
-
       {:reply, :ok, state}
   end
 
@@ -101,6 +109,18 @@ defmodule Still.Compiler.Incremental.Node do
 
       {:reply, source_file, %{state | subscribers: subscribers}}
     catch
+      :exit, {e, _} ->
+        error = %PreprocessorError{
+          message: inspect(e),
+          stacktrace: __STACKTRACE__,
+          source_file: %Still.SourceFile{input_file: state.file, run_type: :compile}
+        }
+
+        ErrorCache.set({:error, error})
+
+        {:reply, %Still.SourceFile{content: "", input_file: state.file},
+         %{state | subscribers: subscribers}}
+
       :error, %PreprocessorError{} = e ->
         ErrorCache.set({:error, e})
 

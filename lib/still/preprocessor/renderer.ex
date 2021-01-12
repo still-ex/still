@@ -29,7 +29,7 @@ defmodule Still.Preprocessor.Renderer do
           |> Enum.map(&String.replace(&1, "_", ""))
           |> Enum.map(&String.capitalize/1)
 
-        Module.concat([@preprocessor | name])
+        Module.concat(["R#{Enum.random(0..100_000)}" | [@preprocessor | name]])
       end
 
       defp create_view_renderer(name, content, metadata) do

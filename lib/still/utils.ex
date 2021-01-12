@@ -1,6 +1,5 @@
 defmodule Still.Utils do
   alias Still.SourceFile
-  alias Imageflow.Native
 
   def get_modified_time!(path) do
     path
@@ -24,14 +23,37 @@ defmodule Still.Utils do
     end
   end
 
-  def get_image_info(file) do
-    job = Native.create!()
+  case Code.ensure_compiled(Imageflow) do
+    {:module, _} ->
+      alias Imageflow.Native
 
-    with :ok <- Native.add_input_file(job, 0, file),
-         {:ok, %{"code" => 200, "data" => %{"image_info" => image_info}}} <-
-           Native.message(job, "v0.1/get_image_info", %{io_id: 0}) do
-      image_info
-    end
+      @spec get_image_info(file :: String.to_atom()) ::
+              {:ok, %{width: integer(), height: integer()}} | {:error, any()}
+      def get_image_info(file) do
+        job = Native.create!()
+
+        with :ok <- Native.add_input_file(job, 0, file),
+             {:ok, %{"code" => 200, "data" => %{"image_info" => image_info}}} <-
+               Native.message(job, "v0.1/get_image_info", %{io_id: 0}) do
+          {:ok,
+           %{
+             width: image_info["image_width"],
+             height: image_info["image_height"]
+           }}
+        end
+      end
+
+    _ ->
+      @spec get_image_info(file :: String.to_atom()) ::
+              {:ok, %{width: integer(), height: integer()}} | {:error, any()}
+      def get_image_info(file) do
+        Mogrify.open(file)
+        |> Mogrify.verbose()
+        |> case do
+          {:error, error} -> {:error, error}
+          res -> {:ok, Map.take(res, [:height, :width])}
+        end
+      end
   end
 
   def get_input_path(%SourceFile{input_file: file}), do: Path.join(get_input_path(), file)
