@@ -11,7 +11,7 @@ defmodule Still.Compiler.File.DevLayout do
     Still.Preprocessor.Slime.run(%SourceFile{
       input_file: @dev_layout,
       content: content,
-      variables: %{children: children, file_path: @dev_layout}
+      metadata: %{children: children, file_path: @dev_layout}
     })
   end
 end

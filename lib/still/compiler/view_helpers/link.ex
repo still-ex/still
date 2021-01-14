@@ -4,20 +4,20 @@ defmodule Still.Compiler.ViewHelpers.Link do
   alias Still.Compiler.ViewHelpers.ContentTag
   alias Still.SourceFile
 
-  def render(opts, variables, do: markup) do
-    preprocessor = variables[:preprocessor]
+  def render(opts, metadata, do: markup) do
+    preprocessor = metadata[:preprocessor]
 
     %{content: content} =
       preprocessor.render(%SourceFile{
         content: markup,
-        input_file: variables[:input_file],
-        variables: variables |> Enum.into(%{})
+        input_file: metadata[:input_file],
+        metadata: metadata |> Enum.into(%{})
       })
 
-    render(content, variables, opts)
+    render(content, metadata, opts)
   end
 
-  def render(text, _variables, opts) do
+  def render(text, _metadata, opts) do
     {url, opts} = pop_url(opts)
 
     ContentTag.render("a", text, [{:href, url} | opts])

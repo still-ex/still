@@ -4,8 +4,8 @@ defmodule Still.Compiler.ViewHelpers.LinkToCSS do
 
   require Logger
 
-  @spec render(String.t(), list(any()), list(any())) :: String.t()
-  def render(file, opts, env) do
+  @spec render(String.t(), list(any())) :: String.t()
+  def render(file, opts) do
     link_opts =
       opts
       |> Enum.map(fn {k, v} ->

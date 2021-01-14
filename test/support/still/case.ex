@@ -8,7 +8,7 @@ defmodule Still.Case do
       setup do
         Application.put_env(:still, :pass_through_copy, [])
 
-        Still.Utils.rm_output_dir()
+        Still.Utils.clean_output_dir()
 
         :ok
       end

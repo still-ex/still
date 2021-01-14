@@ -13,7 +13,7 @@ defmodule Still.SourceFile do
     :input_file,
     :output_file,
     content: nil,
-    variables: %{},
+    metadata: %{},
     extension: nil,
     run_type: :render
   ]
@@ -24,6 +24,6 @@ defmodule Still.SourceFile do
           extension: binary() | nil,
           input_file: binary(),
           output_file: binary() | nil,
-          variables: map()
+          metadata: map()
         }
 end

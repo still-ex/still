@@ -14,7 +14,7 @@ defmodule Still.Preprocessor.SlimeTest do
       assert html == "<p>Still</p>"
     end
 
-    test "passes variables to the template" do
+    test "passes metadata to the template" do
       slime = "p = @title"
       input_file = "index.slime"
       title = "This is a test"
@@ -23,19 +23,10 @@ defmodule Still.Preprocessor.SlimeTest do
         Slime.render(%SourceFile{
           content: slime,
           input_file: input_file,
-          variables: %{title: title}
+          metadata: %{title: title}
         })
 
       assert html == "<p>This is a test</p>"
-    end
-
-    test "defines a render module" do
-      slime = "p Still"
-      input_file = "posts/index.slime"
-
-      Slime.render(%SourceFile{content: slime, input_file: input_file})
-
-      assert {:module, _} = Code.ensure_compiled(Still.Preprocessor.Slime.Posts.Index)
     end
   end
 end

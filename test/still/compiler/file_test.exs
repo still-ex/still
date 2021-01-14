@@ -37,7 +37,7 @@ defmodule Still.Compiler.FileTest do
       assert %{
                content: "<header><p>This is a header</p></header>",
                input_file: ^file,
-               variables: %{title: "Test title"}
+               metadata: %{title: "Test title"}
              } = content
     end
   end

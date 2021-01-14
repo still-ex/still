@@ -15,10 +15,10 @@ defmodule Still.Preprocessor.Renderer do
       @preprocessor Keyword.fetch!(unquote(opts), :preprocessor)
       @extensions Keyword.fetch!(unquote(opts), :extensions)
 
-      def create(%SourceFile{input_file: input_file, content: content, variables: variables}) do
-        variables[:input_file]
+      def create(%SourceFile{input_file: input_file, content: content, metadata: metadata}) do
+        metadata[:input_file]
         |> file_path_to_module_name()
-        |> create_view_renderer(content, variables)
+        |> create_view_renderer(content, metadata)
       end
 
       defp file_path_to_module_name(file) do
@@ -29,14 +29,14 @@ defmodule Still.Preprocessor.Renderer do
           |> Enum.map(&String.replace(&1, "_", ""))
           |> Enum.map(&String.capitalize/1)
 
-        Module.concat([@preprocessor | name])
+        Module.concat(["R#{Enum.random(0..100_000)}" | [@preprocessor | name]])
       end
 
-      defp create_view_renderer(name, content, variables) do
-        compiled = compile(content, variables)
+      defp create_view_renderer(name, content, metadata) do
+        compiled = compile(content, metadata)
 
-        module_variables =
-          variables
+        module_metadata =
+          metadata
           |> ensure_preprocessor()
           |> Map.to_list()
 
@@ -54,14 +54,14 @@ defmodule Still.Preprocessor.Renderer do
             unquote(user_view_helpers_asts())
             unquote(renderer_ast)
 
-            use Still.Compiler.ViewHelpers, unquote(Macro.escape(module_variables))
+            use Still.Compiler.ViewHelpers, unquote(Macro.escape(module_metadata))
 
-            Enum.map(unquote(Macro.escape(variables)), fn {k, v} ->
+            Enum.map(unquote(Macro.escape(metadata)), fn {k, v} ->
               Module.put_attribute(__MODULE__, k, v)
             end)
 
             def render() do
-              var!(unquote(Macro.var(:assigns, __MODULE__))) = unquote(Macro.escape(variables))
+              var!(unquote(Macro.var(:assigns, __MODULE__))) = unquote(Macro.escape(metadata))
               _ = var!(unquote(Macro.var(:assigns, __MODULE__)))
               unquote(compiled)
             end
@@ -81,8 +81,8 @@ defmodule Still.Preprocessor.Renderer do
         end)
       end
 
-      defp ensure_preprocessor(variables) do
-        Map.put_new(variables, :preprocessor, @preprocessor)
+      defp ensure_preprocessor(metadata) do
+        Map.put_new(metadata, :preprocessor, @preprocessor)
       end
     end
   end

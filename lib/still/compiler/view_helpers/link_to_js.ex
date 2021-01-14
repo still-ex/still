@@ -4,7 +4,8 @@ defmodule Still.Compiler.ViewHelpers.LinkToJS do
 
   require Logger
 
-  def render(file, opts, env) do
+  @spec render(String.t(), list(any())) :: String.t()
+  def render(file, opts) do
     link_opts =
       opts
       |> Enum.map(fn {k, v} ->

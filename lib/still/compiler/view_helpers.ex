@@ -1,5 +1,5 @@
 defmodule Still.Compiler.ViewHelpers do
-  defmacro __using__(variables) do
+  defmacro __using__(metadata) do
     quote do
       alias Still.SourceFile
 
@@ -8,25 +8,27 @@ defmodule Still.Compiler.ViewHelpers do
         ViewHelpers.Link,
         ViewHelpers.UrlFor,
         ViewHelpers.LinkToCSS,
-        ViewHelpers.LinkToJS
+        ViewHelpers.LinkToJS,
+        ViewHelpers.ContentTag,
+        ViewHelpers.ResponsiveImage
       }
 
       alias __MODULE__
 
       require Logger
 
-      @env unquote(variables)
+      @env unquote(metadata)
 
-      def include(file, variables \\ %{}, opts \\ [])
+      def include(file, metadata \\ %{}, opts \\ [])
 
-      def include(file, variables, opts) when is_list(variables) do
-        include(file, variables |> Enum.into(%{}), opts)
+      def include(file, metadata, opts) when is_list(metadata) do
+        include(file, metadata |> Enum.into(%{}), opts)
       end
 
-      def include(file, variables, opts) do
+      def include(file, metadata, opts) do
         with pid when not is_nil(pid) <- Incremental.Registry.get_or_create_file_process(file),
              subscriber <- include_subscriber(opts),
-             %SourceFile{content: content} <- Incremental.Node.render(pid, variables, subscriber) do
+             %SourceFile{content: content} <- Incremental.Node.render(pid, metadata, subscriber) do
           if subscriber do
             Incremental.Node.add_subscription(self(), file)
           end
@@ -39,12 +41,28 @@ defmodule Still.Compiler.ViewHelpers do
         end
       end
 
-      defp include_subscriber(opts) do
-        if Keyword.get(opts, :subscribe, true) do
-          @env[:input_file]
-        else
-          nil
-        end
+      defdelegate responsive_image(file, opts \\ []),
+        to: ResponsiveImage,
+        as: :render
+
+      @doc """
+      Converts a relative path to an absolute one.
+
+
+      ## Examples
+
+      File paths are always relative to the root folder, but sometimes it's too
+      cumbersome, and we need to reference a file relative to the current
+      folder.
+
+      For instance, when called inside the file "blog/post/index.md":
+
+          path_expand("./cover.png")
+          # "blog/post/./cover.png"
+
+      """
+      def path_expand(path) do
+        Path.join(Path.dirname(@env[:input_file]), path)
       end
 
       def url_for(relative_path) do
@@ -59,12 +77,16 @@ defmodule Still.Compiler.ViewHelpers do
         Link.render(content, @env, opts)
       end
 
-      def link_to_css(path, opts \\ []) do
-        LinkToCSS.render(path, opts, @env)
-      end
+      defdelegate link_to_css(path, opts \\ []), to: LinkToCSS, as: :render
 
-      def link_to_js(path, opts \\ []) do
-        LinkToJS.render(path, opts, @env)
+      defdelegate link_to_js(path, opts \\ []), to: LinkToJS, as: :render
+
+      defp include_subscriber(opts) do
+        if Keyword.get(opts, :subscribe, true) do
+          @env[:input_file]
+        else
+          nil
+        end
       end
     end
   end
