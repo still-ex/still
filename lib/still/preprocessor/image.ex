@@ -13,9 +13,11 @@ defmodule Still.Preprocessor.Image do
   `:sizes` defines the widths of the output files to create.
 
   `:transformations` defines the function name and arguments to call on the
-  imageflow wrapper. See [Imageflow's
+  adapter. See [Imageflow's
   docs](https://docs.imageflow.io/introduction.html) and
-  [`imageflow_ex`](https://github.com/naps62/imageflow_ex) for more information.
+  [`imageflow_ex`](https://github.com/naps62/imageflow_ex) or [ImageMagick's
+  docs](https://imagemagick.org/script/command-line-options.php) for more
+  information.
 
   When `:image_opts` is not set, it copies the input file to the output
   file as it is.
@@ -25,26 +27,24 @@ defmodule Still.Preprocessor.Image do
 
   import Still.Utils
 
-  case Code.ensure_compiled(Imageflow) do
-    {:module, _} ->
-      @impl true
-      def render(
-            %{
-              metadata: %{image_opts: _opts}
-            } = source_file
-          ) do
-        __MODULE__.Imageflow.render(source_file)
-      end
-
-    _ ->
-      @impl true
-      def render(
-            %{
-              metadata: %{image_opts: _opts}
-            } = source_file
-          ) do
-        __MODULE__.Mogrify.render(source_file)
-      end
+  if Code.ensure_loaded?(Imageflow) do
+    @impl true
+    def render(
+          %{
+            metadata: %{image_opts: _opts}
+          } = source_file
+        ) do
+      __MODULE__.Imageflow.render(source_file)
+    end
+  else
+    @impl true
+    def render(
+          %{
+            metadata: %{image_opts: _opts}
+          } = source_file
+        ) do
+      __MODULE__.Mogrify.render(source_file)
+    end
   end
 
   @impl true
