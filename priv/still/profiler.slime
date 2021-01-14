@@ -1,0 +1,179 @@
+---
+permalink: profiler.html
+title: Still Profiler Output
+---
+
+<%
+  eerie_black = "#222222"
+  lemon_meringue = "#F3EAC3"
+  liver_chestnut = "#A46F41"
+
+  grid_size = "#{1440 - 54 - 54}px"
+%>
+
+doctype html
+html
+  head
+    title Still Profiler
+    meta charset="UTF-8"
+    meta name="viewport" content="width=device-width, initial-scale=1.0"
+    link rel="preconnect" href="https://fonts.gstatic.com"
+    link href="https://fonts.googleapis.com/css2?family=Medula+One&family=Pontano+Sans&display=swap" rel="stylesheet"
+
+    css:
+      body, div, p {
+        box-sizing: border-box;
+      }
+
+      body {
+        height: 100vh;
+        margin: 0;
+        color: <%= eerie_black %>;
+        background-color: <%= lemon_meringue %>;
+        font-family: "Pontano Sans", sans-serif;
+      }
+
+      details {
+        user-select: none;
+      }
+
+      summary:hover {
+        cursor: pointer;
+      }
+
+      p {
+        margin: 0;
+        line-height: 1.5rem;
+      }
+
+      .grid {
+        padding: 3.375rem;
+        max-width: <%= grid_size %>;
+        width: 100%;
+        margin: 0 auto;
+      }
+
+      .container {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .files {
+        border-collapse: collapse;
+        border-spacing: 0;
+        width: 40%;
+      }
+
+      .files thead {
+        text-align: left;
+      }
+
+      .files th:nth-child(2) {
+        width: 30%;
+      }
+
+      .preview {
+        width: 50%;
+      }
+
+      .preview iframe {
+        width: 100%;
+        height: 50vh;
+      }
+
+      .title {
+        font-family: "Medula One", serif;
+        font-size: 5.063rem;
+      }
+
+      .small {
+        font-size: 0.667rem;
+      }
+
+      .delta {
+        color: <%= liver_chestnut %>;
+        margin-left: 0.296rem;
+      }
+
+      .rawContent {
+        display: none;
+      }
+
+      .currentPreview {
+        font-weight: bold;
+      }
+
+  body
+    .grid
+      h1.title Still Profiler Report
+
+      .container
+        table.files
+          thead
+            tr
+              th File
+              th Rendering time
+          tbody
+            = for stat <- @stats do
+              tr
+                td
+                  details
+                    summary
+                      span = stat.source_file.input_file
+
+                    span.small
+                      = if stat.source_file.metadata == %{} do
+                        | No variables
+                      - else
+                        = for {k, v} <- stat.source_file.metadata do
+                          p
+                            strong.var
+                              | &nbsp;&nbsp;
+                              = "#{k}: "
+
+                            - escaped_html = safe_html(v)
+
+                            span.varContent
+                              = truncate(escaped_html)
+
+                            span.rawContent
+                              = escaped_html
+
+                            br
+
+                            = if k == :children do
+                              a.previewButton href="#" View as HTML
+                td
+                  span.small.delta = "(#{stat.delta}ms)"
+
+        .preview
+          iframe#previewHTML src="javascript:void(0);"
+
+    javascript:
+      const elems = document.getElementsByClassName("previewButton");
+
+      Array.from(elems).forEach((elem) => {
+        elem.addEventListener("click", (e) => {
+          e.preventDefault();
+
+          document
+            .querySelector(".files .currentPreview")
+            ?. classList
+            .remove("currentPreview")
+
+          const content = e
+            .target
+            .parentElement
+            .querySelector(".rawContent")
+            .textContent;
+
+          document.getElementById("previewHTML").srcdoc = content;
+
+          const summary = e
+            .target
+            .closest("details")
+            .querySelector("summary")
+            .classList
+            .add("currentPreview");
+        })
+      });

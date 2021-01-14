@@ -15,7 +15,9 @@ defmodule Still.Compiler.ViewHelpers do
         ViewHelpers.LinkToCSS,
         ViewHelpers.LinkToJS,
         ViewHelpers.ContentTag,
-        ViewHelpers.ResponsiveImage
+        ViewHelpers.ResponsiveImage,
+        ViewHelpers.SafeHTML,
+        ViewHelpers.Truncate
       }
 
       alias __MODULE__
@@ -50,6 +52,7 @@ defmodule Still.Compiler.ViewHelpers do
       def include(file, metadata, opts) do
         with pid when not is_nil(pid) <- Incremental.Registry.get_or_create_file_process(file),
              subscriber <- include_subscriber(opts),
+             metadata <- Map.put(metadata, :parent, subscriber),
              %SourceFile{content: content} <- Incremental.Node.render(pid, metadata, subscriber) do
           if subscriber do
             Incremental.Node.add_subscription(self(), file)
@@ -95,6 +98,30 @@ defmodule Still.Compiler.ViewHelpers do
       """
       def link(content, opts) do
         Link.render(content, @env, opts)
+      end
+
+      @doc """
+      Safely renders the content by escaping any HTML tags.
+      """
+      def safe_html(content) do
+        SafeHTML.render(content)
+      end
+
+      @doc """
+      Truncates the string.
+
+      ## Options
+
+      * `escape` - apply `safe_html/1` after truncating. Defaults to `false`.
+      """
+      def truncate(str, opts \\ []) do
+        truncated = Truncate.render(str, opts)
+
+        if opts[:escape] do
+          safe_html(truncated)
+        else
+          truncated
+        end
       end
 
       defp include_subscriber(opts) do
