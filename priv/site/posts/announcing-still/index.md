@@ -36,4 +36,4 @@ JavaScript tooling.
 
 **Responsive Images**
 
-<%= "\_example.jpg" |> path_expand() |> responsive_image(image_opts: %{transformations: [grayscale: "Rec709Luma"]}) %>
+<%= "\_example.jpg" |> path_expand() |> responsive_image(image_opts: %{transformations: [color_filter: "grayscale_bt709"]}) %>
