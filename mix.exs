@@ -22,7 +22,7 @@ defmodule Still.MixProject do
 
   defp docs do
     [
-      main: "Still",
+      main: "getting_started",
       extras: [
         "guides/introduction/getting_started.md",
         "guides/introduction/template_languages.md",
