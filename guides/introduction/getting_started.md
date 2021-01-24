@@ -6,7 +6,7 @@ Still is a simple static site generator for pragmatic developers. It's a modern 
 
 ## Quick start
 
-Still requires Elixir 1.10.4 and Erlang 23.0.3. It may work with previous versions, but these are the versions we are using at the moment.
+Still is in early active development. It requires Elixir 1.10.4 and Erlang 23.0.3. It may work with previous versions, but these are the versions we are using at the moment.
 
 ```bash
 mix archive.install hex still
