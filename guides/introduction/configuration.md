@@ -29,7 +29,7 @@ config still,
 
 The example above will will copy any file with a `.jpg` or `.jpeg` extension.
 
-Sometimes you want to alter the file name or path but keep the content of the files. The `:pass_through_copy` option allows if you use tuples. The key will be used to match the input folder, and the value will be used to transform the input path:
+**Sometimes you want to alter the file name or path but keep the content of the files.** The `:pass_through_copy` option allows this by using tuples. The key will be used to match the input folder, and the value will be used to transform the input path:
 
 ```elixir
 config :still,
