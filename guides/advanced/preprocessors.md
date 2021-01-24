@@ -2,7 +2,7 @@
 
 Preprocessors are the cornerstone of Still. A preprocessor chain can take a markdown file, execute its embedded Elixir, extract metadata from its front matter, transform it into HTML and wrap it in a layout.
 
-The default preprocessors are in [_Preprocessor_ module](https://github.com/subvisual/still/blob/master/lib/still/preprocessor.ex#L16). Each file in the input folder with one of the declared extensions is transformed and placed in the same relative place in the output folder. For instance, the file `about.md` will become `about.html` in the output folder, and a file inside a folder `blog/post_1.md` will also be in the same folder on the output directory `blog/post_1.html`.
+The default preprocessors are in the [`Preprocessor` module](https://github.com/subvisual/still/blob/master/lib/still/preprocessor.ex#L16). Each file in the input folder with one of the declared extensions is transformed and placed in the same relative place in the output folder. For instance, the file `about.md` will become `about.html` in the output folder, and a file inside a folder `blog/post_1.md` will also be in the same folder on the output directory `blog/post_1.html`.
 
 Notice that many file types, such as markdown and CSS, run through EEx, which means you can use EEx syntax in those files. Here's an example of a CSS file that uses EEx interpolation:
 
