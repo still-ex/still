@@ -53,7 +53,7 @@ Create a file `index.slime` in the input folder.
 
 Run `mix still.dev` to start the development server. Then your website will be available in [http://localhost:3000](http://localhost:3000/).
 
-Still is watching your file system for changes, and it refreshes the browser when necessary. If there are any errors building the website, they will show up on the browser, along with the stack trace and the context where the error happen.
+Still is watching your file system for changes and it refreshes the browser when necessary. If there are any errors building the website, they will show up on the browser, along with the stack trace and the context where the error happen.
 
 If you run `iex -S mix still.dev` you'll get an interactive shell where you can test things quickly, such as API calls.
 
