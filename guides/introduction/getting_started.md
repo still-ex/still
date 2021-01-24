@@ -2,7 +2,7 @@
 
 Still is a simple static site generator for pragmatic developers. It's a modern tool that doesn't solve every problem, but it also doesn't create any new developers. It's a modern and sane experience.
 
-🚧 _This documentation is incomplete, but we built [the landing page](https://github.com/subvisual/still/tree/master/priv/site) with Still to showcase some of its features. Have a look there if you can't find what you're looking for here._
+🚧 _This documentation is still incomplete, but we built [the landing page](https://github.com/subvisual/still/tree/master/priv/site) with Still to showcase some of its features. Have a look there if you can't find what you're looking for here._
 
 ## Quick start
 
