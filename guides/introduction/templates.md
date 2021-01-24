@@ -7,7 +7,7 @@ are transformed, and combined, to create the website.
 
 In templates, you can usually write Elixir, which allows you to extend
 your site with abstractions to generate CSS or make API calls. Still comes
-with some functions out of the box to help you build website. We call
+with some functions out of the box to help you build your website. We call
 these view helpers.
 
 ### Including other files
