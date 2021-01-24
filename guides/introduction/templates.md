@@ -62,7 +62,7 @@ The `:sizes` key is optional and by default we take the image's width to generat
 3 smaller images. If you specify an array of integers, it will use that
 instead.
 
-`:transformations` is also optional, and it's passed down to either
+`:transformations` is also optional and it's passed down to either
 [ImageMagick][imagemagic-cli-option] or [Imageflow][imageflow-docs], see
 each project's documentation for more information.
 
