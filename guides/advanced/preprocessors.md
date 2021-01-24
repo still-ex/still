@@ -35,7 +35,7 @@ end
 
 **A custom preprocessor is simply a module that calls `use Still.Preprocessor` and implements the `render/2` and `extension/1` functions.** In this example, the `render` function is used to transform the content and the metadata of a file, and the `extension` function is used to set the resulting content type. This `extension` function is not mandatory.
 
-Preprocessors are always part of a transformation chain, and each file will run through the chain, using the output of the one preprocessor as the input of the next. At the moment, the default transformation chains look like this:
+**Preprocessors are always part of a transformation chain** and each file will run through the chain, using the output of the one preprocessor as the input of the next. At the moment, the default transformation chains look like this:
 
 ```elixir
 @default_preprocessors %{
