@@ -114,8 +114,8 @@ html
     = @children
 ```
 
-Notice that `_layout.slime` starts with an underscore. It's necessary
-because we don't want to compile the layout file by itself. Any file
+Notice that `_layout.slime` starts with an underscore. **This is necessary
+since we don't want to compile the layout file by itself**. Any file
 starting with an underscore isn't compiled to the output, but can be
 imported by other files.
 
