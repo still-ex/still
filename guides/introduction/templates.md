@@ -48,7 +48,7 @@ as a dependency it will use that. The reason we do not use `imageflow_ex`
 by default is that it requires Rust. If you want to use ImageMagick, you
 also need to have it installed in your system.
 
-`responsive_image` receives an image and some opts and generates an HTML
+`responsive_image/2` receives an image and some opts and generates an HTML
 `img` which with the correct `src` and `sizes` for the different image
 sizes it generates.
 
