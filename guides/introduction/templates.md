@@ -105,7 +105,7 @@ h1 About Page
 
 This will look for a `_layout.slime` in your input folder.
 
-The layout file must print the children variable. For instance:
+The layout file must render the `@children` variable:
 
 ```slime
 doctype html
