@@ -47,7 +47,7 @@ config :still,
   output: Path.join(Path.dirname(__DIR__), "_site")
 ```
 
-Create a file `index.slime` in the input folder.
+Finally, create a file `index.slime` in the input folder.
 
 ## Development
 
