@@ -173,7 +173,7 @@ html
     div = @children
 ```
 
-And you can combine any templating language.
+This allows you to cascade down and combine any templating language.
 
 ## Collections
 
