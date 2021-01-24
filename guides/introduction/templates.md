@@ -177,7 +177,7 @@ This allows you to cascade down and combine any templating language.
 
 ## Collections
 
-Collections allow you to group file using a `tags` property. For instance:
+Collections allow you to group file using a `tags` property:
 
 ```
 ---
