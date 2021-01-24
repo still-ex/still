@@ -123,7 +123,7 @@ imported by other files.
 
 You can use any templating language in your layout - it doesn't need to
 match the language of the content being wrapped. For instance, we can have
-a markdown down file with a JavaScript wrapper:
+a markdown file with a JavaScript wrapper:
 
 ```markdown
 ---
