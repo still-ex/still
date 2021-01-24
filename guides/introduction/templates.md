@@ -58,7 +58,7 @@ a list of keyword arguments. To generate an image, Still only cares about the
 `img` tag. `:image_opts` has to be a map where you can specify `:sizes`
 and `:transformations`.
 
-`:sizes` is optional and by default we take the image's width to generate
+The `:sizes` key is optional and by default we take the image's width to generate
 3 smaller images. If you specify an array of integers, it will use that
 instead.
 
