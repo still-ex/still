@@ -83,7 +83,7 @@ A responsive image can be generated like this:
 
 ### Custom helpers
 
-You can call any module from the templates, but if you defined some modules in the config, their functions are imported to the templates:
+You can call any module from the templates (`Enum.reverse(list)` or `MyHelpers.func()`). However, if you want to write custom view helpers, you can add them to the configuration and their functions will be imported to the templates:
 
 ```elixir
 config :still,
