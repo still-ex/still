@@ -63,7 +63,7 @@ The `:sizes` key is optional and by default we take the image's width to generat
 instead.
 
 `:transformations` is also optional, and it's passed down to either
-[ImageMagick](imagemagic-cli-option] or [Imageflow][imageflow-docs], see
+[ImageMagick][imagemagic-cli-option] or [Imageflow][imageflow-docs], see
 each project's documentation for more information.
 
 A responsive image can be generated like this:
