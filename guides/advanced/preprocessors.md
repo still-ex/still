@@ -60,3 +60,11 @@ config :still,
 ```
 
 This preprocessor doesn't do anything to the contents of a file, so the file on the output folder will look exactly like the file in the input folder.
+
+If you want to add a custom preprocessor to one of the default extensions, you need to redefine the whole pipeline. For example, if you want to add your own preprocessor for `.css` files but keep the existing ones do the following:
+
+```elixir
+config :still,
+  preprocessors: %{
+    ".css" => [EEx, MyPreProcessor, CSSMinify, OutputPath, URLFingerprinting]
+  } 
