@@ -18,7 +18,7 @@ config :still,
   pass_through_copy: ["img"]
 ```
 
-Any file or folder that starts with the string `img` will be copied, which may include an `img` folder or a file named `img.png`. So you need to be mindful of that.
+**Any file or folder that starts with the string `img` will be copied, which may include an `img` folder or a file named `img.png`.** So you need to be mindful of that.
 
 You can also use regular expressions:
 
