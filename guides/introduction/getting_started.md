@@ -13,7 +13,7 @@ mix archive.install hex still
 mix still.new mysite
 ```
 
-This will create an Elixir project in the folder _my_new_site_. You'll find an `index.slime` file inside `priv/site`.
+This will create an Elixir project in the folder _mysite_. You'll find an `index.slime` file inside `priv/site`.
 
 Run `mix still.dev` to start the development server. Then open [http://localhost:3000](http://localhost:3000) in your web browser to see the new website.
 
