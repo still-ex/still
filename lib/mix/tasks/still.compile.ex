@@ -3,6 +3,8 @@ defmodule Mix.Tasks.Still.Compile do
 
   @doc false
   def run(_) do
+    Mix.Task.run("compile")
+
     {:ok, _} = Application.ensure_all_started(:still)
 
     Still.Compiler.CompilationStage.subscribe()
