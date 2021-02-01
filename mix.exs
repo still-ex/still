@@ -1,7 +1,7 @@
 defmodule Still.MixProject do
   use Mix.Project
 
-  @version "0.1.0"
+  @version "0.1.1"
 
   def project do
     [
@@ -11,9 +11,34 @@ defmodule Still.MixProject do
       elixir: "~> 1.10",
       elixirc_paths: ["lib"] ++ elixirc_paths(Mix.env()),
       package: package(),
-      source_url: "https://github.com/subvisual/still",
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      name: "Still",
+      source_url: "https://github.com/still-ex/still",
+      homepage_url: "https://still-ex.github.io/still/",
+      docs: docs()
+    ]
+  end
+
+  defp docs do
+    [
+      main: "getting_started",
+      extras: [
+        "guides/introduction/getting_started.md",
+        "guides/introduction/template_languages.md",
+        "guides/introduction/templates.md",
+        "guides/introduction/configuration.md",
+        "guides/advanced/preprocessors.md"
+      ],
+      nest_modules_by_prefix: [
+        Still.Preprocessor,
+        Still.Compiler,
+        Still.Web
+      ],
+      groups_for_extras: [
+        Introduction: Path.wildcard("guides/introduction/*.md"),
+        Advanced: Path.wildcard("guides/advanced/*.md")
+      ]
     ]
   end
 
@@ -43,7 +68,8 @@ defmodule Still.MixProject do
       {:yaml_elixir, "~> 2.4"},
       {:imageflow, "~> 0.4.0", optional: true},
       {:mogrify, "~> 0.8.0"},
-      {:timex, "~> 3.5"}
+      {:timex, "~> 3.5"},
+      {:ex_doc, "~> 0.23", only: :dev, runtime: false}
     ]
   end
 
@@ -62,7 +88,7 @@ defmodule Still.MixProject do
   defp package() do
     [
       licenses: ["ISC"],
-      links: %{"GitHub" => "https://github.com/subvisual/still"}
+      links: %{"GitHub" => "https://github.com/still-ex/still"}
     ]
   end
 end
