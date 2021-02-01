@@ -58,7 +58,7 @@ defmodule Still.MixProject do
       {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:file_system, "~> 0.2.8"},
-      {:markdown, "~> 0.1.0", hex: :still_markdown},
+      {:markdown, "~> 0.1.1", hex: :still_markdown},
       {:jason, "~> 1.2"},
       {:mock, "~> 0.3.0", only: :test},
       {:plug, "~> 1.10"},
