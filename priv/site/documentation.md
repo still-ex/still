@@ -115,7 +115,7 @@ config :still,
 
 This preprocessor doesn't do anything to the contents of a file, so the file on the output folder will look exactly like the file in the input folder.
 
-## Pass through copy
+## Passthrough copy
 
 Some files you don't need to transform, only to copy from the input to the output. That's what pass through copy is for.
 

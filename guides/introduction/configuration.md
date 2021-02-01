@@ -1,6 +1,6 @@
 # Configuration
 
-## Pass through copy
+## Passthrough copy
 
 Some files you don't need to transform, only to copy from the input to the output. That's what pass through copy is for.
 

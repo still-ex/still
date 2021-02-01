@@ -67,8 +67,8 @@ If you want to add a custom preprocessor to one of the default extensions, you n
 config :still,
   preprocessors: %{
     ".css" => [EEx, MyPreProcessor, CSSMinify, OutputPath, URLFingerprinting]
-  } 
-\`\`\`
+  }
+```
 
 The preprocessors will be executed in the order you configure them.
 
@@ -78,4 +78,5 @@ If you want to add a custom preprocessor to one of the default extensions, you n
 config :still,
   preprocessors: %{
     ".css" => [EEx, MyPreProcessor, CSSMinify, OutputPath, URLFingerprinting]
-  } 
+  }
+```

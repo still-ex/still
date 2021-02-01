@@ -12,7 +12,7 @@ these view helpers.
 
 ### Including other files
 
-Use the `include` function to import the contents of another file. For
+Use the `include/3` function to import the contents of another file. For
 instance, the following template includes the file `_includes/head.slime`:
 
 ```slim
@@ -28,7 +28,7 @@ function call with its contents.
 
 ### Linking to other files
 
-The `link` function creates HTML hyperlinks. It takes care of specifying
+The `link/2` function creates HTML hyperlinks. It takes care of specifying
 the `rel` and `target` when necessary, and it supports both full URLs or
 paths relative to the input folder. **You should always use the link
 function to create hyperlinks between files, otherwise deploys to
@@ -47,10 +47,6 @@ on [ImageMagick][imagemagick], but if you add [`imageflow_ex`][imageflow]
 as a dependency it will use that. The reason we do not use `imageflow_ex`
 by default is that it requires Rust. If you want to use ImageMagick, you
 also need to have it installed in your system.
-
-`responsive_image/2` receives an image and some opts and generates an HTML
-`img` which with the correct `src` and `sizes` for the different image
-sizes it generates.
 
 To insert an image use the `responsive_image` function, which accepts
 a list of keyword arguments. To generate an image, Still only cares about the
