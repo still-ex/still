@@ -1,0 +1,51 @@
+.getting_started {
+  background-color: var(--c-orange);
+  padding: var(--s-6);
+}
+
+.getting_started .content {
+  color: var(--c-black);
+  display: grid;
+  font-size: var(--s-5);
+  grid-column-gap: var(--s-8);
+  grid-row-gap: var(--s-8);
+  grid-template-columns: 420px 1fr 420px;
+  grid-template-rows: auto auto auto 1fr;
+  margin: 0 auto;
+  max-width: calc(var(--s-9) * 10);
+
+  grid-template-areas:
+    'title    .        .'
+    'million  details1 details1'
+    'million  .        mean'
+    'details2 details2 mean';
+}
+
+.getting_started .section-title {
+  color: var(--c-white);
+  grid-column: 1 / span 2;
+  grid-area: title;
+}
+
+.getting_started img {
+  max-width: 100%;
+  width: 100%;
+}
+
+.getting_started .details1 {
+  grid-area: details1;
+}
+
+.getting_started .details2 {
+  grid-area: details2;
+}
+
+.getting_started .million {
+  grid-area: million;
+}
+
+.getting_started .mean {
+  grid-area: mean;
+  margin-bottom: calc(var(--s-9) * -2);
+}
+

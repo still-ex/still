@@ -2,6 +2,8 @@
 <%= include("css/_fonts.css") %>
 <%= include("css/_main.css") %>
 <%= include("css/_manifesto.css") %>
+<%= include("css/_getting_started.css") %>
+<%= include("css/_community.css") %>
 
 .visually-hidden {
   clip: rect(0 0 0 0);
@@ -14,7 +16,7 @@
 }
 
 .p {
-  margin-bottom: var(--s-4);
+  margin-bottom: var(--s-6);
 }
 
 .section-title {

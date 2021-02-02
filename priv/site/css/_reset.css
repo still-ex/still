@@ -2,6 +2,8 @@
   --c-black: #222;
   --c-white: #F3EAC3;
   --c-white-alt: #EAEAEA;
+  --c-orange: #DA9F5D;
+  --c-brown: #A46F41;
   --s-1: 0.296rem;
   --s-2: 0.444rem;
   --s-3: 0.667rem;
@@ -82,4 +84,18 @@ p > code {
 
 a {
   color: var(--c-black);
+  text-decoration: none;
+  position: relative;
+  z-index: 1;
+}
+
+a::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  bottom: var(--s-1);
+  width: 100%;
+  left: 0;
+  height: var(--s-2);
+  background-color: var(--c-white);
 }

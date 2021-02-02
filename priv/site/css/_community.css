@@ -1,0 +1,16 @@
+.community {
+  background-color: var(--c-brown);
+  padding: var(--s-6);
+}
+
+.community .section-title {
+  color: var(--c-white);
+}
+
+.community .content {
+  color: var(--c-black);
+  display: grid;
+  font-size: var(--s-5);
+  margin: 0 auto;
+  max-width: calc(var(--s-9) * 10);
+}
