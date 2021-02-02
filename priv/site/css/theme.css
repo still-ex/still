@@ -1,6 +1,7 @@
 <%= include("css/_reset.css") %>
 <%= include("css/_fonts.css") %>
 <%= include("css/_main.css") %>
+<%= include("css/_manifesto.css") %>
 
 .visually-hidden {
   clip: rect(0 0 0 0);
@@ -10,4 +11,13 @@
   position: absolute;
   white-space: nowrap;
   width: 1px;
+}
+
+.p {
+  margin-bottom: var(--s-4);
+}
+
+.section-title {
+  font-family: MedulaOne;
+  font-size: var(--s-8);
 }

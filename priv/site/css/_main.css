@@ -31,11 +31,11 @@
 
 .main .content {
   display: grid;
-  padding: 0 var(--s-3);
+  padding: 0 var(--s-4);
   grid-row-gap: var(--s-6);
   grid-template-rows: max-content max-content;
   justify-content: center;
-  max-width: calc(var(--s-8) * 4);
+  max-width: calc(var(--s-9) * 5);
   padding-top: 15vh;
   width: 100%;
 }
@@ -52,13 +52,13 @@
 .main .lead {
   text-align: center;
   text-transform: uppercase;
-  font-size: var(--s-7);
+  font-size: var(--s-8);
   font-family: MedulaOne;
-  color: white;
+  color: var(--c-white-alt);
 }
 
 .main .marquee {
-  font-size: var(--s-6);
+  font-size: var(--s-7);
   background-color: var(--c-black);
   text-transform: uppercase;
   font-family: MedulaOne;

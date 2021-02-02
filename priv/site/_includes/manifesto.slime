@@ -1,0 +1,18 @@
+.manifesto
+  .content
+    h2.section-title Manifesto
+
+    .description
+      p.p Still is a different take on building static sites.
+
+      p.p A step back from the status quo, to a simpler time, without compromising on the great developer experience some of us have grown used to.
+
+      p.p Still is the web, still how you used to. Still weird. Still simple.
+
+      p.p Still focuses on your happiness and speed of development. It automates the boring parts and leaves the good ones to you.
+
+      p.p Still shines the spotlight on your abilities to write the best code you can. It is customisable, composable and as extensible as you want to. It is as powerful as you are.
+
+      p.p Still is our gift to the community. Stay simple. Stay weird.
+
+    = responsive_image("_includes/the_stilling.jpg", class: "cover")

@@ -1,0 +1,27 @@
+.manifesto {
+  background-color: var(--c-white);
+  padding: var(--s-6);
+}
+
+.manifesto .content {
+  margin: 0 auto;
+  max-width: calc(var(--s-9) * 10);
+  color: var(--c-black);
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  grid-column-gap: var(--s-9);
+  font-size: var(--s-5);
+}
+
+.manifesto .section-title {
+  grid-column: 1 / span 2;
+}
+
+.manifesto .cover {
+  max-width: 100%;
+  width: 100%;
+}
+
+.manifesto .description {
+  padding-top: var(--s-6);
+}
