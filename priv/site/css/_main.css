@@ -1,25 +1,74 @@
-.fancy-title {
-  font-size: 3rem;
-  margin: 8rem 0;
+.main {
+  height: 100vh;
+  position: relative;
+  color: var(--c-white);
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.main > .overlay {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  opacity: 0.45;
+  background-color: black;
+}
+
+.main > .cover {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  top: 0;
+  left: 0;
+  z-index: -2;
+  object-position: bottom center;
+}
+
+.main .content {
+  display: grid;
+  padding: 0 var(--s-3);
+  grid-row-gap: var(--s-6);
+  grid-template-rows: max-content max-content;
+  justify-content: center;
+  max-width: calc(var(--s-8) * 4);
+  padding-top: 15vh;
+  width: 100%;
+}
+
+.main .logo {
+  width: 100%;
+}
+
+.main .fancy-title {
+  font-size: var(--s-8);
   text-align: center;
 }
 
-
-.lead {
+.main .lead {
   text-align: center;
   text-transform: uppercase;
-  font-size: var(--s-6);
+  font-size: var(--s-7);
   font-family: MedulaOne;
+  color: white;
 }
 
-.lead-marquee {
-  font-size: var(--s-5);
-  color: var(--c-white);
+.main .marquee {
+  font-size: var(--s-6);
   background-color: var(--c-black);
   text-transform: uppercase;
+  font-family: MedulaOne;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
 }
 
-.lead-marquee > span {
+.main .marquee > span {
   white-space: nowrap;
   padding: 1px 1rem;
 }
