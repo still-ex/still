@@ -1,7 +1,7 @@
 defmodule Still.MixProject do
   use Mix.Project
 
-  @version "0.1.1"
+  @version "0.1.2"
 
   def project do
     [
@@ -25,7 +25,6 @@ defmodule Still.MixProject do
       main: "getting_started",
       extras: [
         "guides/introduction/getting_started.md",
-        "guides/introduction/template_languages.md",
         "guides/introduction/templates.md",
         "guides/introduction/configuration.md",
         "guides/advanced/preprocessors.md"
@@ -88,7 +87,12 @@ defmodule Still.MixProject do
   defp package() do
     [
       licenses: ["ISC"],
-      links: %{"GitHub" => "https://github.com/still-ex/still"}
+      links: %{"GitHub" => "https://github.com/still-ex/still"},
+      files: [
+        "LICENSE",
+        "mix*",
+        "lib/*"
+      ]
     ]
   end
 end
