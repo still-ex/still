@@ -1,0 +1,9 @@
+.main
+  h1.fancy-title Still
+  p.lead A composable elixir static site builder
+  marquee.lead-marquee
+    span Tonight on display: still (featuring elixir)
+    span Tonight on display: still (featuring elixir)
+    span Tonight on display: still (featuring elixir)
+    span Tonight on display: still (featuring elixir)
+    span Tonight on display: still (featuring elixir)

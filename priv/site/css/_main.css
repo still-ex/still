@@ -1,0 +1,25 @@
+.fancy-title {
+  font-size: 3rem;
+  margin: 8rem 0;
+  text-align: center;
+}
+
+
+.lead {
+  text-align: center;
+  text-transform: uppercase;
+  font-size: var(--s-6);
+  font-family: MedulaOne;
+}
+
+.lead-marquee {
+  font-size: var(--s-5);
+  color: var(--c-white);
+  background-color: var(--c-black);
+  text-transform: uppercase;
+}
+
+.lead-marquee > span {
+  white-space: nowrap;
+  padding: 1px 1rem;
+}

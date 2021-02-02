@@ -105,6 +105,8 @@ defmodule Still.Compiler.CompilationStage do
 
   defp compile_file("."), do: :ok
 
+  defp compile_file("/"), do: :ok
+
   defp compile_file(file) do
     Incremental.Registry.get_or_create_file_process(file)
     |> Incremental.Node.compile()

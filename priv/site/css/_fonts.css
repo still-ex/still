@@ -1,0 +1,9 @@
+@font-face {
+  font-family: MedulaOne;
+  src: url(<%= url_for("/fonts/MedulaOne-Regular.ttf") %>);
+}
+
+@font-face {
+  font-family: PontanoSans;
+  src: url(<%= url_for("/fonts/PontanoSans-Regular.ttf") %>);
+}

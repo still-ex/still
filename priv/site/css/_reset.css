@@ -1,0 +1,81 @@
+:root {
+  --c-black: #222;
+  --c-white: #F3EAC3;
+  --s-1: 0.296rem;
+  --s-2: 0.444rem;
+  --s-3: 1rem;
+  --s-4: 1.5rem;
+  --s-5: 2.25rem;
+  --s-6: 3.375rem;
+  --s-7: 5.063rem;
+  --s-8: 7.594rem;
+}
+
+body, html {
+  color: #333;
+  background: white;
+  font-size: 16px;
+  line-height: 1;
+  font-family: PontanoSans;
+  overscroll-behavior-y: none;
+
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+ul,
+ol {
+  list-style-type: circle;
+  list-style-position: inside;
+  padding: 0;
+}
+
+h1 {
+  font-family: MedulaOne;
+  font-size: var(--s-6);
+}
+
+h2 {
+  font-family: MedulaOne;
+  font-size: var(--s-5);
+}
+
+h3 {
+  font-family: MedulaOne;
+  font-size: var(--s-4);
+}
+
+h4 {
+  font-family: MedulaOne;
+  font-size: var(--s-3);
+}
+
+img {
+  max-width: 100%;
+}
+
+code {
+  color: var(--c-white);
+  background-color: var(--c-black);
+  font-family: monospace;
+  font-size: 16px;
+}
+
+pre {
+  padding: 1rem;
+  color: var(--c-white);
+  background-color: var(--c-black);
+  overflow-x: scroll;
+}
+
+p > code {
+  padding: 0 var(--s-3);
+}
+
+a {
+  color: var(--c-black);
+}
