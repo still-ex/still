@@ -32,7 +32,6 @@
 }
 
 .community .contributor {
-  margin-top: var(--s-7);
   margin-bottom: var(--s-7);
   display: inline-flex;
   width: var(--s-9);
@@ -73,4 +72,12 @@
 .community .stars {
   width: 100%;
   max-width: calc(var(--s-8) * 2);
+}
+
+.community .btn {
+  margin-bottom: var(--s-5);
+}
+
+.community .btn:last-child {
+  margin-bottom: 0;
 }

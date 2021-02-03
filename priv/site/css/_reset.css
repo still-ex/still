@@ -106,19 +106,6 @@ p > code {
 }
 
 a {
-  color: var(--c-black);
+  color: inherit;
   text-decoration: none;
-  position: relative;
-  z-index: 1;
-}
-
-a::after {
-  content: '';
-  position: absolute;
-  z-index: -1;
-  bottom: var(--s-1);
-  width: 100%;
-  left: 0;
-  height: var(--s-2);
-  background-color: var(--c-white);
 }

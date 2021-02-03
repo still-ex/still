@@ -2,9 +2,15 @@
   .content
     h1.fancy-title
       .visually-hidden Still
-      .logo-container
-        = responsive_image("_includes/logo.png", class: "logo", aria_hidden: true)
-      p.lead A composable elixir static site builder
+
+    .logo-container
+      = responsive_image("_includes/logo.png", class: "logo", aria_hidden: true)
+
+    p.lead A composable elixir static site builder
+
+    .info
+      = link "Docs", to: "https://hexdocs.pm/still", class: "cta"
+      = link "GitHub", to: "https://github.com/still-ex/still", class: "cta"
   marquee.marquee
     span Tonight on display: still (featuring elixir)
     span Tonight on display: still (featuring elixir)

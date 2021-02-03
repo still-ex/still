@@ -19,10 +19,76 @@
 
 .p {
   margin-bottom: var(--s-6);
-  font-size: var(--s-5);
+  font-size: var(--s-4);
+  line-height: var(--s-5);
 }
 
 .section-title {
   font-family: MedulaOne;
-  font-size: var(--s-8);
+  font-size: var(--s-7);
+  line-height: var(--s-8);
+}
+
+.code {
+  color: var(--c-white);
+  background-color: var(--c-black);
+  font-family: monospace;
+  padding: 0 var(--s-1);
+}
+
+.btn {
+  display: inline-block;
+  padding: var(--s-3) var(--s-4);
+  border: 1px solid var(--c-black);
+  border-radius: 5px;
+  text-transform: uppercase;
+  font-family: PontanoSans;
+  font-size: var(--s-6);
+  letter-spacing: 4px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn:hover,
+.btn:focus {
+  background-color: var(--c-black);
+  color: var(--c-white);
+}
+
+.btn span {
+  position: relative;
+  z-index: 1;
+}
+
+.btn span::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  bottom: var(--s-1);
+  width: 100%;
+  left: 0;
+  height: var(--s-3);
+  background-color: var(--c-white);
+  transition: all 0.3s ease-in-out;
+}
+
+.btn:hover span::after {
+  background-color: var(--c-red);
+}
+
+.cta {
+  display: inline-block;
+  padding: var(--s-3) var(--s-4);
+  border: 1px solid var(--c-white);
+  border-radius: 5px;
+  font-family: MedulaOne;
+  font-size: var(--s-6);
+  letter-spacing: 6px;
+  color: var(--c-white-alt);
+  transition: all 0.3s ease-in-out;
+}
+
+.cta:hover,
+.cta:focus {
+  background-color: var(--c-white);
+  color: var(--c-black);
 }

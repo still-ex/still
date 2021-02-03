@@ -4,19 +4,32 @@
 
     = responsive_image("_includes/million.jpg", class: "million")
     = responsive_image("_includes/mean.jpg", class: "mean")
-    .details1
+    .details
       p.p Still is still in early active development. To get started:
 
       pre.p
         code
-          mix archive.install hex still<br />
-          mix still.new mysite
+          | mix archive.install hex still
+          br
+          | mix still.new mysite
 
-      p.p This will create an Elixir project in the folder mysite. You’ll find an index.slime file inside priv/site.
+      p.p
+        ' This will create an Elixir project in the folder
+        span.code mysite
+        '. You’ll find an
+        span.code index.slime
+        '  file inside
+        span.code priv/site
+        ' .
 
-      p.p Run mix still.dev to start the development server. Then open http://localhost:3000 in your web browser to see the new website.
+      p.p
+        ' Run
+        span.code mix still.dev
+        '  to start the development server. Then open
+        span.code http://localhost:3000
+        '  in your web browser to see the new website.
 
-    .details2
-      p.p You can also add Still to an existing project.
-
-      p.p Visit our <%= link "docs", to: "https://hexdocs.pm/still" %> for that and more. Fork us on <%= link "GitHub", to: "https://github.com/still-ex/still" %>
+      p.p
+        | You can also add it to an existing project.
+        br
+        | Visit our docs for all the goodies.

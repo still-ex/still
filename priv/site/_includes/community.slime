@@ -3,14 +3,16 @@
     .contributors
       h2.section-title Contributors
 
-      p Still wouldn’t be possible without our maintainers & wonderful contributors. Much ❤️ to you all.
+      p.p
+        | Still wouldn’t be possible without our maintainers & wonderful contributors.
+        br
+        | Much ❤️ to you all.
 
-      = for user <- Still.Site.Github.contributors do
+      = for user <- Still.Site.Github.contributors() do
         = link to: user.url, class: "contributor" do
           img src="#{user.avatar_url}"
-          div= user.username
-
-
+          p
+            strong = user.username
 
       = link to: "https://github.com/still-ex/still", class: "quote" do
         .mark “
@@ -24,6 +26,8 @@
     .still
       h2.section-title Built With Still
 
-      ul
-        li #{link "This website you're reading", to: "https://github.com/still-ex/still/tree/master/priv/site"}
-        li #{link "Gabriel's website", to: "https://gabrielpoca.com"} (#{link "source code", to: "https://github.com/gabrielpoca/gabrielpoca.com/"})
+      = link to: "https://github.com/still-ex/still/tree/master/priv/site", class: "btn" do
+        span This website
+
+      = link to: "https://gabrielpoca.com", class: "btn" do
+        span gabrielpoca.com

@@ -6,4 +6,4 @@
       p.p Maintainance for Still is possible due to contributions from our sponsors:
 
       = link to: "https://subvisual.com" do
-        = responsive_image("_includes/subvisual.png", class: "")
+        = responsive_image("_includes/subvisual.png", class: "sponsor-image")

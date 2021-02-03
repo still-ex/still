@@ -49,9 +49,23 @@
   text-align: center;
   text-transform: uppercase;
   font-size: var(--s-8);
+  line-height: var(--s-9);
   font-family: MedulaOne;
   color: var(--c-white-alt);
+}
+
+.main .info {
+  text-align: center;
   margin-bottom: var(--s-9);
+  width: 100%;
+}
+
+.main .cta {
+  margin-right: var(--s-3);
+}
+
+.main .cta:last-child {
+  margin-right: 0;
 }
 
 .main .marquee {
