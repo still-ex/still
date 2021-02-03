@@ -12,6 +12,10 @@
   max-width: 420px;
 }
 
+.sponsors .details a::after {
+  display: none;
+}
+
 .sponsors .content {
   max-width: calc(var(--s-9) * 10);
   margin: 0 auto;

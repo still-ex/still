@@ -23,3 +23,7 @@
 
     .still
       h2.section-title Built With Still
+
+      ul
+        li #{link "This website you're reading", to: "https://github.com/still-ex/still/tree/master/priv/site"}
+        li #{link "Gabriel's website", to: "https://gabrielpoca.com"} (#{link "source code", to: "https://github.com/gabrielpoca/gabrielpoca.com/"})

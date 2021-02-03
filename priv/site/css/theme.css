@@ -18,6 +18,7 @@
 
 .p {
   margin-bottom: var(--s-6);
+  font-size: var(--s-5);
 }
 
 .section-title {
