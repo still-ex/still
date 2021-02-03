@@ -1,9 +1,9 @@
-defmodule <%= app_module %>.MixProject do
+defmodule <%= @app_module %>.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :<%= app_name %>,
+      app: :<%= @app_name %>,
       version: "0.1.0",
       elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
@@ -28,7 +28,7 @@ defmodule <%= app_module %>.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:still, "~> <%= still_version %>"}
+      {:still, "~> <%= @still_version %>"}
     ]
   end
 end

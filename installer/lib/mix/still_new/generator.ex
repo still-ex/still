@@ -23,31 +23,23 @@ defmodule Still.New.Generator do
   end
 
   defp copy_file(input, output, project) do
-    with :ok <- ensure_file_path_exists(project, output),
-         content <- read_file(input),
-         transformed <- process_eex(project, content),
-         :ok <- write_project_file(project, output, transformed) do
-      :ok
-    end
+    input_path = template_path(input)
+    output_path = output_path(project, output)
+    metadata = eex_metadata(project)
+
+    Mix.Generator.copy_template(input_path, output_path, metadata)
   end
 
-  defp read_file(input) do
-    File.read!("#{@root}/templates/#{input}")
+  defp template_path(input) do
+    "#{@root}/templates/#{input}"
   end
 
-  defp write_project_file(project, output, content) do
+  defp output_path(project, output) do
     (project.path <> output)
     |> Path.expand()
-    |> File.write!(content)
   end
 
-  defp process_eex(project, content) do
-    metadata = project_to_eex_metadata(project)
-
-    EEx.eval_string(content, metadata)
-  end
-
-  defp project_to_eex_metadata(project) do
+  defp eex_metadata(project) do
     [
       app_module: project.module,
       app_name: project.name,
@@ -55,18 +47,17 @@ defmodule Still.New.Generator do
     ]
   end
 
-  defp ensure_base_path_exists(project) do
-    ensure_path_exists(project.path)
-  end
+  defp ensure_base_path_exists(%{path: path}) do
+    cwd = File.cwd!()
+    target = path |> Path.expand() |> Path.dirname()
 
-  defp ensure_file_path_exists(project, path) do
-    ensure_path_exists(project.path <> path)
-  end
-
-  def ensure_path_exists(path) do
+    if cwd == target do
+      true
+    else
     path
     |> Path.expand()
     |> Path.dirname()
-    |> File.mkdir_p()
+    |> Mix.Generator.create_directory()
+    end
   end
 end

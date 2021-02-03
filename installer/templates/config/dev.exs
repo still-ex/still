@@ -1,4 +1,5 @@
 import Config
 
 config :still,
-  dev_layout: true
+  dev_layout: true,
+  profiler: true
