@@ -9,12 +9,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-elixir@v1
+
+      - uses: erlef/setup-elixir@v1
         with:
           otp-version: '23.2'
           elixir-version: '1.11.3'
+
+      - name: Restore Cache
+        uses: actions/cache@v2
+        id: mix-cache
+        with:
+          path: |
+            deps
+            _build
+            _site
+          key: mix-${{ hashFiles('mix.lock') }}
+
       - run: mix deps.get
+
       - run: mix still.compile
+
       - uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
