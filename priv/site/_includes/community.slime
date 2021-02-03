@@ -1,5 +1,25 @@
 .community
   .content
-    h2.section-title Getting Started
+    .contributors
+      h2.section-title Contributors
 
-    p.p Still wouldn’t be possible without our maintainers & wonderful contributors. Much ❤️ to you all.
+      p Still wouldn’t be possible without our maintainers & wonderful contributors. Much ❤️ to you all.
+
+      = for user <- Still.Site.Github.contributors do
+        = link to: user.url, class: "contributor" do
+          img src="#{user.avatar_url}"
+          div= user.username
+
+
+
+      = link to: "https://github.com/still-ex/still", class: "quote" do
+        .mark “
+        div
+          = responsive_image("_includes/stars.png", class: "stars")
+          div Breathtaking, fixed all my issues with static sites.
+          div.small -- 410 stargazers on GitHub
+
+      = responsive_image("_includes/man_still.jpg", class: "man_still")
+
+    .still
+      h2.section-title Built With Still

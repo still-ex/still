@@ -1,10 +1,11 @@
 .community {
   background-color: var(--c-brown);
-  padding: var(--s-6);
+  padding: var(--s-7);
 }
 
 .community .section-title {
   color: var(--c-white);
+  margin-bottom: var(--s-7);
 }
 
 .community .content {
@@ -13,4 +14,63 @@
   font-size: var(--s-5);
   margin: 0 auto;
   max-width: calc(var(--s-9) * 10);
+  display: grid;
+  grid-template-columns: minmax(420px, 1fr) 420px;
+  grid-row-gap: var(--s-8);
+  grid-column-gap: calc(var(--s-8) * 2);
+  justify-content: space-between;
+}
+
+.community .still {
+  padding-top: calc(var(--s-9) * 2);
+}
+
+.community .man_still {
+  margin-top: var(--s-9);
+  margin-bottom: -50%;
+  max-width: 420px;
+}
+
+.community .contributor {
+  margin-top: var(--s-7);
+  margin-bottom: var(--s-7);
+  display: inline-flex;
+  width: var(--s-9);
+  margin-right: var(--s-7);
+  flex-direction: column;
+  align-items: center;
+  font-size: var(--s-4);
+}
+
+.community .contributor img {
+  border-radius: 50%;
+  margin-bottom: var(--s-3);
+}
+
+.community .contributor::after {
+  display: none;
+}
+
+.community .quote {
+  display: flex;
+}
+
+.community .quote::after {
+  display: none;
+}
+
+.community .small {
+  font-size: var(--s-4);
+}
+
+.community .mark {
+  line-height: 0.9;
+  font-size: calc(var(--s-9) * 2);
+  margin-right: var(--s-1);
+  margin-bottom: -200px;
+}
+
+.community .stars {
+  width: 100%;
+  max-width: calc(var(--s-8) * 2);
 }

@@ -4,6 +4,7 @@
 <%= include("css/_manifesto.css") %>
 <%= include("css/_getting_started.css") %>
 <%= include("css/_community.css") %>
+<%= include("css/_sponsors.css") %>
 
 .visually-hidden {
   clip: rect(0 0 0 0);

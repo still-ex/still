@@ -1,0 +1,8 @@
+.sponsors
+  .content
+    .details
+      h2.section-title Sponsors
+
+      p.p Maintainance for Still is possible due to contributions from our sponsors:
+
+      = responsive_image("_includes/subvisual.png", class: "")
