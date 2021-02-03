@@ -7,7 +7,7 @@
 .logo {
   width: 100%;
   opacity: 0;
-  animation: flicker 4.5s linear 1s;
+  animation: flicker 3.5s linear 0.7s;
   animation-fill-mode: forwards;
 }
 
