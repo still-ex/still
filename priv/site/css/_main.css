@@ -40,10 +40,6 @@
   width: 100%;
 }
 
-.main .logo {
-  width: 100%;
-}
-
 .main .fancy-title {
   font-size: var(--s-8);
   text-align: center;

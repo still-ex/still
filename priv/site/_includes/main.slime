@@ -2,8 +2,9 @@
   .content
     h1.fancy-title
       .visually-hidden Still
-      = responsive_image("_includes/logo.png", class: "logo", aria_hidden: true)
-    p.lead A composable elixir static site builder
+      .logo-container
+        = responsive_image("_includes/logo.png", class: "logo", aria_hidden: true)
+      p.lead A composable elixir static site builder
   marquee.marquee
     span Tonight on display: still (featuring elixir)
     span Tonight on display: still (featuring elixir)

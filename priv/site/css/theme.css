@@ -1,5 +1,6 @@
 <%= include("css/_reset.css") %>
 <%= include("css/_fonts.css") %>
+<%= include("css/_logo.css") %>
 <%= include("css/_main.css") %>
 <%= include("css/_manifesto.css") %>
 <%= include("css/_getting_started.css") %>

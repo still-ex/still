@@ -1,0 +1,86 @@
+.logo-container {
+  background-image: url("<%= url_for("images/logo-off.png") %>");
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.logo {
+  width: 100%;
+  opacity: 0;
+  animation: flicker 3s linear 1s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes flicker {
+  0% {
+    opacity: 0;
+  }
+
+  9% {
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  11% {
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  22% {
+    opacity: 1;
+  }
+
+  24% {
+    opacity: 0;
+  }
+
+  58% {
+    opacity: 0;
+  }
+
+  60% {
+    opacity: 1;
+  }
+
+  62% {
+    opacity: 0;
+  }
+
+  68% {
+    opacity: 0;
+  }
+
+  70% {
+    opacity: 1;
+  }
+
+  72% {
+    opacity: 0;
+  }
+
+  81% {
+    opacity: 0;
+  }
+
+  83% {
+    opacity: 1;
+  }
+
+  85% {
+    opacity: 0;
+  }
+
+  92% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
