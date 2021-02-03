@@ -1,2 +1,2 @@
-defmodule <%= app_module %> do
+defmodule <%= @app_module %> do
 end
