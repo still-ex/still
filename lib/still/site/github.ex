@@ -5,24 +5,41 @@ if Mix.env() == :dev do
       "frm"
     ]
 
-    def contributors do
-      @contributors
-      |> Enum.map(fn username ->
-        {:ok, {_, _, body}} =
-          :httpc.request(
-            :get,
-            {"https://api.github.com/users/#{username}",
-             [
-               {'Accept', 'application/vnd.github.v3+json'},
-               {'User-Agent',
-                'Mozilla/5.0 (X11; Linux x86_64; rv:58.0) Gecko/20100101 Firefox/58.0'}
-             ]},
-            [],
-            []
-          )
+    def stars do
+      {:ok, {_, _, body}} =
+        :httpc.request(
+          :get,
+          {"https://api.github.com/repos/still-ex/still",
+           [
+             {'Accept', 'application/vnd.github.v3+json'},
+             {'User-Agent',
+              'Mozilla/5.0 (X11; Linux x86_64; rv:58.0) Gecko/20100101 Firefox/58.0'}
+           ]},
+          [],
+          []
+        )
 
-        Jason.decode!(body)
-      end)
+      body
+      |> Jason.decode!()
+      |> Map.get("stargazers_count")
+    end
+
+    def contributors do
+      {:ok, {_, _, body}} =
+        :httpc.request(
+          :get,
+          {"https://api.github.com/repos/still-ex/still/contributors",
+           [
+             {'Accept', 'application/vnd.github.v3+json'},
+             {'User-Agent',
+              'Mozilla/5.0 (X11; Linux x86_64; rv:58.0) Gecko/20100101 Firefox/58.0'}
+           ]},
+          [],
+          []
+        )
+
+      body
+      |> Jason.decode!()
       |> Enum.map(fn user ->
         %{
           username: "@#{user["login"]}",

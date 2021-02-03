@@ -17,7 +17,7 @@
         div
           = responsive_image("_includes/stars.png", class: "stars")
           div Breathtaking, fixed all my issues with static sites.
-          div.small -- 410 stargazers on GitHub
+          div.small -- #{Still.Site.Github.stars} stargazers on GitHub
 
       = responsive_image("_includes/man_still.jpg", class: "man_still")
 
