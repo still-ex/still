@@ -15,7 +15,7 @@
   margin: 0 auto;
   max-width: calc(var(--s-9) * 10);
   display: grid;
-  grid-template-columns: minmax(420px, 1fr) 420px;
+  grid-template-columns: minmax(var(--s-poster), 1fr) var(--s-poster);
   grid-row-gap: var(--s-8);
   grid-column-gap: calc(var(--s-8) * 2);
   justify-content: space-between;
@@ -28,7 +28,7 @@
 .community .man_still {
   margin-top: var(--s-9);
   margin-bottom: -50%;
-  max-width: 420px;
+  max-width: var(--s-poster);
 }
 
 .community .contributor {

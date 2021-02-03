@@ -9,7 +9,7 @@
   font-size: var(--s-5);
   grid-column-gap: var(--s-8);
   grid-row-gap: var(--s-8);
-  grid-template-columns: 420px 1fr 420px;
+  grid-template-columns: var(--s-poster) 1fr var(--s-poster);
   grid-template-rows: auto auto auto 1fr;
   margin: 0 auto;
   max-width: calc(var(--s-9) * 10);

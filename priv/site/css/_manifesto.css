@@ -8,7 +8,7 @@
   max-width: calc(var(--s-9) * 10);
   color: var(--c-black);
   display: grid;
-  grid-template-columns: 1fr 420px;
+  grid-template-columns: 1fr var(--s-poster);
   grid-column-gap: var(--s-9);
   font-size: var(--s-5);
 }

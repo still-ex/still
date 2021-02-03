@@ -9,7 +9,7 @@
 }
 
 .sponsors .details {
-  max-width: 420px;
+  max-width: var(--s-poster);
 }
 
 .sponsors .details a::after {
