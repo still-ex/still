@@ -34,16 +34,16 @@ jobs:
       uses: actions/cache@v2
       with:
         path: deps
-        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
-        restore-keys: ${{ runner.os }}-mix-
+        key: ${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-mix-${{ hashFiles('**/mix.lock') }}
+        restore-keys: ${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-mix-
 
     - name: Cache build
       uses: actions/cache@v1
       with:
         path: _build
-        key: ${{ runner.OS }}-build-
+        key: ${{ runner.OS }}-${{ matrix.elixir }}-${{ matrix.otp }}-build-
         restore-keys: |
-          ${{ runner.OS }}-build-
+          ${{ runner.OS }}-${{ matrix.elixir }}-${{ matrix.otp }}-build-
 
     - name: Install dependencies
       run: |
