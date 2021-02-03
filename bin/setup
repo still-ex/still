@@ -16,6 +16,7 @@ if ! installed "elixir"; then
     pp_info "setup" "Using asdf..."
     set +e
     asdf plugin-add elixir https://github.com/asdf-vm/asdf-elixir.git 2>/dev/null
+    asdf plugin-add rust https://github.com/code-lever/asdf-rust.git 2>/dev/null
     set -e
 
     asdf install
