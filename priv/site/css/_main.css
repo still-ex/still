@@ -1,5 +1,5 @@
 .main {
-  height: 100vh;
+  min-height: 100vh;
   position: relative;
   color: var(--c-white);
   z-index: 1;
@@ -36,7 +36,7 @@
   grid-template-rows: max-content max-content;
   justify-content: center;
   max-width: calc(var(--s-9) * 5);
-  padding-top: 15vh;
+  padding-top: 10vh;
   width: 100%;
 }
 
@@ -55,6 +55,7 @@
   font-size: var(--s-8);
   font-family: MedulaOne;
   color: var(--c-white-alt);
+  margin-bottom: var(--s-9);
 }
 
 .main .marquee {
