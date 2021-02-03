@@ -17,8 +17,9 @@ jobs:
           - 23
         elixir:
           - 1.10.4
+          - 1.11.3
         rust:
-          - stable
+          - 1.49.0
 
     steps:
     - uses: actions/checkout@v2
@@ -26,8 +27,8 @@ jobs:
     - name: Set up Elixir
       uses: actions/setup-elixir@v1
       with:
-        elixir-version: '1.10.4'
-        otp-version: '23.0.3'
+        elixir-version: ${{ matrix.elixir }}
+        otp-version: ${{ matrix.otp }}
 
     - name: Restore dependencies cache
       uses: actions/cache@v2
