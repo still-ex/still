@@ -7,7 +7,7 @@
 .logo {
   width: 100%;
   opacity: 0;
-  animation: flicker 3s linear 1s;
+  animation: flicker 4.5s linear 1s;
   animation-fill-mode: forwards;
 }
 
@@ -32,51 +32,51 @@
     opacity: 1;
   }
 
-  22% {
+  21% {
     opacity: 1;
   }
 
-  24% {
+  23% {
     opacity: 0;
   }
 
-  58% {
+  49% {
     opacity: 0;
   }
 
-  60% {
+  50% {
     opacity: 1;
+  }
+
+  51% {
+    opacity: 0;
+  }
+
+  55% {
+    opacity: 0;
+  }
+
+  56% {
+    opacity: 1;
+  }
+
+  57% {
+    opacity: 0;
+  }
+
+  61% {
+    opacity: 0;
   }
 
   62% {
-    opacity: 0;
-  }
-
-  68% {
-    opacity: 0;
-  }
-
-  70% {
     opacity: 1;
   }
 
-  72% {
+  63% {
     opacity: 0;
   }
 
-  81% {
-    opacity: 0;
-  }
-
-  83% {
-    opacity: 1;
-  }
-
-  85% {
-    opacity: 0;
-  }
-
-  92% {
+  75% {
     opacity: 0;
   }
 
