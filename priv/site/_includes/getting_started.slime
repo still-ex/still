@@ -2,8 +2,7 @@
   .content
     h2.section-title Getting Started
 
-    = responsive_image("_includes/million.jpg", class: "million")
-    = responsive_image("_includes/mean.jpg", class: "mean")
+    = responsive_image("_includes/million.jpg", class: "million poster")
     .details
       p.p Still is still in early active development. To get started:
 
@@ -33,3 +32,4 @@
         | You can also add it to an existing project.
         br
         | Visit our docs for all the goodies.
+    = responsive_image("_includes/mean.jpg", class: "mean poster")

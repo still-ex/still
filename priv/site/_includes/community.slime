@@ -21,7 +21,7 @@
           div Breathtaking, fixed all my issues with static sites.
           div.small -- #{Still.Site.Github.stars} stargazers on GitHub
 
-      = responsive_image("_includes/man_still.jpg", class: "man_still")
+      = responsive_image("_includes/man_still.jpg", class: "man_still poster")
 
     .still
       h2.section-title Built With Still

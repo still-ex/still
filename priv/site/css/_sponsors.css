@@ -1,7 +1,6 @@
 .sponsors {
   background-color: var(--c-red);
-  padding: var(--s-7);
-  padding-bottom: var(--s-9);
+  padding: 0 var(--s-7) var(--s-9);
 }
 
 .sponsors .section-title {
@@ -26,4 +25,10 @@
 
 .sponsors .sponsor-image {
   width: 100%;
+}
+
+@media (max-width: 700px) {
+  .sponsors .content {
+    justify-content: flex-start;
+  }
 }

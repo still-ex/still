@@ -1,6 +1,6 @@
 .manifesto {
   background-color: var(--c-white);
-  padding: var(--s-9);
+  padding: 0 var(--s-7) var(--s-7);
 }
 
 .manifesto .content {
@@ -13,15 +13,20 @@
   font-size: var(--s-5);
 }
 
-.manifesto .section-title {
-  grid-column: 1 / span 2;
-}
-
 .manifesto .cover {
-  max-width: 100%;
-  width: 100%;
+  margin-top: calc(var(--s-8) * 2);
 }
 
 .manifesto .description {
   padding-top: var(--s-6);
+}
+
+@media (max-width: 700px) {
+  .manifesto .content {
+    display: block;
+  }
+
+  .manifesto .cover {
+    margin-top: calc(var(--s-8));
+  }
 }

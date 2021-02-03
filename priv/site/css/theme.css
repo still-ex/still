@@ -18,15 +18,19 @@
 }
 
 .p {
-  margin-bottom: var(--s-6);
   font-size: var(--s-4);
   line-height: var(--s-5);
+}
+
+.p:not(:last-child) {
+  margin-bottom: var(--s-6);
 }
 
 .section-title {
   font-family: MedulaOne;
   font-size: var(--s-7);
   line-height: var(--s-8);
+  padding-top: var(--s-7);
 }
 
 .code {
@@ -43,7 +47,7 @@
   border-radius: 5px;
   text-transform: uppercase;
   font-family: PontanoSans;
-  font-size: var(--s-6);
+  font-size: var(--s-5);
   letter-spacing: 4px;
   transition: all 0.2s ease-in-out;
 }

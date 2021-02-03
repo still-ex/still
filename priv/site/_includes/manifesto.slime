@@ -1,8 +1,8 @@
 .manifesto
   .content
-    h2.section-title Manifesto
-
     .description
+      h2.section-title Manifesto
+
       p.p Still is a different take on building static sites.
 
       p.p A step back from the status quo, to a simpler time, without compromising on the great developer experience some of us have grown used to.
@@ -15,4 +15,4 @@
 
       p.p Still is our gift to the community. Stay simple. Stay weird.
 
-    = responsive_image("_includes/the_stilling.jpg", class: "cover")
+    = responsive_image("_includes/the_stilling.jpg", class: "cover poster")
