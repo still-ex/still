@@ -1,9 +1,8 @@
 if Mix.env() == :dev do
   defmodule Still.Site.Github do
-    @contributors [
-      "gabrielpoca",
-      "frm"
-    ]
+    @rate_limited_stargazers 418
+    @rate_limited_username "@ratelimited"
+    @rate_limited_url "https://picsum.photos/400"
 
     def stars do
       {:ok, {_, _, body}} =
@@ -21,7 +20,7 @@ if Mix.env() == :dev do
 
       body
       |> Jason.decode!()
-      |> Map.get("stargazers_count")
+      |> Map.get("stargazers_count", @rate_limited_stargazers)
     end
 
     def contributors do
@@ -40,12 +39,20 @@ if Mix.env() == :dev do
 
       body
       |> Jason.decode!()
-      |> Enum.map(fn user ->
-        %{
-          username: "@#{user["login"]}",
-          url: user["html_url"],
-          avatar_url: user["avatar_url"]
-        }
+      |> Enum.map(fn
+        %{"login" => _} = user ->
+          %{
+            username: "@#{user["login"]}",
+            url: user["html_url"],
+            avatar_url: user["avatar_url"]
+          }
+
+        _error ->
+          %{
+            username: @rate_limited_username,
+            url: @rate_limited_url,
+            avatar_url: @rate_limited_url
+          }
       end)
     end
   end
