@@ -65,7 +65,6 @@ defmodule Still.MixProject do
       {:slime, "~> 1.2"},
       {:floki, "~> 0.29.0"},
       {:yaml_elixir, "~> 2.4"},
-      {:imageflow, "~> 0.4.0", optional: true},
       {:mogrify, "~> 0.8.0"},
       {:timex, "~> 3.5"},
       {:ex_doc, "~> 0.23", only: :dev, runtime: false}

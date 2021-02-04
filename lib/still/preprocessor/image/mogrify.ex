@@ -1,7 +1,16 @@
 defmodule Still.Preprocessor.Image.Mogrify do
+  @moduledoc """
+  Implements `Still.Preprocessor.Image.Adapter` for
+  [Mogrify](https://github.com/route/mogrify).
+
+  Default module used when no other adapter is provided.
+  """
+  use Still.Preprocessor.Image.Adapter
+
   import Still.Utils
   import Mogrify
 
+  @impl true
   def render(
         %{
           metadata: %{image_opts: opts} = metadata,
@@ -22,6 +31,16 @@ defmodule Still.Preprocessor.Image.Mogrify do
       source_file
       | metadata: Map.put(metadata, :image_output_files, output_files)
     }
+  end
+
+  @impl true
+  def get_image_info(file) do
+    Mogrify.open(file)
+    |> Mogrify.verbose()
+    |> case do
+      {:error, error} -> {:error, error}
+      res -> {:ok, Map.take(res, [:height, :width])}
+    end
   end
 
   defp input_file_changed?(input_file, [{_, output_file} | _]) do
