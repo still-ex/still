@@ -26,46 +26,53 @@ css:
   }
 
   .dev-error .dev-stack-item:not(:last-child) {
-    margin-bottom: 1rem;
+    margin-bottom: 16px;
   }
 
   .dev-error, .dev-error * {
     box-sizing: border-box;
+    color: #333 !important;
+    font-family: sans-serif;
+    font-size: 16px;
   }
 
   .dev-error {
-    background: white;
-    color: #333;
+    background: #DA9F5D;
     font-family: sans-serif;
     font-size: 18px;
     height: 100%;
     left: 0;
+    overflow-y: scroll;
     padding: 2rem;
     position: fixed;
     top: 0;
     width: 100%;
     z-index: 9999999;
-    overflow-y: scroll;
+  }
+
+  .dev-error code {
+    background: transparent !important;
+    font-family: monospace;
   }
 
   .dev-error pre {
-    background: #eee;
+    background: #F3EAC3;
     overflow-x: scroll;
   }
 
   .dev-error h1 {
-    font-size: 30px;
+    font-size: 24px;
     font-weight: bold;
-    margin-bottom: 1rem;
+    margin-bottom: 16px;
   }
 
   .dev-error h2 {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: bold;
   }
 
   .dev-error pre {
     width: 100%;
-    margin-bottom: 1rem;
-    padding: 1rem;
+    margin-bottom: 16px;
+    padding: 16px;
   }
