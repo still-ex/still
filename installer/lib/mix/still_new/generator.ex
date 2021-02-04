@@ -9,6 +9,9 @@ defmodule Still.New.Generator do
   defp template_files(project) do
     [
       {"config/config.exs", "config/config.exs"},
+      {"config/dev.exs", "config/dev.exs"},
+      {"config/prod.exs", "config/prod.exs"},
+      {"config/test.exs", "config/test.exs"},
       {"lib/app_name.ex", "lib/#{project.name}.ex"},
       {"priv/site/index.slime", "priv/site/index.slime"},
       {"formatter.exs", ".formatter.exs"},
