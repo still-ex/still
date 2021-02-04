@@ -1,4 +1,19 @@
 defmodule Still.Profiler do
+  @moduledoc """
+  Implements a profiler that keeps track of the time each file takes to render.
+
+  A file can be rendered or compiled multiple times in the same stage (e.g when
+  being included), so the compiler hashes each file and metadata to distinguish
+  between those.
+
+  After the compilation is finished, a profiler report is generated and can be
+  accessed at `/profiler.html`.
+
+  The profiler should only run in development and can be disabled by setting:
+
+      config :still, profiler: false
+  """
+
   @profiler_layout "priv/still/profiler.slime"
 
   use GenServer
@@ -11,28 +26,40 @@ defmodule Still.Profiler do
 
   alias Still.{Preprocessor, SourceFile}
 
+  @impl true
   def start_link(_) do
     GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
   end
 
+  @doc """
+  Return a timestamp of the current system time in millseconds.
+  """
   def timestamp do
     :os.system_time(:millisecond)
   end
 
+  @doc """
+  Save a `Still.SourceFile` and the rendering/compilation delta.
+  """
   def register(%SourceFile{} = file, delta) do
     GenServer.cast(__MODULE__, {:register, file, delta})
   end
 
+  @doc """
+  Recompiles the HTML page. Should only be used for internal maintenance.
+  """
   def recompile do
     GenServer.call(__MODULE__, :recompile)
   end
 
+  @impl true
   def init(:ok) do
     CompilationStage.subscribe()
 
     {:ok, %{}}
   end
 
+  @impl true
   def handle_cast({:register, file, delta}, state) do
     key = hash_file(file)
 
@@ -41,6 +68,7 @@ defmodule Still.Profiler do
     {:noreply, new_state}
   end
 
+  @impl true
   def handle_info(:bus_empty, state) do
     content =
       Application.app_dir(:still, @profiler_layout)
@@ -68,6 +96,7 @@ defmodule Still.Profiler do
     {:noreply, state}
   end
 
+  @impl true
   def handle_call(:recompile, _from, state) do
     {:noreply, new_state} = handle_info(:bus_empty, state)
 
