@@ -2,7 +2,7 @@ defmodule Still.Compiler.ViewHelpers.ResponsiveImage do
   @moduledoc """
   Generates a set of images to ensure they are responsive.
 
-  See `Still.Preprocessor.Image for details on these transformations.`
+  See `Still.Preprocessor.Image` for details on these transformations.
   """
 
   alias Still.Compiler.Incremental

@@ -4,12 +4,12 @@ defmodule Still.Preprocessor.Image do
 
   To configure it, set `:image_opts` in the metadata:
 
-    %{
-      image_opts: %{
-        sizes: [100, 200],
-        transformations: [color_filter: "grayscale_bt709"]
+      %{
+        image_opts: %{
+          sizes: [100, 200],
+          transformations: [color_filter: "grayscale_bt709"]
+        }
       }
-    }
 
   `:sizes` defines the widths of the output files to create.
 
