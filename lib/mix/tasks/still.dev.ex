@@ -7,11 +7,13 @@ defmodule Mix.Tasks.Still.Dev do
     Mix.Tasks.Run.run(args())
   end
 
-  defp args do
-    if iex_running?(), do: [], else: ["--no-halt"]
-  end
-
-  defp iex_running? do
-    Code.ensure_loaded?(IEx) and IEx.started?()
+  if Code.ensure_loaded?(IEx) do
+    defp args do
+      if IEx.started?(), do: [], else: ["--no-halt"]
+    end
+  else
+    defp args do
+      ["--no-halt"]
+    end
   end
 end

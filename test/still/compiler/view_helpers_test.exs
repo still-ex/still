@@ -28,7 +28,7 @@ defmodule Still.Compiler.ViewHelpersTest do
 
       View.include(file)
 
-      assert_receive {_, {:add_subscription, file}}, 200
+      assert_receive {_, {:add_subscription, ^file}}, 200
     end
   end
 end

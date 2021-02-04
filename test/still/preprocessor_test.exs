@@ -63,7 +63,7 @@ defmodule Still.PreprocessorTest do
       file = "index.slime"
       content = "p Hello"
 
-      assert %{content: "<p>Hello</p>", input_file: file} =
+      assert %{content: "<p>Hello</p>", input_file: ^file} =
                Preprocessor.run(%SourceFile{input_file: file, content: content})
     end
 
