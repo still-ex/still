@@ -91,7 +91,10 @@ defmodule Still.MixProject do
       files: [
         "LICENSE",
         "mix*",
-        "lib/*"
+        "lib/*",
+        "priv/still/*",
+        "installer/*",
+        "templates/*"
       ]
     ]
   end
