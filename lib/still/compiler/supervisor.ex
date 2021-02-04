@@ -1,4 +1,6 @@
 defmodule Still.Compiler.Supervisor do
+  @moduledoc false
+
   use Supervisor
 
   alias Still.Compiler

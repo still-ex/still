@@ -1,4 +1,9 @@
 defmodule Still.Compiler.Traverse do
+  @moduledoc """
+  First step in the compilation stage. Traverses the input directory, adding any
+  files or folders to `Still.Compiler.Incremental.Registry`.
+  """
+
   import Still.Utils
 
   alias Still.Compiler.{Incremental, CompilationStage}
@@ -13,7 +18,7 @@ defmodule Still.Compiler.Traverse do
     end
   end
 
-  def do_run(folder \\ "") do
+  defp do_run(folder \\ "") do
     with {:ok, files} <- File.ls(Path.join(get_input_path(), folder)),
          files <- Enum.reject(files, &String.starts_with?(&1, "_")),
          _ <- Enum.map(files, &compile_file(Path.join(folder, &1))) do

@@ -1,4 +1,11 @@
 defmodule Still.Compiler.Incremental.Node.Compile do
+  @moduledoc """
+  Compiles the contents of a `Still.Compiler.Incremental.Node`.
+
+  First attempts a pass through copy of the file, in case it should be ignored.
+  When this isn't successful, attempts a compilation via `Still.Compiler.File`,
+  notifying any relevant subscribers of changes.
+  """
   import Still.Utils
 
   alias Still.Compiler

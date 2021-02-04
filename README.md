@@ -1,6 +1,6 @@
 # Still
 
-🚧 **This package is under construction**
+🚧 **This package is still in progress - _badumm tss_**
 
 [Documentation][docs]
 

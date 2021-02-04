@@ -1,4 +1,9 @@
 defmodule Still.Web.ErrorFormatter do
+  @moduledoc """
+  Prettifies compilation errors to be displayed in the browser.
+  Should only run in the `dev` environment.
+  """
+
   def format(e) do
     """
     <div class='dev-error'>

@@ -1,4 +1,6 @@
 defmodule Still.Web.SocketHandler do
+  @moduledoc false
+
   @behaviour :cowboy_websocket
 
   require Logger

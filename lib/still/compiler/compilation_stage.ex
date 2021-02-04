@@ -1,32 +1,53 @@
 defmodule Still.Compiler.CompilationStage do
   @moduledoc """
+  Every compilation request goes through `CompilationStage`. This process is
+  responsible for keeping track of subscriptions (e.g: a browser subscribing to
+  changes) and notifying all the subscribers of the end of the compilation
+  cycle.
+
+  Subscribers to this process are notified when the queue is empty, which is
+  usefull to refresh the browser or finish the compilation task in production.
+
+  Subscribers receive the event `:bus_empty` when `CompilationStage`'s compilation
+  cycle is finished.
+
   There are many events that lead to a file being compiled:
 
   * when Still starts, all files are compiled;
   * files that change are compiled;
   * files that include files that have changed are compiled;
   * any many more.
-
-  Every compilation request goes through the `CompilationStage`. Subscribers
-  to this process are notified when the queue is empty, which is usefull to
-  refresh the browser or finish the compilation task in production.
   """
   use GenServer
 
   alias Still.Compiler.Incremental
 
+  @impl true
   def start_link(_) do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
   end
 
+  @doc """
+  Asynchronously saves a file in the compilation list.
+
+  Files are compiled in parallel, meaning that every 100ms the compilation stage
+  will run and compile any due source file. When no more files are ready to be
+  compiled, the subscribers are notified.
+  """
   def compile(file) do
     GenServer.cast(__MODULE__, {:compile, file})
   end
 
+  @doc """
+  Save a subscription to the compilation cycle.
+  """
   def subscribe do
     GenServer.call(__MODULE__, :subscribe)
   end
 
+  @doc """
+  Remove a subscription to the compilation cycle.
+  """
   def unsubscribe do
     GenServer.call(__MODULE__, :unsubscribe)
   end
