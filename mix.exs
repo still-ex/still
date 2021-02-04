@@ -16,7 +16,8 @@ defmodule Still.MixProject do
       name: "Still",
       source_url: "https://github.com/still-ex/still",
       homepage_url: "https://still-ex.github.io/still/",
-      docs: docs()
+      docs: docs(),
+      xref: [exclude: [IEx]]
     ]
   end
 
