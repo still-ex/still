@@ -1,4 +1,4 @@
-if Mix.env() == :dev do
+if Mix.env() != :prod do
   defmodule Still.Site.Github do
     @rate_limited_stargazers 418
     @rate_limited_username "@ratelimited"
