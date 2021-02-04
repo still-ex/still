@@ -1,0 +1,85 @@
+.main {
+  min-height: 100vh;
+  position: relative;
+  color: var(--c-white);
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.main > .overlay {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  opacity: 0.45;
+  background-color: black;
+}
+
+.main > .cover {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  top: 0;
+  left: 0;
+  z-index: -2;
+  object-position: bottom center;
+}
+
+.main .content {
+  display: grid;
+  padding: 0 var(--s-4);
+  grid-row-gap: var(--s-6);
+  grid-template-rows: max-content max-content;
+  justify-content: center;
+  max-width: calc(var(--s-9) * 5);
+  padding-top: 10vh;
+  width: 100%;
+}
+
+.main .fancy-title {
+  font-size: var(--s-8);
+  text-align: center;
+}
+
+.main .lead {
+  text-align: center;
+  text-transform: uppercase;
+  font-size: var(--s-8);
+  line-height: var(--s-9);
+  font-family: MedulaOne;
+  color: var(--c-white-alt);
+}
+
+.main .info {
+  text-align: center;
+  margin-bottom: var(--s-9);
+  width: 100%;
+}
+
+.main .cta {
+  margin-right: var(--s-3);
+}
+
+.main .cta:last-child {
+  margin-right: 0;
+}
+
+.main .marquee {
+  font-size: var(--s-7);
+  background-color: var(--c-black);
+  text-transform: uppercase;
+  font-family: MedulaOne;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
+
+.main .marquee > span {
+  white-space: nowrap;
+  padding: 1px 1rem;
+}

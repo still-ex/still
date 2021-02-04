@@ -1,0 +1,33 @@
+.community
+  .content
+    .contributors
+      h2.section-title Contributors
+
+      p.p
+        | Still wouldn’t be possible without our maintainers & wonderful contributors.
+        br
+        | Much ❤️ to you all.
+
+      = for user <- Still.Site.Github.contributors() do
+        = link to: user.url, class: "contributor" do
+          img src="#{user.avatar_url}"
+          p
+            strong = user.username
+
+      = link to: "https://github.com/still-ex/still", class: "quote" do
+        .mark “
+        div
+          = responsive_image("_includes/stars.png", class: "stars")
+          div Breathtaking, fixed all my issues with static sites.
+          div.small -- #{Still.Site.Github.stars} stargazers on GitHub
+
+      = responsive_image("_includes/man_still.jpg", class: "man_still poster")
+
+    .still
+      h2.section-title Built With Still
+
+      = link to: "https://github.com/still-ex/still/tree/master/priv/site", class: "btn" do
+        span This website
+
+      = link to: "https://gabrielpoca.com", class: "btn" do
+        span gabrielpoca.com

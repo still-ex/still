@@ -1,0 +1,32 @@
+.manifesto {
+  background-color: var(--c-white);
+  padding: 0 var(--s-7) var(--s-7);
+}
+
+.manifesto .content {
+  margin: 0 auto;
+  max-width: calc(var(--s-9) * 10);
+  color: var(--c-black);
+  display: grid;
+  grid-template-columns: 1fr var(--s-poster);
+  grid-column-gap: var(--s-9);
+  font-size: var(--s-5);
+}
+
+.manifesto .cover {
+  margin-top: calc(var(--s-8) * 2);
+}
+
+.manifesto .description {
+  padding-top: var(--s-6);
+}
+
+@media (max-width: 700px) {
+  .manifesto .content {
+    display: block;
+  }
+
+  .manifesto .cover {
+    margin-top: calc(var(--s-8));
+  }
+}

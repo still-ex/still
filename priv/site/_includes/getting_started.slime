@@ -1,0 +1,35 @@
+.getting_started
+  .content
+    h2.section-title Getting Started
+
+    = responsive_image("_includes/million.jpg", class: "million poster")
+    .details
+      p.p Still is still in early active development. To get started:
+
+      pre.p
+        code
+          | mix archive.install hex still
+          br
+          | mix still.new mysite
+
+      p.p
+        ' This will create an Elixir project in the folder
+        span.code mysite
+        '. You’ll find an
+        span.code index.slime
+        '  file inside
+        span.code priv/site
+        ' .
+
+      p.p
+        ' Run
+        span.code mix still.dev
+        '  to start the development server. Then open
+        span.code http://localhost:3000
+        '  in your web browser to see the new website.
+
+      p.p
+        | You can also add it to an existing project.
+        br
+        | Visit our docs for all the goodies.
+    = responsive_image("_includes/mean.jpg", class: "mean poster")

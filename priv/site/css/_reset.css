@@ -1,0 +1,128 @@
+:root {
+  --c-black: #222;
+  --c-white: #F3EAC3;
+  --c-white-alt: #EAEAEA;
+  --c-orange: #DA9F5D;
+  --c-brown: #A46F41;
+  --c-red: #D57050;
+  --s-1: 0.296rem;
+  --s-2: 0.444rem;
+  --s-3: 0.667rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2.25rem;
+  --s-7: 3.375rem;
+  --s-8: 5.063rem;
+  --s-9: 7.594rem;
+  --s-poster: 420px;
+}
+
+body, html {
+  color: #333;
+  background: white;
+  font-size: 16px;
+  line-height: 1.2;
+  font-family: PontanoSans;
+  overscroll-behavior-y: none;
+}
+
+@media (max-width: 1150px) {
+  :root {
+    --s-poster: 350px;
+  }
+}
+
+@media (max-width: 1000px) {
+  :root {
+    --s-poster: 300px;
+  }
+
+  body, html {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 800px) {
+  :root {
+    --s-poster: 250px;
+  }
+}
+
+@media (max-width: 700px) {
+  :root {
+    --s-poster: 200px;
+  }
+}
+
+
+@media (max-width: 450px) {
+  body, html {
+    font-size: 10px;
+  }
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-size: inherit;
+  font-family: inherit;
+}
+
+ul,
+ol {
+  list-style-type: circle;
+  list-style-position: inside;
+  padding: 0;
+}
+
+h1 {
+  font-family: MedulaOne;
+  font-size: var(--s-6);
+}
+
+h2 {
+  font-family: MedulaOne;
+  font-size: var(--s-5);
+}
+
+h3 {
+  font-family: MedulaOne;
+  font-size: var(--s-4);
+}
+
+h4 {
+  font-family: MedulaOne;
+  font-size: var(--s-3);
+}
+
+img {
+  max-width: 100%;
+}
+
+code {
+  color: var(--c-white);
+  background-color: var(--c-black);
+  font-family: monospace;
+  font-size: 16px;
+}
+
+pre {
+  padding: 1rem;
+  color: var(--c-white);
+  background-color: var(--c-black);
+  overflow-x: hidden;
+}
+
+p > code {
+  padding: 0 var(--s-3);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.poster {
+  max-width: var(--s-poster);
+}

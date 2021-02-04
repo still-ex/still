@@ -1,0 +1,34 @@
+.sponsors {
+  background-color: var(--c-red);
+  padding: 0 var(--s-7) var(--s-9);
+}
+
+.sponsors .section-title {
+  color: var(--c-white);
+  margin-bottom: var(--s-7);
+}
+
+.sponsors .details {
+  max-width: var(--s-poster);
+}
+
+.sponsors .details a::after {
+  display: none;
+}
+
+.sponsors .content {
+  max-width: calc(var(--s-9) * 10);
+  margin: 0 auto;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.sponsors .sponsor-image {
+  width: 100%;
+}
+
+@media (max-width: 700px) {
+  .sponsors .content {
+    justify-content: flex-start;
+  }
+}

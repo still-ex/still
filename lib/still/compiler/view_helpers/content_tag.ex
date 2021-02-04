@@ -30,10 +30,24 @@ defmodule Still.Compiler.ViewHelpers.ContentTag do
   end
 
   defp translate_basic_attrs(attrs) do
-    Enum.map(attrs, fn {attr, value} -> ~s(#{attr}="#{value}") end)
+    Enum.map(attrs, fn {attr, value} -> ~s(#{translate_attr_name(attr)}="#{value}") end)
   end
 
   defp translate_data_attrs(data) do
     Enum.map(data, fn {attr, value} -> ~s(data-#{attr}="#{value}") end)
+  end
+
+  defp translate_attr_name(name) when is_atom(name) do
+    name
+    |> Atom.to_string()
+    |> translate_attr_name()
+  end
+
+  defp translate_attr_name("aria_" <> name) do
+    "aria-#{String.replace(name, "_", "-")}"
+  end
+
+  defp translate_attr_name(name) do
+    name
   end
 end
