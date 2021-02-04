@@ -1,4 +1,9 @@
 defmodule Still.Preprocessor.CSSMinify do
+  @moduledoc """
+  Minifies a CSS file. This is a very basic minifier that simply removes
+  whitespaces.
+  """
+
   alias Still.Preprocessor
 
   use Preprocessor

@@ -1,4 +1,15 @@
 defmodule Still.Preprocessor.AddLayout do
+  @moduledoc """
+  `Still.Preprocessor` that renders the layout of a given file and wraps it
+  around the content of that same file.
+
+  Note that this rendering happens outside `Still.Compiler.CompilationStage`.
+
+  For this preprocessor to work, it requires a `:layout` key in the metadata,
+  which can be set in the frontmatter and then added to the metadata by
+  `Still.Preprocessor.Frontmatter`.
+  """
+
   alias Still.Preprocessor
   alias Still.Compiler.Incremental
 

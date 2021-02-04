@@ -1,4 +1,9 @@
 defmodule Still.Preprocessor.Markdown do
+  @moduledoc """
+  Renders markdown files using
+  [`Markdown`](https://github.com/still-ex/markdown).
+  """
+
   alias Still.Preprocessor
 
   use Preprocessor

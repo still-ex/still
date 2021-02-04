@@ -1,4 +1,25 @@
 defmodule Still.Compiler.ViewHelpers.ContentTag do
+  @moduledoc """
+  Implements an arbitrary content tag with the given content.
+  """
+
+  @doc """
+  Renders an arbitrary HTML tag with the given content.
+
+  If `content` is `nil`, the rendered tag is self-closing.
+
+  `opts` should contain the relevant HTML attributes (e.g `class: "myelem"`).
+
+  `aria` attributes should be in the `aria_name` format (e.g: `aria_label: "Label"`).
+
+  All data attributes should be within a `data` array (e.g: `data: [method:
+  "POST", foo: "bar"]`).
+
+  ## Examples
+
+      iex> content_tag("a", "My link", href: "https://example.org", data: [method: "POST", something: "value"], aria_label: "Label")
+      "<a href=\\"https://example.org\\" data-method=\\"POST\\" data-something=\\"value\\" aria-label=\\"Label\\">My link</a>"
+  """
   def render(tag, content, opts) do
     {data, opts} = Keyword.pop(opts, :data, [])
 
@@ -13,19 +34,19 @@ defmodule Still.Compiler.ViewHelpers.ContentTag do
     opening_tag(tag, content, attrs) <> (content || "") <> closing_tag(tag, content)
   end
 
-  def opening_tag(tag, content, attrs) when is_nil(content) do
+  defp opening_tag(tag, content, attrs) when is_nil(content) do
     "<#{tag} #{attrs}"
   end
 
-  def opening_tag(tag, _content, attrs) do
+  defp opening_tag(tag, _content, attrs) do
     "<#{tag} #{attrs}>"
   end
 
-  def closing_tag(_tag, content) when is_nil(content) do
+  defp closing_tag(_tag, content) when is_nil(content) do
     "/>"
   end
 
-  def closing_tag(tag, _content) do
+  defp closing_tag(tag, _content) do
     "</#{tag}>"
   end
 

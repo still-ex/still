@@ -1,4 +1,28 @@
 defmodule Still.Preprocessor.Renderer do
+  @moduledoc """
+  Defines the basic attributes of a markup renderer.
+
+  A renderer needs to implement a `compile/2` function and an optional `ast/0`
+  function. When a markup file is being compiled, a module is created on
+  demand. This module imports all view helpers defined by Still as well as any
+  view helper configured by the user:
+
+      config :still,
+        view_helpers: [Your.Module]
+
+  The created module implements a `render/0` which will return the result of
+  the `compile/2` call.
+
+  The `ast/0` can be used to tap into the AST of the new module and import or
+  require any necessary module.
+
+  Markup renderers should `use` `Still.Preprocessor.Renderer` and provide two
+  options:
+
+  * `:extensions` - the list of extensions compiled by the renderer;
+  * `:preprocessor` - the preprocessor used to render any necessary snippets
+  (e.g via `Still.Compiler.ViewHelpers.ContentTag`).
+  """
   @type ast :: {atom(), keyword(), list()}
 
   @callback compile(String.t(), [{atom(), any()}]) :: ast()

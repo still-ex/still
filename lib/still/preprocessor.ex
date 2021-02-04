@@ -1,4 +1,53 @@
 defmodule Still.Preprocessor do
+  @moduledoc """
+  Defines functions to be used by the several preprocessors as well as the
+  behaviour they should have.
+
+  Preprocessors are the cornerstone of Still. A preprocessor chain can take a
+  markdown file, execute its embedded Elixir, extract metadata from its front
+  matter, transform it into HTML and wrap it in a layout.
+
+  The default preprocessor chain is the following:
+
+      %{
+        ".slim" => [AddContent, EEx, Frontmatter, Slime, OutputPath, AddLayout, Save],
+        ".slime" => [AddContent, EEx, Frontmatter, Slime, OutputPath, AddLayout, Save],
+        ".eex" => [AddContent, EEx, Frontmatter, OutputPath, AddLayout, Save],
+        ".css" => [AddContent, EEx, CSSMinify, OutputPath, URLFingerprinting, AddLayout, Save],
+        ".js" => [AddContent, EEx, JS, OutputPath, URLFingerprinting, AddLayout, Save],
+        ".md" => [AddContent, EEx, Frontmatter, Markdown, OutputPath, AddLayout, Save],
+        ".jpg" => [OutputPath, Image],
+        ".png" => [OutputPath, Image]
+      }
+
+
+  If the default preprocessors are not enough, you can extend Still with your
+  own.
+
+  **A custom preprocessor is simply a module that calls `use Still.Preprocessor`
+  and implements the `render/2` and `extension/1` functions.**
+
+  Take the following example:
+
+      defmodule YourSite.JPEG do
+        use Still.Preprocessor
+
+        @impl true
+        def extension(_), do: ".jpeg"
+
+        @impl true
+        def render(file) do
+          file
+        end
+      end
+
+  In this example, the `render/1` function is used to transform the content and
+  the metadata of a file, and the `extension/1` function is used to set the
+  resulting content type.  This `extension/1` function is not mandatory.
+
+  See the [preprocessor guide](preprocessors.html) for more details.
+  """
+
   alias Still.SourceFile
   alias Still.Compiler.PreprocessorError
 
@@ -31,6 +80,9 @@ defmodule Still.Preprocessor do
     ".png" => [OutputPath, Image]
   }
 
+  @doc """
+  Runs the preprocessor pipeline for the given file.
+  """
   @spec run(SourceFile.t()) :: SourceFile.t()
   def run(file) do
     file
@@ -71,6 +123,9 @@ defmodule Still.Preprocessor do
       end
   end
 
+  @doc """
+  Retrieves the preprocessor pipeline for the given file.
+  """
   def for(%{input_file: file} = source_file) do
     preprocessors()[Path.extname(file)]
     |> case do
@@ -82,11 +137,6 @@ defmodule Still.Preprocessor do
       preprocessors ->
         preprocessors
     end
-  end
-
-  def supported_extensions do
-    preprocessors()
-    |> Map.keys()
   end
 
   defp preprocessors do
@@ -105,6 +155,9 @@ defmodule Still.Preprocessor do
     quote do
       @behaviour Still.Preprocessor
 
+      @doc """
+      Sets the extension for the current file and calls the `render/1` function.
+      """
       @spec run(SourceFile.t()) :: SourceFile.t()
       def run(file) do
         file
@@ -112,17 +165,22 @@ defmodule Still.Preprocessor do
         |> render()
       end
 
-      def set_extension(file) do
+      @doc """
+      Returns the extension for the current file.
+
+      This function can be overridden.
+      """
+      @spec extension(SourceFile.t()) :: String.t()
+      def extension(file) do
+        file.extension
+      end
+
+      defp set_extension(file) do
         if Kernel.function_exported?(__MODULE__, :extension, 1) do
           %{file | extension: extension(file)}
         else
           file
         end
-      end
-
-      @spec extension(SourceFile.t()) :: String.t()
-      def extension(file) do
-        file.extension
       end
 
       defoverridable(extension: 1)

@@ -1,4 +1,12 @@
 defmodule Still.Preprocessor.Save do
+  @moduledoc """
+  Writes the `Still.SourceFile` `:content` field to the `:output_file` field,
+  creating any necessary directories and including the development layout if
+  needed.
+
+  See `Still.Compiler.File.DevLayout`.
+  """
+
   alias Still.Preprocessor
   alias Still.Compiler.Collections
 

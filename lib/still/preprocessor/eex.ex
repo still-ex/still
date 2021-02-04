@@ -1,4 +1,9 @@
 defmodule Still.Preprocessor.EEx do
+  @moduledoc """
+  Renders an EEx file. See `Still.Preprocessor.Renderer` and
+  `Still.Preprocessor.EEx.Renderer`.
+  """
+
   require EEx
 
   alias Still.Preprocessor

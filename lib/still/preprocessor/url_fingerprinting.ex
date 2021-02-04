@@ -1,4 +1,9 @@
 defmodule Still.Preprocessor.URLFingerprinting do
+  @moduledoc """
+  Creates a hash based on the content of the file and generates a fingerprint
+  to replace the output file.
+  """
+
   alias Still.Preprocessor
 
   use Preprocessor

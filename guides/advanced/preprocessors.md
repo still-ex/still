@@ -9,7 +9,7 @@ Notice that many file types, such as markdown and CSS, run through EEx, which me
 ```css
 html,
 body {
-  color: <%%= Colors.white() %>;
+  color: <%= Colors.white() %>;
 }
 ```
 

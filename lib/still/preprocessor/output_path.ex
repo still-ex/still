@@ -1,4 +1,9 @@
 defmodule Still.Preprocessor.OutputPath do
+  @moduledoc """
+  Generates the output path based on the `Still.SourceFile` `:input_path` and
+  `:extension` field, adding it to the `:output_file` field.
+  """
+
   alias Still.Preprocessor
 
   use Preprocessor

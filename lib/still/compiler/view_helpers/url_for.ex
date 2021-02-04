@@ -1,6 +1,13 @@
 defmodule Still.Compiler.ViewHelpers.UrlFor do
+  @moduledoc """
+  Converts a relative path to an absolute path.
+  """
   import Still.Utils
 
+  @doc """
+  Converts the given relative path to an absolute path by prepending the
+  application's base URL and removing references to `index.html`.
+  """
   @spec render(String.t()) :: String.t()
   def render(relative_path) do
     relative_path

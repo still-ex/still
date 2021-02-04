@@ -1,4 +1,9 @@
 defmodule Still.Preprocessor.Slime do
+  @moduledoc """
+  Renders a Slime file. See `Still.Preprocessor.Renderer` and
+  `Still.Preprocessor.EEx.Renderer`.
+  """
+
   require Slime
 
   alias Still.Preprocessor

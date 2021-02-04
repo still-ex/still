@@ -1,4 +1,8 @@
 defmodule Still.Preprocessor.AddContent do
+  @moduledoc """
+  `Still.Preprocessor` that reads the content of the input file and sets it to
+  the `:content` field of `Still.SourceFile`.
+  """
   alias Still.{Preprocessor, SourceFile}
 
   import Still.Utils

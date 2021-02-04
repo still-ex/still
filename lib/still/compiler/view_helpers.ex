@@ -1,4 +1,9 @@
 defmodule Still.Compiler.ViewHelpers do
+  @moduledoc """
+  Set of helper functions to be included in a file that runs through an Elixir
+  preprocessor.
+  """
+
   defmacro __using__(metadata) do
     quote do
       alias Still.SourceFile
@@ -19,6 +24,23 @@ defmodule Still.Compiler.ViewHelpers do
 
       @env unquote(metadata)
 
+      defdelegate responsive_image(file, opts \\ []),
+        to: ResponsiveImage,
+        as: :render
+
+      defdelegate url_for(relative_path), to: UrlFor, as: :render
+
+      defdelegate link_to_css(path, opts \\ []), to: LinkToCSS, as: :render
+
+      defdelegate link_to_js(path, opts \\ []), to: LinkToJS, as: :render
+
+      @doc """
+      Renders a file and includes it in the page, using the variables defined in `metadata`.
+
+      By default, it creates a subscription to recompile the file in which
+      `include/3` is invoked, when the target `file` changes. This behaviour
+      can be disabled by passing the `:subscribe` option as `false`.
+      """
       def include(file, metadata \\ %{}, opts \\ [])
 
       def include(file, metadata, opts) when is_list(metadata) do
@@ -41,10 +63,6 @@ defmodule Still.Compiler.ViewHelpers do
         end
       end
 
-      defdelegate responsive_image(file, opts \\ []),
-        to: ResponsiveImage,
-        as: :render
-
       @doc """
       Converts a relative path to an absolute one.
 
@@ -65,21 +83,19 @@ defmodule Still.Compiler.ViewHelpers do
         Path.join(Path.dirname(@env[:input_file]), path)
       end
 
-      def url_for(relative_path) do
-        UrlFor.render(relative_path)
-      end
-
+      @doc """
+      Returns the collections for the current file.
+      """
       def get_collections(collection) do
         Still.Compiler.Collections.get(collection, @env[:input_file])
       end
 
+      @doc """
+      Renders the link using `Still.Compiler.ViewHelpers.Link.render/3`.
+      """
       def link(content, opts) do
         Link.render(content, @env, opts)
       end
-
-      defdelegate link_to_css(path, opts \\ []), to: LinkToCSS, as: :render
-
-      defdelegate link_to_js(path, opts \\ []), to: LinkToJS, as: :render
 
       defp include_subscriber(opts) do
         if Keyword.get(opts, :subscribe, true) do

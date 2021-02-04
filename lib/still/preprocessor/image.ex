@@ -1,7 +1,8 @@
 defmodule Still.Preprocessor.Image do
   @moduledoc """
-  This preprocessor handles image transformation. To configure
-  it, set `:image_opts` in the metadata:
+  Handles image transformation.
+
+  To configure it, set `:image_opts` in the metadata:
 
     %{
       image_opts: %{
