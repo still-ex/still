@@ -33,6 +33,16 @@ defmodule Still.Preprocessor.Image.Mogrify do
     }
   end
 
+  @impl true
+  def get_image_info(file) do
+    Mogrify.open(file)
+    |> Mogrify.verbose()
+    |> case do
+      {:error, error} -> {:error, error}
+      res -> {:ok, Map.take(res, [:height, :width])}
+    end
+  end
+
   defp input_file_changed?(input_file, [{_, output_file} | _]) do
     input_mtime =
       input_file

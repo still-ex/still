@@ -34,7 +34,7 @@ defmodule Still.Preprocessor.Image do
 
   @impl true
   def render(%{metadata: %{image_opts: _opts}} = source_file) do
-    image_processor().render(source_file)
+    adapter().render(source_file)
   end
 
   @impl true
@@ -50,7 +50,7 @@ defmodule Still.Preprocessor.Image do
     source_file
   end
 
-  defp image_processor do
+  def adapter do
     Application.get_env(:still, :image_adapter, __MODULE__.Mogrify)
   end
 end
