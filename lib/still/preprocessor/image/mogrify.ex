@@ -1,7 +1,16 @@
 defmodule Still.Preprocessor.Image.Mogrify do
+  @moduledoc """
+  Implements `Still.Preprocessor.Image.Adapter` for
+  [Mogrify](https://github.com/route/mogrify).
+
+  Default module used when no other adapter is provided.
+  """
+  use Still.Preprocessor.Image.Adapter
+
   import Still.Utils
   import Mogrify
 
+  @impl true
   def render(
         %{
           metadata: %{image_opts: opts} = metadata,
