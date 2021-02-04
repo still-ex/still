@@ -1,9 +1,12 @@
 import Config
 
 config :still,
-  view_helpers: [],
   dev_layout: false,
-  url_fingerprinting: false
+  input: Path.join(Path.dirname(__DIR__), "priv/site"),
+  output: Path.join(Path.dirname(__DIR__), "_site"),
+  pass_through_copy: [~r/.*jpe?g/, "subvisual.png", "images", "fonts"],
+  url_fingerprinting: false,
+  view_helpers: []
 
 config :mogrify,
   mogrify_command: [
