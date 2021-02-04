@@ -1,9 +1,9 @@
 defmodule Still.Compiler.CompilationStage do
   @moduledoc """
-  Every compilation request goes through `CompilationStage`. This process is
-  responsible for keeping track of subscriptions (e.g: a browser subscribing to
-  changes) and notifying all the subscribers of the end of the compilation
-  cycle.
+  Almost every compilation request goes through `CompilationStage`. This
+  process is responsible for keeping track of subscriptions (e.g: a browser
+  subscribing to changes) and notifying all the subscribers of the end of the
+  compilation cycle.
 
   Subscribers to this process are notified when the queue is empty, which is
   usefull to refresh the browser or finish the compilation task in production.
@@ -52,10 +52,12 @@ defmodule Still.Compiler.CompilationStage do
     GenServer.call(__MODULE__, :unsubscribe)
   end
 
+  @impl true
   def init(_) do
     {:ok, %{to_compile: [], subscribers: [], changed: false, timer: nil}}
   end
 
+  @impl true
   def handle_call(:subscribe, {from, _}, state) do
     [from | state.subscribers] |> Enum.uniq()
 
@@ -68,6 +70,7 @@ defmodule Still.Compiler.CompilationStage do
     {:reply, :ok, %{state | subscribers: state.subscribers |> Enum.reject(&(&1 == from))}}
   end
 
+  @impl true
   def handle_cast({:compile, files}, state) when is_list(files) do
     if state.timer do
       Process.cancel_timer(state.timer)
@@ -94,6 +97,7 @@ defmodule Still.Compiler.CompilationStage do
      }}
   end
 
+  @impl true
   def handle_info(:run, %{to_compile: [], changed: true} = state) do
     state.subscribers
     |> Enum.each(fn pid ->

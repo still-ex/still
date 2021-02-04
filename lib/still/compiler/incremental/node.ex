@@ -6,7 +6,7 @@ defmodule Still.Compiler.Incremental.Node do
   Each file has a list of subscriptions and subcribers. The subscriptions are
   the files included by the current file. The subscribers are the files that the
   current file includes. When the current file changes, it notifies the
-  subscribers, and updates the subscriptions.
+  subscribers and updates the subscriptions.
 
   A file can be compiled or rendered:
 

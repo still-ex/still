@@ -1,7 +1,7 @@
 defmodule Still.Compiler.ErrorCache do
   @moduledoc """
-  Saves all the errors occurring within a file's compilation and allows them to
-  be retrieved for a prettified display.
+  Saves an error occurring within a file's compilation and allows them to be
+  retrieved for a prettified display.
 
   Since files are compiled asynchronously, the browser (or other interested
   parties) require a centralised access to compilation errors.
