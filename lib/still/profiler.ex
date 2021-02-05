@@ -27,7 +27,6 @@ defmodule Still.Profiler do
   alias Still.{Preprocessor, SourceFile}
   alias Still.Utils
 
-  @impl true
   def start_link(_) do
     GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
   end
@@ -88,6 +87,7 @@ defmodule Still.Profiler do
 
     %SourceFile{
       input_file: @profiler_layout,
+      output_file: "profiler/index.html",
       content: content,
       run_type: :compile,
       metadata: %{stats: stats}
