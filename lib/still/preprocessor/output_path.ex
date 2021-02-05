@@ -9,6 +9,10 @@ defmodule Still.Preprocessor.OutputPath do
   use Preprocessor
 
   @impl true
+  def render(%{output_file: output_file} = file) when not is_nil(output_file) do
+    file
+  end
+
   def render(%{metadata: %{permalink: permalink}} = file) do
     %{file | output_file: permalink}
   end
