@@ -58,5 +58,5 @@ Still was created and is maintained with :heart: by [Subvisual](http://subvisual
 
 Still is released under the [ISC License](./LICENSE).
 
-[docs]: https://subvisual.github.io/still/
+[docs]: https://hexdocs.pm/still/getting_started.html
 [sub-logo]: https://raw.githubusercontent.com/subvisual/guides/master/github/templates/logos/blue.png
