@@ -94,8 +94,9 @@ defmodule Still.MixProject do
         "mix*",
         "lib/*",
         "priv/still/*",
-        "installer/*",
-        "templates/*"
+        "installer/lib/*",
+        "installer/mix*",
+        "installer/templates*"
       ]
     ]
   end
