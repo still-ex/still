@@ -19,7 +19,7 @@ defmodule Still.Compiler.Incremental.Registry do
   Terminates the `Still.Compiler.Incremental.Node` corresponding to the given file name.
   """
   def terminate_file_process(file) do
-    DynamicSupervisor.terminate_child(__MODULE__, Process.whereis(file |> String.to_atom()))
+    DynamicSupervisor.terminate_child(__MODULE__, Process.whereis(file))
     :ok
   end
 
