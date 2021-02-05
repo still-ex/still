@@ -1,6 +1,4 @@
 defmodule Still.New.Generator do
-  @root Path.expand("../../..", __DIR__)
-
   def run(project) do
     for {input, output} <- template_files(project),
         do: copy_file(input, output, project)
@@ -32,7 +30,7 @@ defmodule Still.New.Generator do
   end
 
   defp template_path(input) do
-    "#{@root}/templates/#{input}"
+    Path.join(Application.app_dir(:still_new, "priv/templates"), input)
   end
 
   defp eex_metadata(project) do

@@ -13,7 +13,7 @@ defmodule Still.New.MixProject do
       package: [
         licenses: ["ISC"],
         links: %{"GitHub" => "https://github.com/still-ex/still"},
-        files: ~w(lib templates mix.exs README.md)
+        files: ~w(lib priv mix.exs README.md)
       ],
       description: """
       Still project generator.
