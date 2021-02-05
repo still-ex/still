@@ -48,8 +48,9 @@ defmodule Still.Preprocessor do
   See the [preprocessor guide](preprocessors.html) for more details.
   """
 
-  alias Still.SourceFile
   alias Still.Compiler.PreprocessorError
+  alias Still.Profiler
+  alias Still.SourceFile
 
   require Logger
 
@@ -160,9 +161,11 @@ defmodule Still.Preprocessor do
       """
       @spec run(SourceFile.t()) :: SourceFile.t()
       def run(file) do
-        file
-        |> set_extension()
-        |> render()
+        if profilling?() do
+          run_with_profiler(file)
+        else
+          do_run(file)
+        end
       end
 
       @doc """
@@ -184,6 +187,27 @@ defmodule Still.Preprocessor do
       end
 
       defoverridable(extension: 1)
+
+      defp run_with_profiler(file) do
+        start_time = Profiler.timestamp()
+
+        response = do_run(file)
+
+        end_time = Profiler.timestamp()
+        Profiler.register(response, end_time - start_time)
+
+        response
+      end
+
+      defp do_run(file) do
+        file
+        |> set_extension()
+        |> render()
+      end
+
+      defp profilling? do
+        Application.get_env(:still, :profiler, false)
+      end
     end
   end
 end

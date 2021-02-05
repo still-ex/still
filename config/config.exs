@@ -6,6 +6,7 @@ config :still,
   output: Path.join(Path.dirname(__DIR__), "_site"),
   pass_through_copy: [~r/.*jpe?g/, "subvisual.png", "images", "fonts"],
   url_fingerprinting: false,
+  profiler: false,
   view_helpers: []
 
 config :mogrify,

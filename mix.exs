@@ -47,7 +47,8 @@ defmodule Still.MixProject do
       extra_applications: [:logger],
       mod: {Still.Application, []},
       env: [
-        server: false
+        server: false,
+        profiler: false
       ]
     ]
   end
