@@ -17,15 +17,15 @@ defmodule Still.Compiler.ViewHelpers.ResponsiveImage do
   @doc """
   Returns an image tag with the `src` and `srcset`.
 
-  If `:image_opts` is set in `opts`, it will be passed on to
-  `Still.Preprocessor.Image`.
+  If `:sizes` or `:transformations` are present in `opts`, they will be passed
+  to `Still.Preprocessor.Image`.
 
-  If `:sizes` is not set in the `:image_opts` map, it is assumed to be 25%,
-  50%, 75% and 100% of the input file's width.
+  If `:sizes` is not set, the default will be 25%, 50%, 75% and 100% of the
+  input file's width.
   """
   @spec render(file :: String.t(), list()) :: String.t()
   def render(file, opts \\ []) do
-    {image_opts, opts} = Keyword.pop(opts, :image_opts, %{})
+    {image_opts, opts} = Keyword.split(opts, [:sizes, :transformations])
 
     output_files =
       file
@@ -39,8 +39,10 @@ defmodule Still.Compiler.ViewHelpers.ResponsiveImage do
   end
 
   defp do_render(file, image_opts) do
+    opts = Map.new(image_opts)
+
     Incremental.Registry.get_or_create_file_process(file)
-    |> Incremental.Node.render(get_render_data(file, image_opts))
+    |> Incremental.Node.render(get_render_data(file, opts))
   end
 
   defp get_output_files(%{metadata: %{image_output_files: output_files}}) do

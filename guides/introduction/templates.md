@@ -41,35 +41,30 @@ subfolders will not work.** For instance:
 
 ### Including images
 
-Image support is still (get it?) rudimentary: it can generate images of
-different sizes, and apply transformations to them. By default, it relies
+Image support is still (get it?) rudimentary: it can only generate images of
+different sizes. By default, it relies
 on [ImageMagick][imagemagick], but if you add [`imageflow_ex`][imageflow]
 as a dependency it will use that. The reason we do not use `imageflow_ex`
 by default is that it requires Rust. If you want to use ImageMagick, you
 also need to have it installed in your system.
 
-To insert an image use the `responsive_image` function, which accepts
-a list of keyword arguments. To generate an image, Still only cares about the
-`:image_opts` key, everything else will be rendered as an attribute on the
-`img` tag. `:image_opts` has to be a map where you can specify `:sizes`
-and `:transformations`.
+To insert an image use the function `responsive_image/2`. The first
+argument is the image's path and the second a keyword list. To transform
+the image we only care about the `:sizes` key, everything else will be
+rendered as an attribute on the generated `img` tag.
 
 The `:sizes` key is optional and by default we take the image's width to generate
 3 smaller images. If you specify an array of integers, it will use that
 instead.
 
-`:transformations` is also optional and it's passed down to either
-[ImageMagick][imagemagic-cli-option] or [Imageflow][imageflow-docs], see
-each project's documentation for more information.
-
 A responsive image can be generated like this:
 
 ```eex
-<%= responsive_image("example.jpg", image_opts: %{transformations: [grayscale: "Rec709Luma"]}) %>
+<%= responsive_image("example.jpg") %>
 ```
 
 ```slime
-= responsive_image("cover.jpg", image_opts: %{transformations: [color_filter: "grayscale_bt709"]}, class: "cover")
+= responsive_image("cover.jpg", class: "cover")
 ```
 
 [imagemagick]: https://imagemagick.org/

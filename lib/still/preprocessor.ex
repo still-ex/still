@@ -99,7 +99,7 @@ defmodule Still.Preprocessor do
     preprocessor.run(file)
     |> run(remaining_preprocessors)
   catch
-    :error, %{description: description} ->
+    :error, %{description: description} when description != "" ->
       raise PreprocessorError,
         message: description,
         preprocessor: preprocessor,
