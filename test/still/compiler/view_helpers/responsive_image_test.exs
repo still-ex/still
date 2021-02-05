@@ -22,10 +22,8 @@ defmodule Still.Compiler.ViewHelpers.ResponsiveImageTest do
         file
         |> ResponsiveImage.render(
           class: "cover",
-          image_opts: %{
-            sizes: [width, half_width],
-            transformations: []
-          }
+          sizes: [width, half_width],
+          transformations: []
         )
 
       src = "/img/bg-14881671-#{width}w.jpg"
