@@ -8,7 +8,7 @@
 
       pre.p
         code
-          | mix archive.install hex still
+          | mix archive.install hex still_new
           br
           | mix still.new mysite
 
