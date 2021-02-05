@@ -1,0 +1,23 @@
+:root {
+  --c-black: #222;
+  --c-white: #f3eac3;
+}
+
+html {
+  background-color: var(--c-white);
+  font-size: 16px;
+  line-height: 1.2;
+  font-family: sans-serif;
+  color: var(--c-black);
+}
+
+.title {
+  text-align: center;
+  font-size: 54px;
+}
+
+.main {
+  max-width: 1000px;
+  padding: 1rem;
+  margin: 0 auto;
+}

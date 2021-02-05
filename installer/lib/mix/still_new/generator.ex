@@ -14,6 +14,9 @@ defmodule Still.New.Generator do
       {"config/test.exs", "config/test.exs"},
       {"lib/app_name.ex", "lib/#{project.name}.ex"},
       {"priv/site/index.slime", "priv/site/index.slime"},
+      {"priv/site/_layout.slime", "priv/site/_layout.slime"},
+      {"priv/site/_includes/footer.slime", "priv/site/_includes/footer.slime"},
+      {"priv/site/css/theme.css", "priv/site/css/theme.css"},
       {"formatter.exs", ".formatter.exs"},
       {"gitignore", ".gitignore"},
       {"mix.exs", "mix.exs"}
