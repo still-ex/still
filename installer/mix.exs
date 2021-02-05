@@ -9,8 +9,17 @@ defmodule Still.New.MixProject do
       version: @version,
       elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
-      aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      package: [
+        licenses: ["ISC"],
+        links: %{"GitHub" => "https://github.com/still-ex/still"},
+        files: ~w(lib templates mix.exs README.md)
+      ],
+      description: """
+      Still project generator.
+
+      Provides a `mix still.new` task to bootstrap a new Still project.
+      """
     ]
   end
 
@@ -20,17 +29,5 @@ defmodule Still.New.MixProject do
 
   defp deps do
     []
-  end
-
-  defp aliases do
-    [build: [&build_releases/1]]
-  end
-
-  defp build_releases(_) do
-    Mix.Tasks.Compile.run([])
-    Mix.Tasks.Archive.Build.run([])
-    Mix.Tasks.Archive.Build.run(["--output=still_new.ez"])
-    File.rename("still_new.ez", "./archives/still_new.ez")
-    File.rename("still_new-#{@version}.ez", "./archives/still_new-#{@version}.ez")
   end
 end
