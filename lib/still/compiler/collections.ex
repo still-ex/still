@@ -28,7 +28,7 @@ defmodule Still.Compiler.Collections do
   end
 
   @doc """
-  TODO
+  Adds a file to its collections.
   """
   def add(file) do
     GenServer.call(__MODULE__, {:add, file |> Map.from_struct()})

@@ -61,14 +61,14 @@ defmodule Still.Compiler.Incremental.Node do
   end
 
   @doc """
-  TODO
+  Adds a file to the list of files this process is subscribed to.
   """
   def add_subscription(pid, file) do
     GenServer.cast(pid, {:add_subscription, file})
   end
 
   @doc """
-  TODO
+  Removes a file from the list of files subscribing to this process.
   """
   def remove_subscriber(pid, file) do
     GenServer.cast(pid, {:remove_subscriber, file})
