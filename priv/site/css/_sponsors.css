@@ -1,6 +1,6 @@
 .sponsors {
   background-color: var(--c-red);
-  padding: 0 var(--s-7) var(--s-9);
+  padding: 0 var(--s-7) var(--s-6);
 }
 
 .sponsors .section-title {
@@ -20,6 +20,16 @@
   max-width: calc(var(--s-9) * 10);
   margin: 0 auto;
   display: flex;
+  flex-direction: column;
+}
+
+.sponsors .legal {
+  margin-top: var(--s-9);
+  text-align: center;
+}
+
+.sponsors .right-pane {
+  display: flex;
   justify-content: flex-end;
 }
 
@@ -28,7 +38,7 @@
 }
 
 @media (max-width: 700px) {
-  .sponsors .content {
+  .sponsors .right-pane {
     justify-content: flex-start;
   }
 }
