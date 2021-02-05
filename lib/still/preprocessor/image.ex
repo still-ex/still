@@ -1,14 +1,15 @@
 defmodule Still.Preprocessor.Image do
   @moduledoc """
-  This preprocessor handles image transformation. To configure
-  it, set `:image_opts` in the metadata:
+  Handles image transformation.
 
-    %{
-      image_opts: %{
-        sizes: [100, 200],
-        transformations: [color_filter: "grayscale_bt709"]
+  To configure it, set `:image_opts` in the metadata:
+
+      %{
+        image_opts: %{
+          sizes: [100, 200],
+          transformations: [color_filter: "grayscale_bt709"]
+        }
       }
-    }
 
   `:sizes` defines the widths of the output files to create.
 

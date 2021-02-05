@@ -1,24 +1,25 @@
 defmodule Still.Compiler.Incremental.Node do
-  @doc """
-  A Incremental Node represents a file, or folder, that is processed
-  individually. Each file has a list of subscriptions and subcribers. The
-  subscriptions are the files included by the current file. The subscribers are
-  the files that the current file includes. When the current file changes, it
-  notifies the subscribers, and updates the subscriptions.
+  @moduledoc """
+  An incremental node represents a file, or folder, that is processed
+  individually.
+
+  Each file has a list of subscriptions and subcribers. The subscriptions are
+  the files included by the current file. The subscribers are the files that the
+  current file includes. When the current file changes, it notifies the
+  subscribers and updates the subscriptions.
 
   A file can be compiled or rendered:
 
-  * Compile - compiling a file means, most
-  times, running it thorugh a preprocessor and writing to to the destination
-  folder.
+  * Compile - compiling a file means, most times, running it thorugh a
+  preprocessor and writing to to the destination folder.
 
-  * Render - rendering a file means that the current file is being
-  included by another file. Template files may return HTML and images could return a path.
+  * Render - rendering a file means that the current file is being included by
+  another file. Template files may return HTML and images could return a path.
 
-  Incremental nodes attempt to compile/render files synchronously.  This
-  process can take a long time, which is usually fine, but it can be
-  changed by setting the `:compilation_timeout` key in your
-  `config/config.exs`. Default is `:infinity`.
+  Incremental nodes attempt to compile/render files synchronously. This process
+  can take a long time, which is usually fine, but it can be changed by setting
+  the `:compilation_timeout` key in your `config/config.exs`. Default is
+  `:infinity`.
   """
 
   use GenServer
@@ -30,26 +31,56 @@ defmodule Still.Compiler.Incremental.Node do
 
   @default_compilation_timeout :infinity
 
+  @impl true
   def start_link(file: file) do
     GenServer.start_link(__MODULE__, %{file: file}, name: file |> String.to_atom())
   end
 
+  @doc """
+  Compiles the file mapped by the `Node` with the given PID.
+
+  This PID can be obtained from `Still.Compiler.Incremental.Registry`.
+
+  For difference between compilation and renderisation see
+  `Still.Compiler.File`.
+  """
   def compile(pid) do
     GenServer.call(pid, :compile, compilation_timeout())
   end
 
+  @doc """
+  Renders the file mapped by the `Node` with the given PID.
+
+  This PID can be obtained from `Still.Compiler.Incremental.Registry`.
+
+  For difference between compilation and renderisation see
+  `Still.Compiler.File`.
+  """
   def render(pid, data, subscriber \\ nil) do
     GenServer.call(pid, {:render, data, subscriber}, compilation_timeout())
   end
 
+  @doc """
+  Adds a file to the list of files this process is subscribed to.
+  """
   def add_subscription(pid, file) do
     GenServer.cast(pid, {:add_subscription, file})
   end
 
+  @doc """
+  Removes a file from the list of files subscribing to this process.
+  """
   def remove_subscriber(pid, file) do
     GenServer.cast(pid, {:remove_subscriber, file})
   end
 
+  @doc """
+  Returns the compilation timeout defined in the config.
+
+  You can change this by setting
+
+    config :still, :compilation_timeout, 1_000_000
+  """
   def compilation_timeout do
     Still.Utils.config(:compilation_timeout, @default_compilation_timeout)
   end

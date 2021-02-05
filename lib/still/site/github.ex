@@ -1,5 +1,7 @@
 if Mix.env() != :prod do
   defmodule Still.Site.Github do
+    @moduledoc false
+
     @rate_limited_stargazers 418
     @rate_limited_username "@ratelimited"
     @rate_limited_url "https://picsum.photos/400"

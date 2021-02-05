@@ -1,7 +1,12 @@
 defmodule Still.Compiler.ViewHelpers.ResponsiveImage do
+  @moduledoc """
+  Generates a set of images to ensure they are responsive.
+
+  See `Still.Preprocessor.Image` for details on these transformations.
+  """
+
   alias Still.Compiler.Incremental
   alias Still.Compiler.ViewHelpers.{ContentTag, UrlFor}
-  alias Still.Preprocessor
 
   import Still.Utils
 
@@ -12,10 +17,11 @@ defmodule Still.Compiler.ViewHelpers.ResponsiveImage do
   @doc """
   Returns an image tag with the `src` and `srcset`.
 
-  If `:image_opts` is set in `opts`, it will be passed on to #{Preprocessor.Image}.
+  If `:image_opts` is set in `opts`, it will be passed on to
+  `Still.Preprocessor.Image`.
 
-  If `:sizes` is not set in `:image_opts` map, it sets sizes as as
-  25%, 50%, 75% and 100% of the input file's width.
+  If `:sizes` is not set in the `:image_opts` map, it is assumed to be 25%,
+  50%, 75% and 100% of the input file's width.
   """
   @spec render(file :: String.t(), list()) :: String.t()
   def render(file, opts \\ []) do

@@ -1,4 +1,6 @@
 defmodule Still.Web.Router do
+  @moduledoc false
+
   use Plug.Router
   use Plug.Debugger
   require Logger

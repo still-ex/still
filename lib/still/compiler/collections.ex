@@ -1,28 +1,45 @@
 defmodule Still.Compiler.Collections do
+  @moduledoc """
+  Keeps track of all the collections within a compilation cycle.
+  """
+
   use GenServer
 
   alias Still.Compiler.CompilationStage
 
+  @impl true
   def start_link(_) do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
   end
 
+  @doc """
+  Resets the saved collections.
+  """
   def reset do
     GenServer.call(__MODULE__, :reset)
   end
 
+  @doc """
+  Returns the collection with a given name, subscribing caller's file to any
+  future changes.
+  """
   def get(collection, parent_file) do
     GenServer.call(__MODULE__, {:get, collection, parent_file})
   end
 
+  @doc """
+  Adds a file to its collections.
+  """
   def add(file) do
     GenServer.call(__MODULE__, {:add, file |> Map.from_struct()})
   end
 
+  @impl true
   def init(_) do
     {:ok, %{files: [], subscribers: %{}}}
   end
 
+  @impl true
   def handle_call({:add, file}, _, state) do
     notify_subscribers(file, state)
 

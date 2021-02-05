@@ -1,4 +1,8 @@
 defmodule Still.Preprocessor.Slime.Renderer do
+  @moduledoc """
+  `Still.Preprocessor.Renderer` implementation for Slime files.
+  """
+
   use Still.Preprocessor.Renderer,
     extensions: [".slime"],
     preprocessor: Still.Preprocessor.Slime

@@ -1,4 +1,9 @@
 defmodule Still.Preprocessor.Frontmatter do
+  @moduledoc """
+  Parses the file's frontmatter and adds they key/value pairs to the
+  corresponding `Still.SourceFile`'s `:metadata` field.
+  """
+
   alias Still.Preprocessor
   alias Still.Utils
 

@@ -1,4 +1,8 @@
 defmodule Still.Preprocessor.EEx.Renderer do
+  @moduledoc """
+  `Still.Preprocessor.Renderer` implementation for EEx files.
+  """
+
   use Still.Preprocessor.Renderer,
     extensions: [".eex"],
     preprocessor: Still.Preprocessor.EEx
