@@ -17,6 +17,20 @@ defmodule Still.Compiler.ViewHelpers.SafeHTML do
     |> Enum.join(", ")
   end
 
+  def render(content) when is_map(content) do
+    content
+    |> Stream.map(fn {k, v} -> render(k) <> ": " <> render(v) end)
+    |> Enum.join(", ")
+  end
+
+  def render(content) when is_tuple(content) do
+    content
+    |> Tuple.to_list()
+    |> Enum.map(&render/1)
+    |> List.to_tuple()
+    |> inspect()
+  end
+
   def render(content) when is_integer(content) do
     Integer.to_string(content)
   end

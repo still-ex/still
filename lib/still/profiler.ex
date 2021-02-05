@@ -25,6 +25,7 @@ defmodule Still.Profiler do
   }
 
   alias Still.{Preprocessor, SourceFile}
+  alias Still.Utils
 
   @impl true
   def start_link(_) do
@@ -124,15 +125,12 @@ defmodule Still.Profiler do
   end
 
   defp hash_file(%SourceFile{input_file: file, metadata: metadata}) do
-    ref = :crypto.hash_init(:sha256) |> :crypto.hash_update(file)
+    metadata_hash =
+      metadata
+      |> Utils.Map.deep_atomify_keys()
+      |> :erlang.phash2()
+      |> to_string()
 
-    metadata
-    |> Enum.reduce(ref, fn {k, v}, acc ->
-      acc
-      |> :crypto.hash_update(to_string(k))
-      |> :crypto.hash_update(to_string(v))
-    end)
-    |> :crypto.hash_final()
-    |> Base.encode16()
+    file <> "-" <> metadata_hash
   end
 end

@@ -1,8 +1,3 @@
----
-permalink: profiler.html
-title: Still Profiler Output
----
-
 <%
   eerie_black = "#222222"
   lemon_meringue = "#F3EAC3"
