@@ -1,9 +1,16 @@
 .sponsors
   .content
-    .details
-      h2.section-title Sponsors
+    .right-pane
+      .details
+        h2.section-title Sponsors
 
-      p.p Still's maintenance is possible due to contributions from our sponsors:
+        p.p Still's maintenance is possible due to contributions from our sponsors:
 
-      = link to: "https://subvisual.com" do
-        = responsive_image("_includes/subvisual.png", class: "sponsor-image")
+        = link to: "https://subvisual.com" do
+          = responsive_image("_includes/subvisual.png", class: "sponsor-image")
+    .legal
+      p.p
+        ' Still is #{link "open sourced", to: "https://github.com/still-ex/still"}
+        ' with ❤️ © #{link "Subvisual", to: "https://subvisual.com"} 2021
+        br
+        | Hero image by #{link "UnknownArtist", to: "https://wallhaven.cc/w/13gmlv"}

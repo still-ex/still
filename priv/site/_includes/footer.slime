@@ -1,4 +1,0 @@
-.footer
-  p Still was created and is maintained by
-
-  img src="#{url_for("subvisual.png")}" alt="Subvisual"
