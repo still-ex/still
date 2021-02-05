@@ -1,4 +1,15 @@
 defmodule Still.Compiler.ViewHelpers.Truncate do
+  @moduledoc """
+  Truncates the content to a given maximum.
+
+  ## Options
+
+  * `length` - Maximum length of the truncated string. This includes the
+  omission string. Defaults to `300`.
+  * `omission` - String to indicate the omission of further text. Defaults to
+  `"..."`
+  """
+
   @default_length 300
   @default_omission "..."
 

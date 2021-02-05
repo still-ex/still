@@ -113,6 +113,8 @@ defmodule Still.Compiler.ViewHelpers do
       ## Options
 
       * `escape` - apply `safe_html/1` after truncating. Defaults to `false`.
+
+      See further supported options in `Still.ViewHelpers.Truncate`.
       """
       def truncate(str, opts \\ []) do
         truncated = Truncate.render(str, opts)
