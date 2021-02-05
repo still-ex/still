@@ -7,7 +7,6 @@ defmodule Still.Compiler.Collections do
 
   alias Still.Compiler.CompilationStage
 
-  @impl true
   def start_link(_) do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
   end

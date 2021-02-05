@@ -6,7 +6,6 @@ defmodule Still.Compiler.Incremental.Registry do
 
   alias Still.Compiler.Incremental
 
-  @impl true
   def start_link(_) do
     DynamicSupervisor.start_link(__MODULE__, %{}, name: __MODULE__)
   end

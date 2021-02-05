@@ -31,7 +31,6 @@ defmodule Still.Compiler.Incremental.Node do
 
   @default_compilation_timeout :infinity
 
-  @impl true
   def start_link(file: file) do
     GenServer.start_link(__MODULE__, %{file: file}, name: file |> String.to_atom())
   end
