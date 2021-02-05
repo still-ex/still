@@ -1,0 +1,10 @@
+---
+layout: _layout.slime
+---
+
+h1.title Welcome to Still
+
+.main
+  p Hello! <br /> This is your starter to create something beautiful.
+
+  = include("_includes/footer.slime")

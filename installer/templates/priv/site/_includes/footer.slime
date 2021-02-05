@@ -1,0 +1,6 @@
+footer
+  p Relevant links:
+  nav
+    ul
+      li = link "Docs", to: "https://hexdocs.pm/still/"
+      li = link "Github", to: "https://github.com/still-ex/still"
