@@ -28,7 +28,7 @@ defmodule Still.Preprocessor.Image.Adapter do
 
   @callback render(%Still.SourceFile{}) :: %Still.SourceFile{}
 
-  @callback get_image_info(file :: String.to_atom()) ::
+  @callback get_image_info(file :: String.t()) ::
               {:ok, %{width: integer(), height: integer()}} | {:error, any()}
 
   defmacro __using__(_) do

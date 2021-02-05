@@ -12,7 +12,6 @@ defmodule Still.Watcher do
 
   import Still.Utils
 
-  @impl true
   def start_link(_opts) do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
   end
@@ -26,6 +25,7 @@ defmodule Still.Watcher do
   Starts the file system watcher and the compiler traversal via
   `Still.Compiler.Traverse`.
   """
+  @impl true
   def handle_continue(:async_compile, state) do
     {:ok, watcher_pid} = FileSystem.start_link(dirs: [get_input_path()])
     FileSystem.subscribe(watcher_pid)
