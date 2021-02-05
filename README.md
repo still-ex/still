@@ -19,7 +19,7 @@ add it to any mix project.
 
 ### For new projects
 
-Run `mix archive.install hex still` to install the archive on your system.
+Run `mix archive.install hex still_new` to install the archive on your system.
 
 Afterwards, create a static site by running `mix still.new my_site`.
 That's it!

@@ -9,7 +9,7 @@ Still is a simple static site generator for pragmatic developers. It's a modern 
 Still is in early active development. It requires Elixir 1.10.4 and Erlang 23.0.3. It may work with previous versions, but these are the versions we are using at the moment.
 
 ```bash
-mix archive.install hex still
+mix archive.install hex still_new
 mix still.new mysite
 ```
 
@@ -23,7 +23,7 @@ Still can be used by itself or as part of another project.
 
 ### For new projects
 
-Run `mix archive.install hex still` to install the archive on your system.
+Run `mix archive.install hex still_new` to install the archive on your system.
 
 Afterwards, create a site by running `mix still.new my_site`. That's it!
 
