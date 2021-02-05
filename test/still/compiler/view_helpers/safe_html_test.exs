@@ -54,14 +54,12 @@ defmodule Still.Compiler.ViewHelpers.SafeHTMLTest do
       assert "<h1>" = SafeHTML.render({:safe, "<h1>"})
     end
 
-    test "raises errors on unsupported data" do
-      assert_raise ArgumentError, fn ->
-        SafeHTML.render({"h1", "title"})
-      end
+    test "renders tuples" do
+      assert ~s({"1", "2"}) = SafeHTML.render({1, 2})
+    end
 
-      assert_raise ArgumentError, fn ->
-        SafeHTML.render(%{"h1" => "title"})
-      end
+    test "renders maps" do
+      assert "bar: 2, foo: 1" = SafeHTML.render(%{foo: 1, bar: 2})
     end
   end
 end
