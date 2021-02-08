@@ -131,9 +131,7 @@ defmodule Still.Preprocessor do
     preprocessors()[Path.extname(file)]
     |> case do
       nil ->
-        raise PreprocessorError,
-          message: "Preprocessors not found for #{file}",
-          source_file: source_file
+        Logger.warn("Preprocessors not found for file: #{file}")
 
       preprocessors ->
         preprocessors
