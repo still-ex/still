@@ -14,8 +14,6 @@ defmodule Still.Profiler do
       config :still, profiler: false
   """
 
-  @profiler_layout "priv/still/profiler.slime"
-
   use GenServer
 
   alias Still.Compiler.{
@@ -24,8 +22,12 @@ defmodule Still.Profiler do
     PreprocessorError
   }
 
-  alias Still.{Preprocessor, SourceFile}
-  alias Still.Utils
+  alias Still.{Preprocessor, SourceFile, Utils}
+
+  alias Still.Preprocessor.{EEx, Slime, Save}
+
+  @profiler_layout "priv/still/profiler.slime"
+  @preprocessors [EEx, Slime, Save]
 
   def start_link(_) do
     GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
@@ -56,41 +58,34 @@ defmodule Still.Profiler do
   def init(:ok) do
     CompilationStage.subscribe()
 
-    {:ok, %{}}
+    layout =
+      Application.app_dir(:still, @profiler_layout)
+      |> File.read!()
+
+    {:ok, %{layout: layout, stats: %{}}}
   end
 
   @impl true
   def handle_cast({:register, file, delta}, state) do
-    key = hash_file(file)
+    new_stats = add_file_render_info(state.stats, file, delta)
 
-    new_state = Map.put(state, key, %{source_file: file, delta: delta})
-
-    {:noreply, new_state}
+    {:noreply, %{state | stats: new_stats}}
   end
 
   @impl true
   def handle_info(:bus_empty, state) do
-    content =
-      Application.app_dir(:still, @profiler_layout)
-      |> File.read!()
-
     stats =
-      state
+      state.stats
       |> Map.values()
-      |> Stream.map(fn %{source_file: source_file} = s ->
-        input_file = String.trim(source_file.input_file, "/")
-        source_file = %{source_file | input_file: input_file}
-
-        %{s | source_file: source_file}
-      end)
       |> Enum.sort_by(&{&1.source_file.input_file, &1.delta}, :asc)
 
     %SourceFile{
       input_file: @profiler_layout,
       output_file: "profiler/index.html",
-      content: content,
+      content: state.layout,
       run_type: :compile,
-      metadata: %{stats: stats}
+      metadata: %{stats: stats},
+      profilable: false
     }
     |> run_preprocessor()
 
@@ -106,7 +101,7 @@ defmodule Still.Profiler do
 
   defp run_preprocessor(source_file) do
     try do
-      Preprocessor.run(source_file)
+      Preprocessor.run(source_file, @preprocessors)
 
       ErrorCache.set({:ok, source_file})
     catch
@@ -122,6 +117,23 @@ defmodule Still.Profiler do
       :error, %PreprocessorError{} = e ->
         ErrorCache.set({:error, e})
     end
+  end
+
+  defp add_file_render_info(stats, file, delta) do
+    key = hash_file(file)
+
+    Map.update(
+      stats,
+      key,
+      %{source_file: file, delta: delta, nr_renders: 1, hash: key},
+      fn data ->
+        %{
+          data
+          | delta: delta + data.delta,
+            nr_renders: data.nr_renders + 1
+        }
+      end
+    )
   end
 
   defp hash_file(%SourceFile{input_file: file, metadata: metadata}) do

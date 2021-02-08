@@ -97,7 +97,40 @@ defmodule Still.Preprocessor do
     file
   end
 
-  def run(file, [preprocessor | remaining_preprocessors]) do
+  def run(file, preprocessors) do
+    if should_profile?(file) do
+      run_with_profiler(file, preprocessors)
+    else
+      do_run(file, preprocessors)
+    end
+  end
+
+  @doc """
+  Retrieves the preprocessor pipeline for the given file.
+  """
+  def for(%{input_file: file}) do
+    preprocessors()[Path.extname(file)]
+    |> case do
+      nil ->
+        Logger.warn("Preprocessors not found for file: #{file}")
+
+      preprocessors ->
+        preprocessors
+    end
+  end
+
+  defp run_with_profiler(file, preprocessors) do
+    start_time = Profiler.timestamp()
+
+    response = do_run(file, preprocessors)
+
+    end_time = Profiler.timestamp()
+    Profiler.register(response, end_time - start_time)
+
+    response
+  end
+
+  defp do_run(file, [preprocessor | remaining_preprocessors]) do
     preprocessor.run(file)
     |> run(remaining_preprocessors)
   catch
@@ -126,26 +159,16 @@ defmodule Still.Preprocessor do
       end
   end
 
-  @doc """
-  Retrieves the preprocessor pipeline for the given file.
-  """
-  def for(%{input_file: file} = source_file) do
-    preprocessors()[Path.extname(file)]
-    |> case do
-      nil ->
-        Logger.warn("Preprocessors not found for file: #{file}")
-
-      preprocessors ->
-        preprocessors
-    end
-  end
-
   defp preprocessors do
     Map.merge(@default_preprocessors, user_defined_preprocessors())
   end
 
   defp user_defined_preprocessors do
     config(:preprocessors, %{})
+  end
+
+  defp should_profile?(%SourceFile{profilable: profilable}) do
+    profilable and Application.get_env(:still, :profiler, false)
   end
 
   @callback render(SourceFile.t()) :: SourceFile.t()
@@ -161,11 +184,9 @@ defmodule Still.Preprocessor do
       """
       @spec run(SourceFile.t()) :: SourceFile.t()
       def run(file) do
-        if profilling?() do
-          run_with_profiler(file)
-        else
-          do_run(file)
-        end
+        file
+        |> set_extension()
+        |> render()
       end
 
       @doc """
@@ -187,27 +208,6 @@ defmodule Still.Preprocessor do
       end
 
       defoverridable(extension: 1)
-
-      defp run_with_profiler(file) do
-        start_time = Profiler.timestamp()
-
-        response = do_run(file)
-
-        end_time = Profiler.timestamp()
-        Profiler.register(response, end_time - start_time)
-
-        response
-      end
-
-      defp do_run(file) do
-        file
-        |> set_extension()
-        |> render()
-      end
-
-      defp profilling? do
-        config(:profiler, false)
-      end
     end
   end
 end

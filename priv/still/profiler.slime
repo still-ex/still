@@ -116,9 +116,27 @@ html
                     summary
                       span = stat.source_file.input_file
 
+                    strong.small
+                      ' Total render time:
+
+                    span.small #{stat.delta}ms
+
+                    br
+
+                    strong.small
+                      ' Hash of metadata:
+
+                    span.small #{stat.hash}
+
+                    br
+
+                    strong.small Variables:
+
+                    br
+
                     span.small
                       = if stat.source_file.metadata == %{} do
-                        | No variables
+                        | &nbsp;&nbsp;No variables
                       - else
                         = for {k, v} <- stat.source_file.metadata do
                           p
@@ -139,7 +157,8 @@ html
                             = if k == :children do
                               a.previewButton href="#" View as HTML
                 td
-                  span.small.delta = "(#{stat.delta}ms)"
+                  span.small.delta
+                    | Rendered #{stat.nr_renders}x (avg. #{trunc(stat.delta / stat.nr_renders)} ms)
 
         .preview
           iframe#previewHTML src="javascript:void(0);"
