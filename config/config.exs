@@ -4,7 +4,13 @@ config :still,
   dev_layout: false,
   input: Path.join(Path.dirname(__DIR__), "priv/site"),
   output: Path.join(Path.dirname(__DIR__), "_site"),
-  pass_through_copy: [~r/.*jpe?g/, "subvisual.png", "images", "fonts"],
+  pass_through_copy: [
+    ~r/.*jpe?g/,
+    "subvisual.png",
+    "images",
+    "fonts",
+    "CNAME"
+  ],
   url_fingerprinting: false,
   profiler: false,
   view_helpers: []
