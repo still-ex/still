@@ -15,7 +15,8 @@ defmodule Still.SourceFile do
     content: nil,
     metadata: %{},
     extension: nil,
-    run_type: :render
+    run_type: :render,
+    profilable: true
   ]
 
   @type t :: %__MODULE__{
@@ -24,6 +25,7 @@ defmodule Still.SourceFile do
           extension: binary() | nil,
           input_file: binary(),
           output_file: binary() | nil,
-          metadata: map()
+          metadata: map(),
+          profilable: boolean()
         }
 end
