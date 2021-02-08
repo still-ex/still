@@ -5,7 +5,7 @@ defmodule Still.New.Project do
 
   def new(opts) do
     %__MODULE__{
-      name: Keyword.fetch!(opts, :name),
+      name: to_app_name(opts[:module] || Keyword.fetch!(opts, :name)),
       module: to_module_name(opts[:module] || opts[:name]),
       path: ensure_path(opts[:path] || "./#{opts[:name]}"),
       version: @still_version
@@ -18,6 +18,10 @@ defmodule Still.New.Project do
     else
       path <> "/"
     end
+  end
+
+  defp to_app_name(name) do
+    String.downcase(name)
   end
 
   defp to_module_name(name) do
