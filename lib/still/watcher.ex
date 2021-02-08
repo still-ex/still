@@ -49,6 +49,8 @@ defmodule Still.Watcher do
 
       Enum.member?(events, :removed) ->
         Incremental.Registry.terminate_file_process(file)
+
+      true -> nil
     end
 
     {:noreply, state}
