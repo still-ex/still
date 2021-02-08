@@ -3,6 +3,8 @@ defmodule Still.Application do
 
   use Application
 
+  import Still.Utils, only: [config: 2]
+
   require Logger
 
   def start(_type, _args) do
@@ -63,10 +65,10 @@ defmodule Still.Application do
   end
 
   defp server? do
-    Application.get_env(:still, :server, false)
+    config(:server, false)
   end
 
   defp profiler? do
-    Application.get_env(:still, :profiler, false)
+    config(:profiler, false)
   end
 end

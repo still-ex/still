@@ -100,7 +100,7 @@ defmodule Still.Compiler.PassThroughCopy do
   end
 
   defp get_pass_through_copy_match(file) do
-    Application.get_env(:still, :pass_through_copy, [])
+    config(:pass_through_copy, [])
     |> Enum.find(&match_pass_through_copy(file, &1))
   end
 
