@@ -6,6 +6,8 @@ defmodule Still.Preprocessor.URLFingerprinting do
 
   alias Still.Preprocessor
 
+  import Still.Utils, only: [config: 2]
+
   use Preprocessor
 
   @impl true
@@ -35,6 +37,6 @@ defmodule Still.Preprocessor.URLFingerprinting do
   end
 
   def enabled? do
-    Application.get_env(:still, :url_fingerprinting, false)
+    config(:url_fingerprinting, false)
   end
 end

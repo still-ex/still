@@ -31,6 +31,8 @@ defmodule Still.Preprocessor.Renderer do
 
   @optional_callbacks [ast: 0]
 
+  import Still.Utils, only: [config: 2]
+
   alias Still.SourceFile
 
   defmacro __using__(opts) do
@@ -97,7 +99,7 @@ defmodule Still.Preprocessor.Renderer do
       end
 
       defp user_view_helpers_asts do
-        Application.get_env(:still, :view_helpers, [])
+        config(:view_helpers, [])
         |> Enum.map(fn module ->
           quote do
             import unquote(module)

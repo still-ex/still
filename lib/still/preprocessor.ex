@@ -54,6 +54,8 @@ defmodule Still.Preprocessor do
 
   require Logger
 
+  import Still.Utils, only: [config: 2]
+
   alias __MODULE__.{
     CSSMinify,
     EEx,
@@ -143,7 +145,7 @@ defmodule Still.Preprocessor do
   end
 
   defp user_defined_preprocessors do
-    Application.get_env(:still, :preprocessors, %{})
+    config(:preprocessors, %{})
   end
 
   @callback render(SourceFile.t()) :: SourceFile.t()
@@ -204,7 +206,7 @@ defmodule Still.Preprocessor do
       end
 
       defp profilling? do
-        Application.get_env(:still, :profiler, false)
+        config(:profiler, false)
       end
     end
   end

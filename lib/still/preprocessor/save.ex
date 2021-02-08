@@ -41,7 +41,7 @@ defmodule Still.Preprocessor.Save do
   def render(file), do: file
 
   defp append_development_layout(%{extension: ".html", content: content} = file) do
-    if Application.get_env(:still, :dev_layout, false) do
+    if config(:dev_layout, false) do
       %{content: content} = Still.Compiler.File.DevLayout.wrap(content)
 
       %{file | content: content}

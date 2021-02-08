@@ -52,6 +52,6 @@ defmodule Still.Preprocessor.Image do
   end
 
   def adapter do
-    Application.get_env(:still, :image_adapter, __MODULE__.Mogrify)
+    config(:image_adapter, __MODULE__.Mogrify)
   end
 end
