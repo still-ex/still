@@ -71,12 +71,3 @@ config :still,
 ```
 
 The preprocessors will be executed in the order you configure them.
-
-If you want to add a custom preprocessor to one of the default extensions, you need to redefine the whole pipeline. For example, if you want to add your own preprocessor for `.css` files but keep the existing ones do the following:
-
-```elixir
-config :still,
-  preprocessors: %{
-    ".css" => [EEx, MyPreProcessor, CSSMinify, OutputPath, URLFingerprinting]
-  }
-```
