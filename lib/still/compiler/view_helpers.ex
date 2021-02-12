@@ -126,6 +126,10 @@ defmodule Still.Compiler.ViewHelpers do
         end
       end
 
+      def code(do: markup) do
+        Makeup.highlight(markup)
+      end
+
       defp include_subscriber(opts) do
         if Keyword.get(opts, :subscribe, true) do
           @env[:input_file]

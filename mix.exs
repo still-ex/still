@@ -69,7 +69,9 @@ defmodule Still.MixProject do
       {:yaml_elixir, "~> 2.4"},
       {:mogrify, "~> 0.8.0"},
       {:timex, "~> 3.5"},
-      {:ex_doc, "~> 0.23", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.23", only: :dev, runtime: false},
+      {:makeup, "~> 1.0.4"},
+      {:makeup_elixir, "0.14.1"}
     ]
   end
 

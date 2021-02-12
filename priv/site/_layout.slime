@@ -10,5 +10,8 @@ html
     = include("_includes/meta.slime")
     = link_to_js "/console.js"
     = link_to_css "/css/theme.css", media: "all"
+    style
+      = Makeup.stylesheet()
+
   body
     = @children
