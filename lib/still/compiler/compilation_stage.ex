@@ -96,6 +96,7 @@ defmodule Still.Compiler.CompilationStage do
      }}
   end
 
+  @impl true
   def handle_info(:notify_subscribers, %{to_compile: []} = state) do
     state.subscribers
     |> Enum.each(fn pid ->
@@ -109,7 +110,6 @@ defmodule Still.Compiler.CompilationStage do
     {:noreply, state}
   end
 
-  @impl true
   def handle_info(:run, %{to_compile: [], changed: true} = state) do
     Process.send(self(), :notify_subscribers, [])
 
