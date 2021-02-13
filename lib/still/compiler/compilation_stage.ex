@@ -71,6 +71,13 @@ defmodule Still.Compiler.CompilationStage do
 
   @impl true
   def handle_cast({:compile, files}, state) when is_list(files) do
+    files
+    |> Enum.map(fn file ->
+      file
+      |> Incremental.Registry.get_or_create_file_process()
+      |> Incremental.Node.changed()
+    end)
+
     if state.timer do
       Process.cancel_timer(state.timer)
     end
@@ -84,6 +91,10 @@ defmodule Still.Compiler.CompilationStage do
   end
 
   def handle_cast({:compile, file}, state) do
+    file
+    |> Incremental.Registry.get_or_create_file_process()
+    |> Incremental.Node.changed()
+
     if state.timer do
       Process.cancel_timer(state.timer)
     end
@@ -132,7 +143,7 @@ defmodule Still.Compiler.CompilationStage do
       Task.await(task, Incremental.Node.compilation_timeout())
     end)
 
-    Process.send_after(self(), :run, 900)
+    send(self(), :run)
 
     {:noreply, %{state | to_compile: [], changed: true, timer: nil}}
   end

@@ -69,7 +69,8 @@ defmodule Still.MixProject do
       {:yaml_elixir, "~> 2.4"},
       {:mogrify, "~> 0.8.0"},
       {:timex, "~> 3.5"},
-      {:ex_doc, "~> 0.23", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.23", only: :dev, runtime: false},
+      {:fastimage, "~> 1.0.0-rc4"}
     ]
   end
 
