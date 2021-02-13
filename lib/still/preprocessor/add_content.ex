@@ -12,11 +12,34 @@ defmodule Still.Preprocessor.AddContent do
   require Logger
 
   @impl true
-  def render(%{content: content} = file) when is_nil(content) do
-    with {:ok, content} <- File.read(get_input_path(file)) do
-      %SourceFile{file | content: content}
-    end
+  def render(%{content: content, input_file: input_file} = file) when is_nil(content) do
+    %SourceFile{file | content: get_content(input_file)}
   end
 
   def render(file), do: file
+
+  defp get_content(file) do
+    case get_from_cache(file) do
+      {:ok, content} when not is_nil(content) ->
+        content
+
+      _ ->
+        file
+        |> get_from_filesystem!()
+        |> update_cache(file)
+    end
+  end
+
+  defp get_from_cache(file) do
+    Still.Compiler.ContentCache.get(file)
+  end
+
+  defp get_from_filesystem!(file) do
+    File.read!(get_input_path(file))
+  end
+
+  defp update_cache(content, file) do
+    Still.Compiler.ContentCache.set(file, content)
+    content
+  end
 end

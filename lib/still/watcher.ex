@@ -63,8 +63,11 @@ defmodule Still.Watcher do
   end
 
   defp process_file(file) do
-    file
-    |> get_relative_input_path()
-    |> CompilationStage.compile()
+    file =
+      file
+      |> get_relative_input_path()
+
+    Still.Compiler.ContentCache.clear(file)
+    CompilationStage.compile(file)
   end
 end
