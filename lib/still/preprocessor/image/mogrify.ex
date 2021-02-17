@@ -35,11 +35,11 @@ defmodule Still.Preprocessor.Image.Mogrify do
 
   @impl true
   def get_image_info(file) do
-    Mogrify.open(file)
-    |> Mogrify.verbose()
+    file
+    |> Fastimage.size()
     |> case do
       {:error, error} -> {:error, error}
-      res -> {:ok, Map.take(res, [:height, :width])}
+      {:ok, res} -> {:ok, Map.take(res, [:height, :width])}
     end
   end
 

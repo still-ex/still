@@ -50,7 +50,8 @@ defmodule Still.Watcher do
       Enum.member?(events, :removed) ->
         Incremental.Registry.terminate_file_process(file)
 
-      true -> nil
+      true ->
+        nil
     end
 
     {:noreply, state}
@@ -62,7 +63,11 @@ defmodule Still.Watcher do
   end
 
   defp process_file(file) do
-    get_relative_input_path(file)
-    |> CompilationStage.compile()
+    file =
+      file
+      |> get_relative_input_path()
+
+    Still.Compiler.ContentCache.clear(file)
+    CompilationStage.compile(file)
   end
 end

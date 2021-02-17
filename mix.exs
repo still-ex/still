@@ -55,21 +55,23 @@ defmodule Still.MixProject do
 
   defp deps do
     [
+      {:cachex, "~> 3.3"},
       {:cowboy, "~> 2.8"},
       {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
+      {:ex_doc, "~> 0.23", only: :dev, runtime: false},
+      {:fastimage, "~> 1.0.0-rc4"},
       {:file_system, "~> 0.2.10"},
-      {:markdown, "~> 0.1.1", hex: :still_markdown},
+      {:floki, "~> 0.29.0"},
       {:jason, "~> 1.2"},
+      {:markdown, "~> 0.1.1", hex: :still_markdown},
       {:mock, "~> 0.3.0", only: :test},
+      {:mogrify, "~> 0.8.0"},
       {:plug, "~> 1.10"},
       {:plug_cowboy, "~> 2.3"},
       {:slime, "~> 1.2"},
-      {:floki, "~> 0.29.0"},
-      {:yaml_elixir, "~> 2.4"},
-      {:mogrify, "~> 0.8.0"},
       {:timex, "~> 3.5"},
-      {:ex_doc, "~> 0.23", only: :dev, runtime: false}
+      {:yaml_elixir, "~> 2.4"}
     ]
   end
 

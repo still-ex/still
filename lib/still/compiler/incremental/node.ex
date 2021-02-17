@@ -84,22 +84,32 @@ defmodule Still.Compiler.Incremental.Node do
     Still.Utils.config(:compilation_timeout, @default_compilation_timeout)
   end
 
+  def changed(pid) do
+    GenServer.cast(pid, :changed)
+  end
+
   @impl true
   def init(%{file: file}) do
     state = %{
       file: file,
       subscribers: [],
-      subscriptions: []
+      subscriptions: [],
+      cached_source_file: nil
     }
 
     {:ok, state}
   end
 
   @impl true
+  def handle_call(:compile, _from, %{cached_source_file: source_file} = state)
+      when not is_nil(source_file) do
+    {:reply, source_file, state}
+  end
+
   def handle_call(:compile, _from, state) do
     with {:ok, source_file} <- Compile.run(state) do
       ErrorCache.set({:ok, source_file})
-      {:reply, source_file, state}
+      {:reply, source_file, %{state | cached_source_file: source_file}}
     else
       other ->
         {:reply, other, state}
@@ -160,13 +170,16 @@ defmodule Still.Compiler.Incremental.Node do
   end
 
   @impl true
+  def handle_cast(:changed, state) do
+    {:noreply, %{state | cached_source_file: nil}}
+  end
+
   def handle_cast({:remove_subscriber, file}, state) do
     subscribers = Enum.reject(state.subscribers, &(&1 == file))
 
     {:noreply, %{state | subscribers: subscribers}}
   end
 
-  @impl true
   def handle_cast({:add_subscription, file}, state) do
     subscriptions = [file | state.subscriptions] |> Enum.uniq()
 
