@@ -48,4 +48,4 @@ jobs:
         mix deps.get
 
     - name: Run tests
-      run: mix test
+      run: mix test --timeout 120000
