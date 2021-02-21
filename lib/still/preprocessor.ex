@@ -131,32 +131,48 @@ defmodule Still.Preprocessor do
   end
 
   defp do_run(file, [preprocessor | remaining_preprocessors]) do
-    preprocessor.run(file)
-    |> run(remaining_preprocessors)
-  catch
-    :error, %{description: description} when description != "" ->
-      raise PreprocessorError,
-        message: description,
+    try do
+      preprocessor.run(file)
+      |> run(remaining_preprocessors)
+    catch
+      :error,
+      %PreprocessorError{
+        message: message,
         preprocessor: preprocessor,
         remaining_preprocessors: remaining_preprocessors,
-        source_file: file,
-        stacktrace: __STACKTRACE__
-
-    :error, e ->
-      Logger.error(inspect(e))
-
-      case e do
-        %PreprocessorError{} ->
+        source_file: source_file,
+        stacktrace: stacktrace
+      } = e ->
+        if String.contains?(source_file.input_file, file.input_file) do
           raise e
-
-        e ->
+        else
           raise PreprocessorError,
-            message: inspect(e),
+            message: message,
             preprocessor: preprocessor,
             remaining_preprocessors: remaining_preprocessors,
-            source_file: file,
-            stacktrace: __STACKTRACE__
-      end
+            source_file: %{
+              source_file
+              | input_file: "#{file.input_file} -> #{source_file.input_file}"
+            },
+            stacktrace: stacktrace
+        end
+
+      :error, %{description: description} when description != "" ->
+        raise PreprocessorError,
+          message: description,
+          preprocessor: preprocessor,
+          remaining_preprocessors: remaining_preprocessors,
+          source_file: file,
+          stacktrace: __STACKTRACE__
+
+      :error, e ->
+        raise PreprocessorError,
+          message: inspect(e),
+          preprocessor: preprocessor,
+          remaining_preprocessors: remaining_preprocessors,
+          source_file: file,
+          stacktrace: __STACKTRACE__
+    end
   end
 
   defp preprocessors do

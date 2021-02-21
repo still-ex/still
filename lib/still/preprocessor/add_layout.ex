@@ -31,12 +31,14 @@ defmodule Still.Preprocessor.AddLayout do
       |> Map.drop([:tag, :layout, :permalink, :input_file])
       |> Map.put(:children, children)
 
-    %{content: content} =
-      layout_file
-      |> Incremental.Registry.get_or_create_file_process()
-      |> Incremental.Node.render(layout_metadata, input_file)
-
-    %{file | content: content}
+    with %{content: content} <-
+           layout_file
+           |> Incremental.Registry.get_or_create_file_process()
+           |> Incremental.Node.render(layout_metadata, input_file) do
+      %{file | content: content}
+    else
+      error -> raise error
+    end
   end
 
   def render(file), do: file

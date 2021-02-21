@@ -17,7 +17,8 @@ defmodule Still.Compiler.ViewHelpers do
         ViewHelpers.ContentTag,
         ViewHelpers.ResponsiveImage,
         ViewHelpers.SafeHTML,
-        ViewHelpers.Truncate
+        ViewHelpers.Truncate,
+        PreprocessorError
       }
 
       alias __MODULE__
@@ -60,6 +61,9 @@ defmodule Still.Compiler.ViewHelpers do
 
           content
         else
+          %PreprocessorError{} = e ->
+            raise e
+
           _ ->
             Logger.error("File process not found for #{file}")
             ""

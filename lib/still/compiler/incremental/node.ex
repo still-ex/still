@@ -29,6 +29,8 @@ defmodule Still.Compiler.Incremental.Node do
   alias Still.Compiler.ErrorCache
   alias __MODULE__.Compile
 
+  require Logger
+
   @default_compilation_timeout :infinity
 
   def start_link(file: file) do
@@ -132,11 +134,29 @@ defmodule Still.Compiler.Incremental.Node do
 
   @impl true
   def handle_call({:render, data, nil}, _from, state) do
-    {:reply, do_render(data, state), state}
-  catch
-    :error, %PreprocessorError{} = e ->
-      ErrorCache.set({:error, e})
-      {:reply, %Still.SourceFile{content: "", input_file: state.file}, state}
+    try do
+      source_file = do_render(data, state)
+      ErrorCache.set({:ok, source_file})
+
+      {:reply, source_file, state}
+    catch
+      :exit, {e, _} ->
+        error = %PreprocessorError{
+          message: inspect(e),
+          stacktrace: __STACKTRACE__,
+          source_file: %Still.SourceFile{input_file: state.file, run_type: :render}
+        }
+
+        ErrorCache.set({:error, error})
+
+        {:reply, error, state}
+
+      :error, %PreprocessorError{} = e ->
+        Logger.error(inspect(e))
+        ErrorCache.set({:error, e})
+
+        {:reply, e, state}
+    end
   end
 
   @impl true
@@ -153,19 +173,18 @@ defmodule Still.Compiler.Incremental.Node do
         error = %PreprocessorError{
           message: inspect(e),
           stacktrace: __STACKTRACE__,
-          source_file: %Still.SourceFile{input_file: state.file, run_type: :compile}
+          source_file: %Still.SourceFile{input_file: state.file, run_type: :render}
         }
 
         ErrorCache.set({:error, error})
 
-        {:reply, %Still.SourceFile{content: "", input_file: state.file},
-         %{state | subscribers: subscribers}}
+        {:reply, error, %{state | subscribers: subscribers}}
 
       :error, %PreprocessorError{} = e ->
+        Logger.error(inspect(e))
         ErrorCache.set({:error, e})
 
-        {:reply, %Still.SourceFile{content: "", input_file: state.file},
-         %{state | subscribers: subscribers}}
+        {:reply, e, %{state | subscribers: subscribers}}
     end
   end
 
