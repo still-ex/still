@@ -155,12 +155,5 @@ defmodule Still.Compiler.CompilationStage do
   defp compile_file(file) do
     Incremental.Registry.get_or_create_file_process(file)
     |> Incremental.Node.compile()
-    |> case do
-      :ok ->
-        :ok
-
-      _ ->
-        file |> Path.dirname() |> compile_file()
-    end
   end
 end
