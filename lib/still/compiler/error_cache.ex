@@ -14,10 +14,6 @@ defmodule Still.Compiler.ErrorCache do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
   end
 
-  def stop() do
-    GenServer.stop(__MODULE__, :ok)
-  end
-
   @doc """
   Save the given error or clear it if the compilation was successful.
 
