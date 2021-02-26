@@ -4,7 +4,7 @@ The following sections contain more information on the templating languages supp
 
 ## Slime
 
-[Slime](https://github.com/slime-lang/slime) is a language that generates HTM. Any file with the extension `.slime` will generate an `.html` file. More information can be found in [Template](https://hexdocs.pm/still/templates.html).
+[Slime](https://github.com/slime-lang/slime) is a language that generates HTML. Any file with the extension `.slime` will generate a corresponding `.html` file. More information can be found in [Template](https://hexdocs.pm/still/templates.html).
 
 ## EEx
 
