@@ -17,7 +17,7 @@ mix still.new mysite
 
 This will create an Elixir project in the folder _mysite_. You'll find an `index.slime` file inside `priv/site`.
 
-Run `mix still.dev` inside `mysite` to start the development server. Then open [http://localhost:3000](http://localhost:3000) in your web browser to see the new website.
+Run `cd mysite` and then you can just run `mix still.dev` to start the development server. Then open [http://localhost:3000](http://localhost:3000) in your web browser to see the new website.
 
 ## Installation
 
