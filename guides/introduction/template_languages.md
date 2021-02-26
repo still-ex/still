@@ -8,7 +8,7 @@ The following sections contain more information on the templating languages supp
 
 ## EEx
 
-[EEx](https://hexdocs.pm/eex/EEx.html) is not a language, but a tool to embed Elixir code in strings. Files with the `.eex` extension will generate `.html` files (unless you override that configuration). But almost every template run first through EEx, which means that you can use EEx inside Front Matter blocks, Markdown, CSS, JS, almost any text file. More information can be found in [Template](https://hexdocs.pm/still/templates.html).
+[EEx](https://hexdocs.pm/eex/EEx.html) is not a language, but a tool to embed Elixir code in strings. Files with the `.eex` extension will generate `.html` files (unless you override that configuration). However, almost every template runs first through EEx, which means that you can use EEx inside Front Matter blocks, Markdown, CSS, JS and almost any other file. More information can be found in [Template](https://hexdocs.pm/still/templates.html).
 
 ## Markdown
 
