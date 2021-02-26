@@ -18,14 +18,12 @@ jobs:
         elixir:
           - 1.10.4
           - 1.11.3
-        rust:
-          - 1.49.0
 
     steps:
     - uses: actions/checkout@v2
 
     - name: Set up Elixir
-      uses: actions/setup-elixir@v1
+      uses: erlef/setup-elixir@v1
       with:
         elixir-version: ${{ matrix.elixir }}
         otp-version: ${{ matrix.otp }}
@@ -50,4 +48,4 @@ jobs:
         mix deps.get
 
     - name: Run tests
-      run: mix test
+      run: mix test --timeout 120000
