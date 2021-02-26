@@ -15,7 +15,7 @@ defmodule Still.Compiler.Traverse do
          _ <- File.rmdir(get_output_path()),
          :ok <- File.mkdir_p(get_output_path()) do
       compilable_files()
-      |> Enum.map(&CompilationStage.compile/1)
+      |> CompilationStage.compile()
     end
   end
 
