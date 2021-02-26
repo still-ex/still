@@ -22,6 +22,7 @@ defmodule Still.Preprocessor.AddLayout do
         %{
           content: children,
           input_file: input_file,
+          dependency_chain: dependency_chain,
           metadata: %{layout: layout_file} = metadata
         } = file
       )
@@ -30,6 +31,7 @@ defmodule Still.Preprocessor.AddLayout do
       metadata
       |> Map.drop([:tag, :layout, :permalink, :input_file])
       |> Map.put(:children, children)
+      |> Map.put(:dependency_chain, dependency_chain)
 
     with %{content: content} <-
            layout_file

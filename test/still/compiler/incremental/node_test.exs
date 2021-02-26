@@ -21,9 +21,8 @@ defmodule Still.Compiler.Incremental.NodeTest do
     })
   end
 
-  describe "process" do
+  describe "compile" do
     test "compiles a file" do
-      CompilationStage.subscribe()
       pid = Registry.get_or_create_file_process("about.slime")
 
       Node.compile(pid)
@@ -37,7 +36,7 @@ defmodule Still.Compiler.Incremental.NodeTest do
 
       other_pid = Registry.get_or_create_file_process("_includes/header.slime")
 
-      Node.render(other_pid, %{}, "about.slime")
+      Node.render(other_pid, %{dependency_chain: ["about.slime"]}, "about.slime")
 
       Node.compile(other_pid)
 
@@ -49,7 +48,7 @@ defmodule Still.Compiler.Incremental.NodeTest do
     test "renders a file" do
       pid = Registry.get_or_create_file_process("_includes/header.slime")
 
-      content = Node.render(pid, %{}, "about.slime")
+      content = Node.render(pid, %{dependency_chain: ["about.slime"]}, "about.slime")
 
       assert %{content: "<header><p>This is a header</p></header>"} = content
     end

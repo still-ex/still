@@ -24,7 +24,7 @@ defmodule Still.Compiler.Incremental.Node do
 
   use GenServer
 
-  alias Still.Compiler
+  alias Still.{Compiler, SourceFile}
   alias Still.Compiler.PreprocessorError
   alias Still.Compiler.ErrorCache
   alias __MODULE__.Compile
@@ -134,58 +134,17 @@ defmodule Still.Compiler.Incremental.Node do
 
   @impl true
   def handle_call({:render, data, nil}, _from, state) do
-    try do
-      source_file = do_render(data, state)
-      ErrorCache.set({:ok, source_file})
-
-      {:reply, source_file, state}
-    catch
-      :exit, {e, _} ->
-        error = %PreprocessorError{
-          message: inspect(e),
-          stacktrace: __STACKTRACE__,
-          source_file: %Still.SourceFile{input_file: state.file, run_type: :render}
-        }
-
-        ErrorCache.set({:error, error})
-
-        {:reply, error, state}
-
-      :error, %PreprocessorError{} = e ->
-        Logger.error(inspect(e))
-        ErrorCache.set({:error, e})
-
-        {:reply, e, state}
-    end
+    do_render(data, state)
   end
 
   @impl true
   def handle_call({:render, data, subscriber}, _from, state) do
-    subscribers = [subscriber | state.subscribers] |> Enum.uniq() |> Enum.reject(&is_nil/1)
+    subscribers =
+      [subscriber | state.subscribers]
+      |> Enum.uniq()
+      |> Enum.reject(&is_nil/1)
 
-    try do
-      source_file = do_render(data, state)
-      ErrorCache.set({:ok, source_file})
-
-      {:reply, source_file, %{state | subscribers: subscribers}}
-    catch
-      :exit, {e, _} ->
-        error = %PreprocessorError{
-          message: inspect(e),
-          stacktrace: __STACKTRACE__,
-          source_file: %Still.SourceFile{input_file: state.file, run_type: :render}
-        }
-
-        ErrorCache.set({:error, error})
-
-        {:reply, error, %{state | subscribers: subscribers}}
-
-      :error, %PreprocessorError{} = e ->
-        Logger.error(inspect(e))
-        ErrorCache.set({:error, e})
-
-        {:reply, e, %{state | subscribers: subscribers}}
-    end
+    do_render(data, %{state | subscribers: subscribers})
   end
 
   @impl true
@@ -205,7 +164,34 @@ defmodule Still.Compiler.Incremental.Node do
     {:noreply, %{state | subscriptions: subscriptions}}
   end
 
-  defp do_render(data, state) do
-    Compiler.File.render(state.file, data)
+  defp do_render(data = %{dependency_chain: dependency_chain}, state) do
+    source_file =
+      %SourceFile{
+        input_file: state.file,
+        dependency_chain: [state.file | dependency_chain],
+        metadata: Map.drop(data, [:dependency_chain])
+      }
+      |> Compiler.File.render()
+
+    ErrorCache.set({:ok, source_file})
+
+    {:reply, source_file, state}
+  catch
+    :exit, {e, _} ->
+      error = %PreprocessorError{
+        message: inspect(e),
+        stacktrace: __STACKTRACE__,
+        source_file: %Still.SourceFile{input_file: state.file, run_type: :render}
+      }
+
+      ErrorCache.set({:error, error})
+
+      {:reply, error, state}
+
+    :error, %PreprocessorError{} = error ->
+      Logger.error(inspect(error))
+      ErrorCache.set({:error, error})
+
+      {:reply, error, state}
   end
 end

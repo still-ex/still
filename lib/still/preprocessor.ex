@@ -86,13 +86,13 @@ defmodule Still.Preprocessor do
   @doc """
   Runs the preprocessor pipeline for the given file.
   """
-  @spec run(SourceFile.t()) :: SourceFile.t()
+  @spec run(SourceFile.t()) :: SourceFile.t() | {:error, any()}
   def run(file) do
     file
     |> run(__MODULE__.for(file))
   end
 
-  @spec run(SourceFile.t(), list(module())) :: SourceFile.t()
+  @spec run(SourceFile.t(), list(module())) :: SourceFile.t() | {:error, any()}
   def run(file, []) do
     file
   end
@@ -135,27 +135,8 @@ defmodule Still.Preprocessor do
       preprocessor.run(file)
       |> run(remaining_preprocessors)
     catch
-      :error,
-      %PreprocessorError{
-        message: message,
-        preprocessor: preprocessor,
-        remaining_preprocessors: remaining_preprocessors,
-        source_file: source_file,
-        stacktrace: stacktrace
-      } = e ->
-        if String.contains?(source_file.input_file, file.input_file) do
-          raise e
-        else
-          raise PreprocessorError,
-            message: message,
-            preprocessor: preprocessor,
-            remaining_preprocessors: remaining_preprocessors,
-            source_file: %{
-              source_file
-              | input_file: "#{file.input_file} -> #{source_file.input_file}"
-            },
-            stacktrace: stacktrace
-        end
+      :error, %PreprocessorError{} = e ->
+        raise e
 
       :error, %{description: description} when description != "" ->
         raise PreprocessorError,
