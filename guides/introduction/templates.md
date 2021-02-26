@@ -88,7 +88,7 @@ Most template files allow for a [YAML Front Matter](https://jekyllrb.com/docs/fr
 
 ### Permalink
 
-Setting `permalink` allows you to override the output path of a file. For instance, by default `blog/post_1/index.md` would generate `blog/post_1/index.html`, but you can change it to `blog/announcment.html` like this:
+Setting the `permalink` option allows you to override the output path of a file. For instance, by default `blog/post_1/index.md` would generate `blog/post_1/index.html`, but you can change it to `blog/announcment.html` like this:
 
 ```slime
 ---
