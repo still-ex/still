@@ -1,12 +1,14 @@
 # Getting Started
 
-Still is a simple static site generator for pragmatic developers. It's a modern tool that doesn't magically solve every single problem, but also doesn't create any new ones or generate new developer positions. It's a modern and sane experience, designed to be composable, easy to use and to grow in complexity with your needs and abilities.
+Still is a simple static site generator for pragmatic developers. It's a modern tool that doesn't magically solve every single problem, but also doesn't create any new ones. It's a modern and sane experience, designed to be composable, easy to use and to grow in complexity with your needs and abilities.
 
 🚧 _This documentation is still incomplete, but we built [the landing page](https://github.com/subvisual/still/tree/master/priv/site) with Still to showcase some of its features. Have a look there if you can't find what you're looking for here._
 
 ## Quick start
 
-Still is in early active development. It requires Elixir 1.10.4 and Erlang 23.0.3. It may work with previous versions, but these are the versions we are using at the moment.
+Still is in early active development. It requires at least Elixir 1.10.4 and Erlang 23.0.3. It may work with previous versions, but these are the versions we are using at the moment.
+
+To bootstrap a new site, run the following commands:
 
 ```bash
 mix archive.install hex still_new
@@ -15,7 +17,7 @@ mix still.new mysite
 
 This will create an Elixir project in the folder _mysite_. You'll find an `index.slime` file inside `priv/site`.
 
-Run `mix still.dev` to start the development server. Then open [http://localhost:3000](http://localhost:3000) in your web browser to see the new website.
+Run `mix still.dev` inside `mysite` to start the development server. Then open [http://localhost:3000](http://localhost:3000) in your web browser to see the new website.
 
 ## Installation
 
@@ -39,13 +41,7 @@ def deps do
 end
 ```
 
-Open up `config.exs` and set the input and output folders:
-
-```elixir
-config :still,
-  input: Path.join(Path.dirname(__DIR__), "priv/site"),
-  output: Path.join(Path.dirname(__DIR__), "_site")
-```
+Copy the configs from [here](https://github.com/still-ex/still/tree/master/installer/priv/templates/config) to your project.
 
 Finally, create a file `index.slime` in the input folder.
 
