@@ -24,6 +24,7 @@ defmodule Still.Compiler.Incremental.Registry do
     if not is_nil(pid) do
       DynamicSupervisor.terminate_child(__MODULE__, pid)
     end
+
     :ok
   end
 

@@ -82,21 +82,7 @@ defmodule Still.Compiler.PassThroughCopy do
     |> Path.dirname()
     |> File.mkdir_p!()
 
-    if File.dir?(get_input_path(file)) do
-      process_folder(file, output_file)
-    else
-      process_file(file, output_file)
-    end
-  end
-
-  defp process_file(file, output_file) do
     File.cp(get_input_path(file), get_output_path(output_file))
-  end
-
-  defp process_folder(folder, output_folder) do
-    with {:ok, _} <- File.cp_r(get_input_path(folder), get_output_path(output_folder)) do
-      :ok
-    end
   end
 
   defp get_pass_through_copy_match(file) do

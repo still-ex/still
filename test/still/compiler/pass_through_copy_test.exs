@@ -4,16 +4,6 @@ defmodule Still.Compiler.PassThroughCopyTest do
   alias Still.Compiler.PassThroughCopy
 
   describe "try" do
-    test "matches folders" do
-      Application.put_env(:still, :pass_through_copy, css: "styles", img: "img")
-
-      PassThroughCopy.try("css")
-      PassThroughCopy.try("img")
-
-      assert File.exists?(get_output_path("styles"))
-      assert File.exists?(get_output_path("img"))
-    end
-
     test "copies files inside matching folders" do
       Application.put_env(:still, :pass_through_copy, css: "styles")
 

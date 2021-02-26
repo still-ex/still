@@ -25,9 +25,6 @@ defmodule Still.Compiler.Incremental.Node.Compile do
 
   defp do_compile(state) do
     cond do
-      File.dir?(get_input_path(state.file)) ->
-        :error
-
       should_be_ignored?(state.file) ->
         notify_subscribers(state)
         :error
