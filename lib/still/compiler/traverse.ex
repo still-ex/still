@@ -13,9 +13,8 @@ defmodule Still.Compiler.Traverse do
 
     with true <- File.dir?(get_input_path()),
          _ <- File.rmdir(get_output_path()),
-         :ok <- File.mkdir_p(get_output_path()),
-         files <- compilable_files() do
-      files
+         :ok <- File.mkdir_p(get_output_path()) do
+      compilable_files()
       |> Enum.map(&CompilationStage.compile/1)
     end
   end
@@ -24,7 +23,7 @@ defmodule Still.Compiler.Traverse do
     path = Path.join(get_input_path, rel_path)
 
     cond do
-      partial?(path) ->
+      partial?(rel_path) ->
         []
 
       File.regular?(path) ->
