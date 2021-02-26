@@ -62,7 +62,7 @@ To add your own templating language you need to write at least one [custom prepr
 
 ```
 
-Then, you create a new elixir module somewhere with the following contents:
+Then, you create a new Elixir module somewhere with the following contents:
 
 ```elixir
 defmodule YourSite.SassPreprocessor do
