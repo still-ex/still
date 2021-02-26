@@ -83,6 +83,7 @@ defmodule Still.Compiler.PassThroughCopy do
     |> File.mkdir_p!()
 
     if File.dir?(get_input_path(file)) do
+      IO.inspect("processing dir #{file}")
       process_folder(file, output_file)
     else
       process_file(file, output_file)
