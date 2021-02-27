@@ -1,9 +1,12 @@
 defmodule Still.Compiler.CompilationStage do
   @moduledoc """
   Almost every compilation request goes through `CompilationStage`. This
-  process is responsible for keeping track of subscriptions (e.g: a browser
-  subscribing to changes) and notifying all the subscribers of the end of the
-  compilation cycle.
+  process is responsible for keeping track of files to compile and
+  subscriptions (e.g: a browser subscribing to changes) and notifying all the
+  subscribers of the end of the compilation cycle.
+
+  Files are compiled in parallel. When no more files are ready to be compiled,
+  the subscribers are notified.
 
   Subscribers to this process are notified when the queue is empty, which is
   usefull to refresh the browser or finish the compilation task in production.
@@ -20,21 +23,21 @@ defmodule Still.Compiler.CompilationStage do
   """
   use GenServer
 
-  alias Still.Compiler.Incremental
+  alias Still.Compiler.Incremental.{Registry, Node}
 
   def start_link(_) do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
   end
 
   @doc """
-  Asynchronously saves a file in the compilation list.
-
-  Files are compiled in parallel, meaning that every 100ms the compilation stage
-  will run and compile any due source file. When no more files are ready to be
-  compiled, the subscribers are notified.
+  Asynchronously pushes a file to the compilation list.
   """
+  def compile(files) when is_list(files) do
+    GenServer.cast(__MODULE__, {:compile, files})
+  end
+
   def compile(file) do
-    GenServer.cast(__MODULE__, {:compile, file})
+    compile([file])
   end
 
   @doc """
@@ -58,24 +61,20 @@ defmodule Still.Compiler.CompilationStage do
 
   @impl true
   def handle_call(:subscribe, {from, _}, state) do
-    [from | state.subscribers] |> Enum.uniq()
-
     {:reply, :ok, %{state | subscribers: [from | state.subscribers] |> Enum.uniq()}}
   end
 
   def handle_call(:unsubscribe, {from, _}, state) do
-    [from | state.subscribers] |> Enum.uniq()
-
     {:reply, :ok, %{state | subscribers: state.subscribers |> Enum.reject(&(&1 == from))}}
   end
 
   @impl true
-  def handle_cast({:compile, files}, state) when is_list(files) do
+  def handle_cast({:compile, files}, state) do
     files
     |> Enum.map(fn file ->
       file
-      |> Incremental.Registry.get_or_create_file_process()
-      |> Incremental.Node.changed()
+      |> Registry.get_or_create_file_process()
+      |> Node.changed()
     end)
 
     if state.timer do
@@ -85,24 +84,7 @@ defmodule Still.Compiler.CompilationStage do
     {:noreply,
      %{
        state
-       | to_compile: Enum.concat(files, state.to_compile),
-         timer: Process.send_after(self(), :run, 100)
-     }}
-  end
-
-  def handle_cast({:compile, file}, state) do
-    file
-    |> Incremental.Registry.get_or_create_file_process()
-    |> Incremental.Node.changed()
-
-    if state.timer do
-      Process.cancel_timer(state.timer)
-    end
-
-    {:noreply,
-     %{
-       state
-       | to_compile: [file | state.to_compile],
+       | to_compile: Enum.concat(files, state.to_compile) |> Enum.uniq(),
          timer: Process.send_after(self(), :run, 100)
      }}
   end
@@ -133,14 +115,13 @@ defmodule Still.Compiler.CompilationStage do
 
   def handle_info(:run, state) do
     state.to_compile
-    |> Enum.uniq()
     |> Enum.map(fn file ->
       Task.async(fn ->
         compile_file(file)
       end)
     end)
     |> Enum.map(fn task ->
-      Task.await(task, Incremental.Node.compilation_timeout())
+      Task.await(task, Node.compilation_timeout())
     end)
 
     send(self(), :run)
@@ -148,12 +129,8 @@ defmodule Still.Compiler.CompilationStage do
     {:noreply, %{state | to_compile: [], changed: true, timer: nil}}
   end
 
-  defp compile_file("."), do: :ok
-
-  defp compile_file("/"), do: :ok
-
   defp compile_file(file) do
-    Incremental.Registry.get_or_create_file_process(file)
-    |> Incremental.Node.compile()
+    Registry.get_or_create_file_process(file)
+    |> Node.compile()
   end
 end
