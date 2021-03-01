@@ -43,7 +43,7 @@ subpaths will not work.** For instance:
 
 Image support is still (get it?) rudimentary: it can only generate images of
 different sizes. By default, it relies
-on [ImageMagick][imagemagick], but if you install [`still_imageflow`](https://github.com/still-ex/still_imageflow)
+on [ImageMagick][imagemagick], but if you install [`still_imageflow`][still_imageflow]
 as a dependency it will use [imageflow][imageflow]. The reason we do not use imageflow by default is that it requires Rust. If you want to use ImageMagick, you
 also need to have it installed in your system.
 
@@ -72,6 +72,7 @@ and it will include the proper `src` and `srcset` attributes to use the differen
 [imageflow]: https://github.com/imazen/imageflow
 [imagemagic-cli-option]: https://imagemagick.org/script/command-line-options.php
 [imageflow-docs]: https://docs.imageflow.io/
+[still_imageflow]: https://github.com/still-ex/still_imageflow
 
 ### Custom helpers
 
@@ -85,6 +86,8 @@ config :still,
 ## Configuration
 
 Most template files allow for a [YAML Front Matter](https://jekyllrb.com/docs/front-matter/) block to change their configuration.
+
+If you add your own template language, you can support this by ensuring the file's preprocessor pipeline includes `Still.Preprocessor.Frontmatter`.
 
 ### Permalink
 

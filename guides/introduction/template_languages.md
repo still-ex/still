@@ -4,11 +4,11 @@ The following sections contain more information on the templating languages supp
 
 ## Slime
 
-[Slime](https://github.com/slime-lang/slime) is a language that generates HTML. Any file with the extension `.slime` will generate a corresponding `.html` file. More information can be found in [Template](https://hexdocs.pm/still/templates.html).
+[Slime](https://github.com/slime-lang/slime) is a language that generates HTML. Any file with the extension `.slime` will generate a corresponding `.html` file. More information can be found in [Template][templates].
 
 ## EEx
 
-[EEx](https://hexdocs.pm/eex/EEx.html) is not a language, but a tool to embed Elixir code in strings. Files with the `.eex` extension will generate `.html` files (unless you override that configuration). However, almost every template runs first through EEx, which means that you can use EEx inside Front Matter blocks, Markdown, CSS, JS and almost any other file. More information can be found in [Template](https://hexdocs.pm/still/templates.html).
+[EEx](https://hexdocs.pm/eex/EEx.html) is not a language, but a tool to embed Elixir code in strings. Files with the `.eex` extension will generate `.html` files (unless you override that configuration). However, almost every template runs first through EEx, which means that you can use EEx inside Front Matter blocks, Markdown, CSS, JS and almost any other file. More information can be found in [Template][templates].
 
 ## Markdown
 
@@ -25,11 +25,11 @@ tags:
 <%= responsive_image("bg.jpg") %>
 ```
 
-More information can be found in [Template](https://hexdocs.pm/still/templates.html).
+More information can be found in [Template][templates].
 
 ## CSS
 
-CSS files are regular [templates](https://hexdocs.pm/still/templates.html) where you can embed Elixir:
+CSS files are regular [templates][templates] where you can embed Elixir:
 
 ```css
 <%= include("_global.scss") %>
@@ -42,7 +42,7 @@ CSS files are regular [templates](https://hexdocs.pm/still/templates.html) where
 
 ## JavaScript
 
-JavaScript files are regular [templates](https://hexdocs.pm/still/templates.html) where you can embed Elixir:
+JavaScript files are regular [templates][templates] where you can embed Elixir:
 
 ```js
 console.log('<%= link_to("img/bg.jpg") %>')
@@ -50,7 +50,7 @@ console.log('<%= link_to("img/bg.jpg") %>')
 
 ## Custom
 
-To add your own templating language you need to write at least one [custom preprocessor](https://hexdocs.pm/still/preprocessors.html). Say you want to add [Sass](https://sass-lang.com/) using [these Elixir bindings](https://github.com/scottdavis/sass.ex). The first step is to add the package to the dependencies:
+To add your own templating language you need to write at least one [custom preprocessor][preprocessor]. Say you want to add [Sass](https://sass-lang.com/) using [these Elixir bindings](https://github.com/scottdavis/sass.ex). The first step is to add the package to the dependencies:
 
 ```elixir
   defp deps do
@@ -85,7 +85,7 @@ defmodule YourSite.SassPreprocessor do
 end
 ```
 
-You should read the section on [custom preprocessors](https://hexdocs.pm/still/preprocessors.html#content) for more information.
+You should read the section on [custom preprocessors][preprocessor] for more information.
 
 The last step is update `config.exs`:
 
@@ -103,3 +103,6 @@ config :still,
 ```
 
 Now, any file with the extension `.scss` will be compiled with Sass and generate a `.css` file.
+
+[templates]: https://hexdocs.pm/still/templates.html
+[preprocessor]: https://hexdocs.pm/still/preprocessors.html#content
