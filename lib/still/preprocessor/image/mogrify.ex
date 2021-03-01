@@ -10,6 +10,8 @@ defmodule Still.Preprocessor.Image.Mogrify do
   import Still.Utils
   import Mogrify
 
+  require ExImageInfo
+
   @impl true
   def render(
         %{
@@ -36,10 +38,11 @@ defmodule Still.Preprocessor.Image.Mogrify do
   @impl true
   def get_image_info(file) do
     file
-    |> Fastimage.size()
+    |> File.read!()
+    |> ExImageInfo.info()
     |> case do
-      {:error, error} -> {:error, error}
-      {:ok, res} -> {:ok, Map.take(res, [:height, :width])}
+      {_, width, height, _} -> {:ok, %{width: width, height: height}}
+      _ -> {:error, "Failed to find image information for #{file}"}
     end
   end
 
