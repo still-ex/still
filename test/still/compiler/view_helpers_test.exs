@@ -4,7 +4,7 @@ defmodule Still.Compiler.ViewHelpersTest do
   alias Still.Compiler.ViewHelpers
 
   defmodule View do
-    use ViewHelpers, input_file: "about.slime"
+    use ViewHelpers, input_file: "about.slime", dependency_chain: []
   end
 
   describe "include/2" do

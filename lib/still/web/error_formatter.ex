@@ -7,7 +7,7 @@ defmodule Still.Web.ErrorFormatter do
   def format(e) do
     """
     <div class='dev-error'>
-      <h1>#{e.source_file.input_file} #{e.message}</h1>
+      <h1>#{error_title(e)}</h1>
       #{render_stacktrace(e) |> String.trim()}
       <h2>Error</h2>
       <pre>
@@ -64,5 +64,11 @@ defmodule Still.Web.ErrorFormatter do
     html
     |> Floki.parse_fragment!()
     |> Floki.raw_html()
+  end
+
+  defp error_title(%{message: message, source_file: %{dependency_chain: dependency_chain}}) do
+    files = Enum.join(dependency_chain, " <- ")
+
+    "#{files} - #{message}"
   end
 end

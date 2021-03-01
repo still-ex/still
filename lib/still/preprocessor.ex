@@ -86,13 +86,13 @@ defmodule Still.Preprocessor do
   @doc """
   Runs the preprocessor pipeline for the given file.
   """
-  @spec run(SourceFile.t()) :: SourceFile.t()
+  @spec run(SourceFile.t()) :: SourceFile.t() | {:error, any()}
   def run(file) do
     file
     |> run(__MODULE__.for(file))
   end
 
-  @spec run(SourceFile.t(), list(module())) :: SourceFile.t()
+  @spec run(SourceFile.t(), list(module())) :: SourceFile.t() | {:error, any()}
   def run(file, []) do
     file
   end
@@ -131,32 +131,29 @@ defmodule Still.Preprocessor do
   end
 
   defp do_run(file, [preprocessor | remaining_preprocessors]) do
-    preprocessor.run(file)
-    |> run(remaining_preprocessors)
-  catch
-    :error, %{description: description} when description != "" ->
-      raise PreprocessorError,
-        message: description,
-        preprocessor: preprocessor,
-        remaining_preprocessors: remaining_preprocessors,
-        source_file: file,
-        stacktrace: __STACKTRACE__
+    try do
+      preprocessor.run(file)
+      |> run(remaining_preprocessors)
+    catch
+      :error, %PreprocessorError{} = e ->
+        raise e
 
-    :error, e ->
-      Logger.error(inspect(e))
+      :error, %{description: description} when description != "" ->
+        raise PreprocessorError,
+          message: description,
+          preprocessor: preprocessor,
+          remaining_preprocessors: remaining_preprocessors,
+          source_file: file,
+          stacktrace: __STACKTRACE__
 
-      case e do
-        %PreprocessorError{} ->
-          raise e
-
-        e ->
-          raise PreprocessorError,
-            message: inspect(e),
-            preprocessor: preprocessor,
-            remaining_preprocessors: remaining_preprocessors,
-            source_file: file,
-            stacktrace: __STACKTRACE__
-      end
+      :error, e ->
+        raise PreprocessorError,
+          message: inspect(e),
+          preprocessor: preprocessor,
+          remaining_preprocessors: remaining_preprocessors,
+          source_file: file,
+          stacktrace: __STACKTRACE__
+    end
   end
 
   defp preprocessors do

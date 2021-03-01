@@ -62,8 +62,8 @@ defmodule Still.Compiler.ViewHelpers.ResponsiveImage do
     |> Enum.join(", ")
   end
 
-  defp get_render_data(_, %{sizes: _} = image_opts) do
-    %{image_opts: image_opts}
+  defp get_render_data(file, %{sizes: _} = image_opts) do
+    %{image_opts: image_opts, dependency_chain: [file]}
   end
 
   defp get_render_data(file, image_opts) do
@@ -82,6 +82,6 @@ defmodule Still.Compiler.ViewHelpers.ResponsiveImage do
         |> Enum.map(&(&1 * step_width))
       )
 
-    %{image_opts: image_opts}
+    %{image_opts: image_opts, dependency_chain: [file]}
   end
 end

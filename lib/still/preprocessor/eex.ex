@@ -19,10 +19,17 @@ defmodule Still.Preprocessor.EEx do
     %{file | content: do_render(file)}
   end
 
-  defp do_render(%{metadata: metadata} = file) do
+  defp do_render(
+         %{
+           metadata: metadata,
+           input_file: input_file,
+           dependency_chain: dependency_chain
+         } = file
+       ) do
     metadata =
       metadata
-      |> Map.put(:input_file, Map.get(file, :input_file))
+      |> Map.put(:input_file, input_file)
+      |> Map.put(:dependency_chain, dependency_chain)
 
     Renderer.create(%{file | metadata: metadata})
     |> apply(:render, [])

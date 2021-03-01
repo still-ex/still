@@ -17,7 +17,8 @@ defmodule Still.Compiler.ViewHelpers do
         ViewHelpers.ContentTag,
         ViewHelpers.ResponsiveImage,
         ViewHelpers.SafeHTML,
-        ViewHelpers.Truncate
+        ViewHelpers.Truncate,
+        PreprocessorError
       }
 
       alias __MODULE__
@@ -52,7 +53,7 @@ defmodule Still.Compiler.ViewHelpers do
       def include(file, metadata, opts) do
         with pid when not is_nil(pid) <- Incremental.Registry.get_or_create_file_process(file),
              subscriber <- include_subscriber(opts),
-             metadata <- Map.put(metadata, :parent, subscriber),
+             metadata <- Map.put(metadata, :dependency_chain, @env[:dependency_chain]),
              %SourceFile{content: content} <- Incremental.Node.render(pid, metadata, subscriber) do
           if subscriber do
             Incremental.Node.add_subscription(self(), file)
@@ -60,6 +61,9 @@ defmodule Still.Compiler.ViewHelpers do
 
           content
         else
+          %PreprocessorError{} = e ->
+            raise e
+
           _ ->
             Logger.error("File process not found for #{file}")
             ""

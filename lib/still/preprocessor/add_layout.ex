@@ -22,6 +22,7 @@ defmodule Still.Preprocessor.AddLayout do
         %{
           content: children,
           input_file: input_file,
+          dependency_chain: dependency_chain,
           metadata: %{layout: layout_file} = metadata
         } = file
       )
@@ -30,13 +31,16 @@ defmodule Still.Preprocessor.AddLayout do
       metadata
       |> Map.drop([:tag, :layout, :permalink, :input_file])
       |> Map.put(:children, children)
+      |> Map.put(:dependency_chain, dependency_chain)
 
-    %{content: content} =
-      layout_file
-      |> Incremental.Registry.get_or_create_file_process()
-      |> Incremental.Node.render(layout_metadata, input_file)
-
-    %{file | content: content}
+    with %{content: content} <-
+           layout_file
+           |> Incremental.Registry.get_or_create_file_process()
+           |> Incremental.Node.render(layout_metadata, input_file) do
+      %{file | content: content}
+    else
+      error -> raise error
+    end
   end
 
   def render(file), do: file

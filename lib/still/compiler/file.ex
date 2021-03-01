@@ -16,15 +16,19 @@ defmodule Still.Compiler.File do
   run through its `Still.Preprocessor` pipeline.
   """
   def compile(input_file) do
-    %SourceFile{input_file: input_file, run_type: :compile}
-    |> Preprocessor.run()
-    |> case do
+    source_file = %SourceFile{
+      input_file: input_file,
+      dependency_chain: [input_file],
+      run_type: :compile
+    }
+
+    case Preprocessor.run(source_file) do
       %SourceFile{} = file ->
         {:ok, file}
 
-      msg ->
+      error ->
         Logger.error("Failed to compile #{input_file}")
-        msg
+        error
     end
   end
 
@@ -34,16 +38,15 @@ defmodule Still.Compiler.File do
   This differs from compilation since it doesn't generate any output in the file
   system.
   """
-  def render(input_file, metadata) do
-    file = %SourceFile{input_file: input_file, metadata: metadata}
+  def render(%{input_file: input_file} = source_file) do
+    case Preprocessor.run(source_file) do
+      %SourceFile{} = source_file ->
+        Logger.debug("Rendered #{input_file}")
+        source_file
 
-    with %SourceFile{} = file <- Preprocessor.run(file) do
-      Logger.debug("Rendered #{input_file}")
-      file
-    else
-      msg ->
+      error ->
         Logger.error("Failed to render #{input_file}")
-        msg
+        error
     end
   end
 end

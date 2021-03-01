@@ -48,7 +48,13 @@ defmodule Still.Watcher do
         process_file(file)
 
       Enum.member?(events, :removed) ->
-        Incremental.Registry.terminate_file_process(file)
+        file
+        |> get_relative_input_path()
+        |> Still.Compiler.ErrorCache.clear()
+
+        file
+        |> get_relative_input_path()
+        |> Incremental.Registry.terminate_file_process()
 
       true ->
         nil

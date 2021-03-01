@@ -8,6 +8,8 @@ defmodule Still.Compiler.ErrorCache do
   """
   use GenServer
 
+  alias Still.SourceFile
+
   def start_link(_) do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
   end
@@ -20,6 +22,10 @@ defmodule Still.Compiler.ErrorCache do
   """
   def set(result) do
     GenServer.call(__MODULE__, {:set, result})
+  end
+
+  def clear(input_file) do
+    GenServer.cast(__MODULE__, {:clear, input_file})
   end
 
   @doc """
@@ -40,20 +46,30 @@ defmodule Still.Compiler.ErrorCache do
   end
 
   def handle_call({:set, {:ok, source_file}}, _, state) do
-    errors = Map.put(state.errors, source_file.input_file, nil)
+    errors =
+      state.errors
+      |> Map.put(source_file_id(source_file), nil)
+
     state = %{state | errors: errors}
 
     {:reply, :ok, state}
   end
 
   def handle_call({:set, {:error, error}}, _, state) do
-    errors = Map.put(state.errors, error.source_file.input_file, error)
+    errors =
+      state.errors
+      |> Map.put(source_file_id(error.source_file), error)
+
     state = %{state | errors: errors}
 
     {:reply, :ok, state}
   end
 
   @impl true
+  def handle_cast({:clear, input_file}, state) do
+    {:noreply, state |> Map.delete(input_file)}
+  end
+
   def handle_cast(_, state) do
     {:noreply, state}
   end
@@ -61,5 +77,10 @@ defmodule Still.Compiler.ErrorCache do
   @impl true
   def handle_info(_, state) do
     {:noreply, state}
+  end
+
+  defp source_file_id(%SourceFile{dependency_chain: dependency_chain}) do
+    dependency_chain
+    |> Enum.join(" <- ")
   end
 end

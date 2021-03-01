@@ -13,19 +13,21 @@ defmodule Still.SourceFile do
     :input_file,
     :output_file,
     content: nil,
-    metadata: %{},
+    dependency_chain: [],
     extension: nil,
-    run_type: :render,
-    profilable: true
+    metadata: %{},
+    profilable: true,
+    run_type: :render
   ]
 
   @type t :: %__MODULE__{
-          run_type: :render | :compile,
           content: binary() | nil,
+          dependency_chain: list(binary()),
           extension: binary() | nil,
           input_file: binary(),
-          output_file: binary() | nil,
           metadata: map(),
-          profilable: boolean()
+          output_file: binary() | nil,
+          profilable: boolean(),
+          run_type: :render | :compile
         }
 end
