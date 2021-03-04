@@ -3,12 +3,12 @@
 We call template to almost any file in the input folder. Templates
 are transformed, and combined, to create the website.
 
-## View Helpers
+## Template Helpers
 
 In templates, you can usually write Elixir, which allows you to extend
 your site with abstractions to generate CSS or make API calls. Still comes
 with some functions out of the box to help you build your website. We call
-these view helpers.
+these template helpers.
 
 ### Including other files or templates
 
@@ -76,11 +76,11 @@ and it will include the proper `src` and `srcset` attributes to use the differen
 
 ### Custom helpers
 
-You can call any module from the templates (`Enum.reverse(list)` or `MyHelpers.func()`). However, if you want to write custom view helpers, you can add them to the configuration and their functions will be imported to the templates using `import Your.Module`.
+You can call any module from the templates (`Enum.reverse(list)` or `MyHelpers.func()`). However, if you want to write custom template helpers, you can add them to the configuration and their functions will be imported to the templates using `import Your.Module`.
 
 ```elixir
 config :still,
-  view_helpers: [Your.Module]
+  template_helpers: [Your.Module]
 ```
 
 ## Configuration

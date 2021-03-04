@@ -1,4 +1,4 @@
-defmodule Still.Compiler.ViewHelpers.ResponsiveImage do
+defmodule Still.Compiler.TemplateHelpers.ResponsiveImage do
   @moduledoc """
   Generates a set of images to ensure they are responsive.
 
@@ -6,7 +6,7 @@ defmodule Still.Compiler.ViewHelpers.ResponsiveImage do
   """
 
   alias Still.Compiler.Incremental
-  alias Still.Compiler.ViewHelpers.{ContentTag, UrlFor}
+  alias Still.Compiler.TemplateHelpers.{ContentTag, UrlFor}
 
   import Still.Utils
 

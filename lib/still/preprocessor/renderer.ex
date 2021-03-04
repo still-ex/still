@@ -4,11 +4,11 @@ defmodule Still.Preprocessor.Renderer do
 
   A renderer needs to implement a `compile/2` function and an optional `ast/0`
   function. When a markup file is being compiled, a module is created on
-  demand. This module imports all view helpers defined by Still as well as any
-  view helper configured by the user:
+  demand. This module imports all template helpers defined by Still as well as any
+  template helper configured by the user:
 
       config :still,
-        view_helpers: [Your.Module]
+        template_helpers: [Your.Module]
 
   The created module implements a `render/0` which will return the result of
   the `compile/2` call.
@@ -21,7 +21,7 @@ defmodule Still.Preprocessor.Renderer do
 
   * `:extensions` - the list of extensions compiled by the renderer;
   * `:preprocessor` - the preprocessor used to render any necessary snippets
-  (e.g via `Still.Compiler.ViewHelpers.ContentTag`).
+  (e.g via `Still.Compiler.TemplateHelpers.ContentTag`).
   """
   @type ast :: {atom(), keyword(), list()}
 
@@ -44,7 +44,7 @@ defmodule Still.Preprocessor.Renderer do
       def create(%SourceFile{input_file: input_file, content: content, metadata: metadata}) do
         metadata[:input_file]
         |> file_path_to_module_name()
-        |> create_view_renderer(content, metadata)
+        |> create_template_renderer(content, metadata)
       end
 
       defp file_path_to_module_name(file) do
@@ -58,7 +58,7 @@ defmodule Still.Preprocessor.Renderer do
         Module.concat(["R#{Enum.random(0..100_000)}" | [@preprocessor | name]])
       end
 
-      defp create_view_renderer(name, content, metadata) do
+      defp create_template_renderer(name, content, metadata) do
         compiled = compile(content, metadata)
 
         module_metadata =
@@ -77,10 +77,10 @@ defmodule Still.Preprocessor.Renderer do
           quote do
             @compile :nowarn_unused_vars
 
-            unquote(user_view_helpers_asts())
+            unquote(user_template_helpers_asts())
             unquote(renderer_ast)
 
-            use Still.Compiler.ViewHelpers, unquote(Macro.escape(module_metadata))
+            use Still.Compiler.TemplateHelpers, unquote(Macro.escape(module_metadata))
 
             Enum.map(unquote(Macro.escape(metadata)), fn {k, v} ->
               Module.put_attribute(__MODULE__, k, v)
@@ -98,8 +98,8 @@ defmodule Still.Preprocessor.Renderer do
         end
       end
 
-      defp user_view_helpers_asts do
-        config(:view_helpers, [])
+      defp user_template_helpers_asts do
+        config(:template_helpers, [])
         |> Enum.map(fn module ->
           quote do
             import unquote(module)

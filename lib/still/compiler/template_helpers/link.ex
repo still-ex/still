@@ -1,19 +1,19 @@
-defmodule Still.Compiler.ViewHelpers.Link do
+defmodule Still.Compiler.TemplateHelpers.Link do
   @moduledoc """
   Renders an anchor HTML tag.
   """
   import Still.Utils
 
-  alias Still.Compiler.ViewHelpers.ContentTag
+  alias Still.Compiler.TemplateHelpers.ContentTag
   alias Still.SourceFile
 
   @doc """
-  Uses `Still.Compiler.ViewHelpers.ContentTag` to render an anchor tag.
+  Uses `Still.Compiler.TemplateHelpers.ContentTag` to render an anchor tag.
 
   Requires a `:to` option, the target URL. If this is a relative path, the
   website's base URL is prepended. If it is an absolute path the `target:
   "_blank"` and `rel: "noopener noreferrer"` options are added to be passed to
-  `Still.Compiler.ViewHelpers.ContentTag` `render` function.
+  `Still.Compiler.TemplateHelpers.ContentTag` `render` function.
 
   If there is a `do` block, it uses the current file preprocessor to render
   `markup`. Note that this is on demand, outside

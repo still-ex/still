@@ -1,4 +1,4 @@
-defmodule Still.Compiler.ViewHelpers.ContentTag do
+defmodule Still.Compiler.TemplateHelpers.ContentTag do
   @moduledoc """
   Implements an arbitrary content tag with the given content.
   """

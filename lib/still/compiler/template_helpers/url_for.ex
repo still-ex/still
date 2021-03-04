@@ -1,4 +1,4 @@
-defmodule Still.Compiler.ViewHelpers.UrlFor do
+defmodule Still.Compiler.TemplateHelpers.UrlFor do
   @moduledoc """
   Converts a relative path to an absolute path.
   """

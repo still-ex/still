@@ -1,4 +1,4 @@
-defmodule Still.Compiler.ViewHelpers.SafeHTML do
+defmodule Still.Compiler.TemplateHelpers.SafeHTML do
   @moduledoc """
   Renders the given content as safe HTML, escaping any tags.
   """

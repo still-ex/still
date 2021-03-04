@@ -1,7 +1,7 @@
-defmodule Still.Compiler.ViewHelpers.SafeHTMLTest do
+defmodule Still.Compiler.TemplateHelpers.SafeHTMLTest do
   use ExUnit.Case, async: true
 
-  alias Still.Compiler.ViewHelpers.SafeHTML
+  alias Still.Compiler.TemplateHelpers.SafeHTML
 
   describe "render/1" do
     test "renders nil" do
