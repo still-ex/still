@@ -13,7 +13,7 @@ config :still,
   ],
   url_fingerprinting: false,
   profiler: false,
-  view_helpers: []
+  template_helpers: []
 
 config :mogrify,
   mogrify_command: [

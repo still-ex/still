@@ -1,7 +1,7 @@
-defmodule Still.Compiler.ViewHelpers.TruncateTest do
+defmodule Still.Compiler.TemplateHelpers.TruncateTest do
   use ExUnit.Case, async: true
 
-  alias Still.Compiler.ViewHelpers.Truncate
+  alias Still.Compiler.TemplateHelpers.Truncate
 
   describe "render/2" do
     test "truncates to the correct length" do

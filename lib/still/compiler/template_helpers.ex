@@ -1,4 +1,4 @@
-defmodule Still.Compiler.ViewHelpers do
+defmodule Still.Compiler.TemplateHelpers do
   @moduledoc """
   Set of helper functions to be included in a file that runs through an Elixir
   preprocessor.
@@ -10,14 +10,14 @@ defmodule Still.Compiler.ViewHelpers do
 
       alias Still.Compiler.{
         Incremental,
-        ViewHelpers.Link,
-        ViewHelpers.UrlFor,
-        ViewHelpers.LinkToCSS,
-        ViewHelpers.LinkToJS,
-        ViewHelpers.ContentTag,
-        ViewHelpers.ResponsiveImage,
-        ViewHelpers.SafeHTML,
-        ViewHelpers.Truncate,
+        TemplateHelpers.Link,
+        TemplateHelpers.UrlFor,
+        TemplateHelpers.LinkToCSS,
+        TemplateHelpers.LinkToJS,
+        TemplateHelpers.ContentTag,
+        TemplateHelpers.ResponsiveImage,
+        TemplateHelpers.SafeHTML,
+        TemplateHelpers.Truncate,
         PreprocessorError
       }
 
@@ -98,7 +98,7 @@ defmodule Still.Compiler.ViewHelpers do
       end
 
       @doc """
-      Renders the link using `Still.Compiler.ViewHelpers.Link.render/3`.
+      Renders the link using `Still.Compiler.TemplateHelpers.Link.render/3`.
       """
       def link(content, opts) do
         Link.render(content, @env, opts)
@@ -118,7 +118,7 @@ defmodule Still.Compiler.ViewHelpers do
 
       * `escape` - apply `safe_html/1` after truncating. Defaults to `false`.
 
-      See further supported options in `Still.ViewHelpers.Truncate`.
+      See further supported options in `Still.TemplateHelpers.Truncate`.
       """
       def truncate(str, opts \\ []) do
         truncated = Truncate.render(str, opts)

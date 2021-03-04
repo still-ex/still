@@ -1,4 +1,4 @@
-defmodule Still.Compiler.ViewHelpers.Truncate do
+defmodule Still.Compiler.TemplateHelpers.Truncate do
   @moduledoc """
   Truncates the content to a given maximum.
 

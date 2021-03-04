@@ -8,9 +8,9 @@ defmodule Still.Preprocessor.Image.Adapter do
 
   The `render/1` function should create several versions of the same images,
   given the `:sizes` and `:transformations` options. The purpose of this
-  function is to support the `responsive_image/2 view helper`. See
-  `Still.Compiler.ViewHelpers.ResponsiveImage.render/2` for details on how this
-  view helper works.
+  function is to support the `responsive_image/2 template helper`. See
+  `Still.Compiler.TemplateHelpers.ResponsiveImage.render/2` for details on how this
+  template helper works.
 
   `:sizes` defines the widths of the output files to create.
 

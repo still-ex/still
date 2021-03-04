@@ -1,7 +1,7 @@
-defmodule Still.Compiler.ViewHelpers.ContentTagTest do
+defmodule Still.Compiler.TemplateHelpers.ContentTagTest do
   use ExUnit.Case, async: true
 
-  alias Still.Compiler.ViewHelpers.ContentTag
+  alias Still.Compiler.TemplateHelpers.ContentTag
 
   describe "render/3" do
     test "returns the HTML for an image" do

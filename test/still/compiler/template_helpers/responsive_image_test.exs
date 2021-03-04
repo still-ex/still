@@ -1,7 +1,7 @@
-defmodule Still.Compiler.ViewHelpers.ResponsiveImageTest do
+defmodule Still.Compiler.TemplateHelpers.ResponsiveImageTest do
   use Still.Case, async: false
 
-  alias Still.Compiler.ViewHelpers.ResponsiveImage
+  alias Still.Compiler.TemplateHelpers.ResponsiveImage
   alias Still.Utils
 
   setup do
