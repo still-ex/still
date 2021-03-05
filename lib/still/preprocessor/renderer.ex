@@ -83,8 +83,6 @@ defmodule Still.Preprocessor.Renderer do
 
             import Still.Compiler.TemplateHelpers
 
-            Module.put_attribute(__MODULE__, :env, 1)
-
             Enum.map(unquote(Macro.escape(metadata)), fn {k, v} ->
               Module.put_attribute(__MODULE__, k, v)
             end)
