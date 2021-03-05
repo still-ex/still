@@ -57,7 +57,7 @@ defmodule Still.Utils do
 
       config :still, input: "path/to/site"
   """
-  def get_input_path() do
+  def get_input_path do
     config!(:input)
     |> Path.expand()
   end
@@ -77,7 +77,7 @@ defmodule Still.Utils do
 
       config :still, output: "path/to/site"
   """
-  def get_output_path() do
+  def get_output_path do
     config!(:output)
     |> Path.expand()
   end
@@ -95,14 +95,14 @@ defmodule Still.Utils do
   @doc """
   Returns the site's base URL.
   """
-  def get_base_url() do
+  def get_base_url do
     config!(:base_url)
   end
 
   @doc """
   Recursively cleans the site's output directory.
   """
-  def rm_output_dir() do
+  def rm_output_dir do
     get_output_path()
     |> File.rm_rf()
   end
@@ -110,7 +110,7 @@ defmodule Still.Utils do
   @doc """
   Creates the output directory.
   """
-  def mk_output_dir() do
+  def mk_output_dir do
     get_output_path()
     |> File.mkdir_p!()
   end
@@ -126,7 +126,7 @@ defmodule Still.Utils do
   @doc """
   Recursively removes all files from the site's output directory.
   """
-  def clean_output_dir() do
+  def clean_output_dir do
     File.rm_rf(Path.join(get_output_path(), "*"))
   end
 

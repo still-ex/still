@@ -6,9 +6,12 @@ defmodule Still.Compiler.Traverse do
 
   import Still.Utils
 
-  alias Still.Compiler.{Incremental, CompilationStage}
+  alias Still.Compiler.{
+    CompilationStage,
+    Incremental
+  }
 
-  def run() do
+  def run do
     Still.Compiler.Collections.reset()
 
     with true <- File.dir?(get_input_path()),

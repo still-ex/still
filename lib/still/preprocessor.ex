@@ -131,29 +131,27 @@ defmodule Still.Preprocessor do
   end
 
   defp do_run(file, [preprocessor | remaining_preprocessors]) do
-    try do
-      preprocessor.run(file)
-      |> run(remaining_preprocessors)
-    catch
-      :error, %PreprocessorError{} = e ->
-        raise e
+    preprocessor.run(file)
+    |> run(remaining_preprocessors)
+  catch
+    :error, %PreprocessorError{} = e ->
+      raise e
 
-      :error, %{description: description} when description != "" ->
-        raise PreprocessorError,
-          message: description,
-          preprocessor: preprocessor,
-          remaining_preprocessors: remaining_preprocessors,
-          source_file: file,
-          stacktrace: __STACKTRACE__
+    :error, %{description: description} when description != "" ->
+      raise PreprocessorError,
+        message: description,
+        preprocessor: preprocessor,
+        remaining_preprocessors: remaining_preprocessors,
+        source_file: file,
+        stacktrace: __STACKTRACE__
 
-      :error, e ->
-        raise PreprocessorError,
-          message: inspect(e),
-          preprocessor: preprocessor,
-          remaining_preprocessors: remaining_preprocessors,
-          source_file: file,
-          stacktrace: __STACKTRACE__
-    end
+    :error, e ->
+      raise PreprocessorError,
+        message: inspect(e),
+        preprocessor: preprocessor,
+        remaining_preprocessors: remaining_preprocessors,
+        source_file: file,
+        stacktrace: __STACKTRACE__
   end
 
   defp preprocessors do

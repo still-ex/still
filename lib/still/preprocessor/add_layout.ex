@@ -10,8 +10,8 @@ defmodule Still.Preprocessor.AddLayout do
   `Still.Preprocessor.Frontmatter`.
   """
 
-  alias Still.Preprocessor
   alias Still.Compiler.Incremental
+  alias Still.Preprocessor
 
   use Preprocessor
 
@@ -33,13 +33,15 @@ defmodule Still.Preprocessor.AddLayout do
       |> Map.put(:children, children)
       |> Map.put(:dependency_chain, dependency_chain)
 
-    with %{content: content} <-
-           layout_file
-           |> Incremental.Registry.get_or_create_file_process()
-           |> Incremental.Node.render(layout_metadata, input_file) do
-      %{file | content: content}
-    else
-      error -> raise error
+    layout_file
+    |> Incremental.Registry.get_or_create_file_process()
+    |> Incremental.Node.render(layout_metadata, input_file)
+    |> case do
+      %{content: content} ->
+        %{file | content: content}
+
+      error ->
+        raise error
     end
   end
 

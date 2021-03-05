@@ -24,7 +24,7 @@ defmodule Still.Profiler do
 
   alias Still.{Preprocessor, SourceFile, Utils}
 
-  alias Still.Preprocessor.{EEx, Slime, Save}
+  alias Still.Preprocessor.{EEx, Save, Slime}
 
   @profiler_layout "priv/still/profiler.slime"
   @preprocessors [EEx, Slime, Save]
@@ -100,23 +100,21 @@ defmodule Still.Profiler do
   end
 
   defp run_preprocessor(source_file) do
-    try do
-      Preprocessor.run(source_file, @preprocessors)
+    Preprocessor.run(source_file, @preprocessors)
 
-      ErrorCache.set({:ok, source_file})
-    catch
-      :exit, {e, _} ->
-        error = %PreprocessorError{
-          message: inspect(e),
-          stacktrace: __STACKTRACE__,
-          source_file: source_file
-        }
+    ErrorCache.set({:ok, source_file})
+  catch
+    :exit, {e, _} ->
+      error = %PreprocessorError{
+        message: inspect(e),
+        stacktrace: __STACKTRACE__,
+        source_file: source_file
+      }
 
-        ErrorCache.set({:error, error})
+      ErrorCache.set({:error, error})
 
-      :error, %PreprocessorError{} = e ->
-        ErrorCache.set({:error, e})
-    end
+    :error, %PreprocessorError{} = e ->
+      ErrorCache.set({:error, e})
   end
 
   defp add_file_render_info(stats, file, delta) do

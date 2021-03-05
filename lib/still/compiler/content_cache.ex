@@ -13,7 +13,7 @@ defmodule Still.Compiler.ContentCache do
     Cachex.del(@cache_name, key)
   end
 
-  def clear_all() do
+  def clear_all do
     Cachex.clear(@cache_name)
   end
 

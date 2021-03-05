@@ -6,15 +6,18 @@ defmodule Still.Compiler.Incremental.Node.Compile do
   When this isn't successful, attempts a compilation via `Still.Compiler.File`,
   notifying any relevant subscribers of changes.
   """
-  import Still.Utils
 
   alias Still.Compiler
-  alias Still.Compiler.{Incremental, PassThroughCopy, CompilationStage}
+
+  alias Still.Compiler.{
+    CompilationStage,
+    Incremental,
+    PassThroughCopy
+  }
 
   def run(state) do
-    with :ok <- try_pass_through_copy(state) do
-      :ok
-    else
+    case try_pass_through_copy(state) do
+      :ok -> :ok
       _ -> do_compile(state)
     end
   end

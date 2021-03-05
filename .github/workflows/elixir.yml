@@ -7,8 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
-    name: Build and test
+  test:
     runs-on: ubuntu-latest
 
     strategy:
@@ -32,16 +31,16 @@ jobs:
       uses: actions/cache@v2
       with:
         path: deps
-        key: ${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-mix-${{ hashFiles('**/mix.lock') }}
-        restore-keys: ${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-mix-
+        key: test-${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-mix-${{ hashFiles('**/mix.lock') }}
+        restore-keys: test-${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-mix-
 
     - name: Cache build
       uses: actions/cache@v1
       with:
         path: _build
-        key: ${{ runner.OS }}-${{ matrix.elixir }}-${{ matrix.otp }}-build-
+        key: test-${{ runner.OS }}-${{ matrix.elixir }}-${{ matrix.otp }}-build-
         restore-keys: |
-          ${{ runner.OS }}-${{ matrix.elixir }}-${{ matrix.otp }}-build-
+          test-${{ runner.OS }}-${{ matrix.elixir }}-${{ matrix.otp }}-build-
 
     - name: Install dependencies
       run: |
@@ -49,3 +48,48 @@ jobs:
 
     - name: Run tests
       run: mix test --timeout 120000
+
+  lint:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        otp:
+          - 23
+        elixir:
+          - 1.10.4
+          - 1.11.3
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Elixir
+      uses: erlef/setup-elixir@v1
+      with:
+        elixir-version: ${{ matrix.elixir }}
+        otp-version: ${{ matrix.otp }}
+
+    - name: Restore dependencies cache
+      uses: actions/cache@v2
+      with:
+        path: deps
+        key: test-${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-mix-${{ hashFiles('**/mix.lock') }}
+        restore-keys: test-${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-mix-
+
+    - name: Cache build
+      uses: actions/cache@v1
+      with:
+        path: _build
+        key: lint-${{ runner.OS }}-${{ matrix.elixir }}-${{ matrix.otp }}-build-
+        restore-keys: |
+          lint-${{ runner.OS }}-${{ matrix.elixir }}-${{ matrix.otp }}-build-
+
+    - name: Install dependencies
+      run: |
+        mix deps.get
+
+    - name: Run formatter
+      run: mix format --check-formatted
+
+    - name: Run credo
+      run: mix credo

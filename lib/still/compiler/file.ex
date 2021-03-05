@@ -9,7 +9,7 @@ defmodule Still.Compiler.File do
   """
   require Logger
 
-  alias Still.{SourceFile, Preprocessor}
+  alias Still.{Preprocessor, SourceFile}
 
   @doc """
   Compiles a given `Still.SourceFile` to the correct output path, after being
