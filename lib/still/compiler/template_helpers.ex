@@ -20,7 +20,7 @@ defmodule Still.Compiler.TemplateHelpers do
 
   require Logger
 
-  defdelegate responsive_image(_env, file, opts \\ []),
+  defdelegate responsive_image(file, opts \\ []),
     to: ResponsiveImage,
     as: :render
 
