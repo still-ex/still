@@ -8,11 +8,9 @@ defmodule Still.Preprocessor.Slime.Renderer do
     preprocessor: Still.Preprocessor.Slime
 
   @impl true
-  def compile(content, _metadata) do
-    info = [file: __ENV__.file, line: __ENV__.line]
-
+  def compile(content) do
     Slime.Renderer.precompile(content)
-    |> EEx.compile_string(info)
+    |> EEx.compile_string(file: __ENV__.file, line: __ENV__.line)
   end
 
   @impl true

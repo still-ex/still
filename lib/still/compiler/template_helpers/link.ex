@@ -19,20 +19,20 @@ defmodule Still.Compiler.TemplateHelpers.Link do
   `markup`. Note that this is on demand, outside
   `Still.Compiler.CompilationStage`.
   """
-  def render(opts, metadata, do: markup) do
-    preprocessor = metadata[:preprocessor]
+  def render(env, opts, do: markup) do
+    preprocessor = env[:preprocessor]
 
     %{content: content} =
       preprocessor.render(%SourceFile{
         content: markup,
-        input_file: metadata[:input_file],
-        metadata: metadata |> Enum.into(%{})
+        input_file: env[:input_file],
+        metadata: env |> Enum.into(%{})
       })
 
-    render(content, metadata, opts)
+    render(env, content, opts)
   end
 
-  def render(text, _metadata, opts) do
+  def render(_env, text, opts) do
     {url, opts} = pop_url(opts)
 
     ContentTag.render("a", text, [{:href, url} | opts])

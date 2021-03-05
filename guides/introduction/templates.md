@@ -200,11 +200,11 @@ title: A blog post
 
 This file will be assigned to the collection `post`. Every file that
 specifies the `post` tag will be listed in the `post` collection. You can
-then iterate over this list using the `get_collections` function:
+then iterate over this list using the `get_collections/2` function:
 
 ```slime
 ul
-  = Enum.map get_collections("post"), fn x ->
+  = Enum.map get_collections(@env, "post"), fn x ->
     li
       = link x[:title], to: x[:permalink]
 ```

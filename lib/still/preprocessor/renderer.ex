@@ -11,7 +11,7 @@ defmodule Still.Preprocessor.Renderer do
         template_helpers: [Your.Module]
 
   The created module implements a `render/0` which will return the result of
-  the `compile/2` call.
+  the `compile/1` call.
 
   The `ast/0` can be used to tap into the AST of the new module and import or
   require any necessary module.
@@ -25,7 +25,7 @@ defmodule Still.Preprocessor.Renderer do
   """
   @type ast :: {atom(), keyword(), list()}
 
-  @callback compile(String.t(), [{atom(), any()}]) :: ast()
+  @callback compile(String.t()) :: ast()
 
   @callback ast() :: ast()
 
@@ -41,7 +41,7 @@ defmodule Still.Preprocessor.Renderer do
       @preprocessor Keyword.fetch!(unquote(opts), :preprocessor)
       @extensions Keyword.fetch!(unquote(opts), :extensions)
 
-      def create(%SourceFile{input_file: input_file, content: content, metadata: metadata}) do
+      def create(%SourceFile{input_file: input_file, content: content, metadata: metadata} = file) do
         metadata[:input_file]
         |> file_path_to_module_name()
         |> create_template_renderer(content, metadata)
@@ -59,12 +59,13 @@ defmodule Still.Preprocessor.Renderer do
       end
 
       defp create_template_renderer(name, content, metadata) do
-        compiled = compile(content, metadata)
+        compiled = compile(content)
 
-        module_metadata =
-          metadata
-          |> ensure_preprocessor()
-          |> Map.to_list()
+        metadata = Map.put(metadata, :env, metadata)
+
+        assigns = [
+          env: metadata
+        ]
 
         renderer_ast =
           if Kernel.function_exported?(__MODULE__, :ast, 0) do
@@ -80,7 +81,7 @@ defmodule Still.Preprocessor.Renderer do
             unquote(user_template_helpers_asts())
             unquote(renderer_ast)
 
-            use Still.Compiler.TemplateHelpers, unquote(Macro.escape(module_metadata))
+            import Still.Compiler.TemplateHelpers
 
             Enum.map(unquote(Macro.escape(metadata)), fn {k, v} ->
               Module.put_attribute(__MODULE__, k, v)

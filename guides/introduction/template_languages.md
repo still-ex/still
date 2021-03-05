@@ -32,7 +32,7 @@ More information can be found in [Template][templates].
 CSS files are regular [templates][templates] where you can embed Elixir:
 
 ```css
-<%= include("_global.scss") %>
+<%= include(@env, "_global.scss") %>
 
 @font-face {
   font-family: IBMPlexMono;

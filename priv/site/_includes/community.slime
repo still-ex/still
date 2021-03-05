@@ -17,7 +17,7 @@
       = link to: "https://github.com/still-ex/still", class: "quote" do
         .mark “
         div
-          = responsive_image("_includes/stars.png", class: "stars")
+          = responsive_image(@env, "_includes/stars.png", class: "stars")
           div Breathtaking, fixed all my issues with static sites.
           div.small -- #{Still.Site.Github.stars} stargazers on GitHub
 
