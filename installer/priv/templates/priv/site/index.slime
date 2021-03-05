@@ -7,4 +7,4 @@ h1.title Welcome to Still
 .main
   p Hello! <br /> This is your starter to create something beautiful.
 
-  = include("_includes/footer.slime")
+  = include(@env, "_includes/footer.slime")

@@ -8,10 +8,8 @@ defmodule Still.Preprocessor.EEx.Renderer do
     preprocessor: Still.Preprocessor.EEx
 
   @impl true
-  def compile(content, _metadata) do
-    info = [file: __ENV__.file, line: __ENV__.line]
-
-    EEx.compile_string(content, info)
+  def compile(content) do
+    EEx.compile_string(content, file: __ENV__.file, line: __ENV__.line)
   end
 
   @impl true

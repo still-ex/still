@@ -2,7 +2,7 @@
 layout: _layout.slime
 title: Still | About
 ---
-= include("_includes/header.slime")
+= include(@env, "_includes/header.slime")
 
 h1 About
 p Hi! I like Elixir.

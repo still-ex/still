@@ -3,31 +3,29 @@ defmodule Still.Compiler.TemplateHelpersTest do
 
   alias Still.Compiler.TemplateHelpers
 
-  defmodule Template do
-    use TemplateHelpers, input_file: "about.slime", dependency_chain: []
-  end
+  @env [input_file: "about.slime", dependency_chain: []]
 
   describe "include/2" do
     test "renders a file" do
       file = "_includes/header.slime"
 
-      assert "<header><p>This is a header</p></header>" == Template.include(file)
+      assert "<header><p>This is a header</p></header>" == TemplateHelpers.include(@env, file)
     end
 
     test "metadata can be a map or a keyword list" do
       file = "_includes/metadata.slime"
 
       assert "<nav>This include has metadata: Test</nav>" ==
-               Template.include(file, variable: "Test")
+               TemplateHelpers.include(@env, file, variable: "Test")
 
       assert "<nav>This include has metadata: Test</nav>" ==
-               Template.include(file, %{variable: "Test"})
+               TemplateHelpers.include(@env, file, %{variable: "Test"})
     end
 
     test "adds a subscription to the included file" do
       file = "_includes/header.slime"
 
-      Template.include(file)
+      TemplateHelpers.include(@env, file)
 
       assert_receive {_, {:add_subscription, ^file}}, 200
     end

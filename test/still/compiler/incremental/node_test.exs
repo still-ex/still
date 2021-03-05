@@ -2,7 +2,6 @@ defmodule Still.Compiler.Incremental.NodeTest do
   use Still.Case, async: false
 
   alias Still.Compiler.Incremental.{Registry, Node}
-  alias Still.Compiler.CompilationStage
 
   alias Still.Preprocessor.{Frontmatter, Slime, AddLayout, AddContent, Save, OutputPath}
 

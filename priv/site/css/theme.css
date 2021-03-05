@@ -1,11 +1,11 @@
-<%= include("css/_reset.css") %>
-<%= include("css/_fonts.css") %>
-<%= include("css/_logo.css") %>
-<%= include("css/_main.css") %>
-<%= include("css/_manifesto.css") %>
-<%= include("css/_getting_started.css") %>
-<%= include("css/_community.css") %>
-<%= include("css/_sponsors.css") %>
+<%= include(@env, "css/_reset.css") %>
+<%= include(@env, "css/_fonts.css") %>
+<%= include(@env, "css/_logo.css") %>
+<%= include(@env, "css/_main.css") %>
+<%= include(@env, "css/_manifesto.css") %>
+<%= include(@env, "css/_getting_started.css") %>
+<%= include(@env, "css/_community.css") %>
+<%= include(@env, "css/_sponsors.css") %>
 
 .visually-hidden {
   clip: rect(0 0 0 0);

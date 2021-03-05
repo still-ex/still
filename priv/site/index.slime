@@ -2,10 +2,10 @@
 layout: _layout.slime
 ---
 
-= include("_includes/main.slime")
-= include("_includes/manifesto.slime")
-= include("_includes/getting_started.slime")
-= include("_includes/community.slime")
-= include("_includes/sponsors.slime")
+= include(@env, "_includes/main.slime")
+= include(@env, "_includes/manifesto.slime")
+= include(@env, "_includes/getting_started.slime")
+= include(@env, "_includes/community.slime")
+= include(@env, "_includes/sponsors.slime")
 
 = link_to_js "console.js"
