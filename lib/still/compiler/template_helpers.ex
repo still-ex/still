@@ -20,15 +20,15 @@ defmodule Still.Compiler.TemplateHelpers do
 
   require Logger
 
-  defdelegate responsive_image(file, opts \\ []),
+  defdelegate responsive_image(_env, file, opts \\ []),
     to: ResponsiveImage,
     as: :render
 
-  defdelegate url_for(relative_path), to: UrlFor, as: :render
+  defdelegate url_for(_env, relative_path), to: UrlFor, as: :render
 
-  defdelegate link_to_css(path, opts \\ []), to: LinkToCSS, as: :render
+  defdelegate link_to_css(_env, path, opts \\ []), to: LinkToCSS, as: :render
 
-  defdelegate link_to_js(path, opts \\ []), to: LinkToJS, as: :render
+  defdelegate link_to_js(_env, path, opts \\ []), to: LinkToJS, as: :render
 
   @doc """
   Renders a file and includes it in the page, using the variables defined in `metadata`.
