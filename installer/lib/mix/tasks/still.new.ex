@@ -29,6 +29,7 @@ defmodule Mix.Tasks.Still.New do
 
       {name, opts} ->
         Project.new([{:name, name} | opts])
+        |> validate_project()
         |> Generator.run()
     end
   end
@@ -49,6 +50,21 @@ defmodule Mix.Tasks.Still.New do
 
       {_opts, _args, [{arg, value} | _]} ->
         Mix.raise("Invalid argument: #{arg}=#{value}")
+    end
+  end
+
+  defp validate_project(%Project{} = project) do
+    check_app_name!(project.name)
+
+    project
+  end
+
+  defp check_app_name!(name) do
+    unless name =~ Regex.recompile!(~r/^[a-z][\w_]*$/) do
+      Mix.raise(
+        "Application name must start with a letter and have only lowercase " <>
+          "letters, numbers and underscore, got: #{inspect(name)}"
+      )
     end
   end
 end
