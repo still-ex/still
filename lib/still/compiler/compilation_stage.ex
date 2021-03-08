@@ -23,7 +23,7 @@ defmodule Still.Compiler.CompilationStage do
   """
   use GenServer
 
-  alias Still.Compiler.Incremental.{Registry, Node}
+  alias Still.Compiler.Incremental.{Node, Registry}
 
   def start_link(_) do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
@@ -70,12 +70,11 @@ defmodule Still.Compiler.CompilationStage do
 
   @impl true
   def handle_cast({:compile, files}, state) do
-    files
-    |> Enum.map(fn file ->
+    for file <- files do
       file
       |> Registry.get_or_create_file_process()
       |> Node.changed()
-    end)
+    end
 
     if state.timer do
       Process.cancel_timer(state.timer)
@@ -120,7 +119,7 @@ defmodule Still.Compiler.CompilationStage do
         compile_file(file)
       end)
     end)
-    |> Enum.map(fn task ->
+    |> Enum.each(fn task ->
       Task.await(task, Node.compilation_timeout())
     end)
 

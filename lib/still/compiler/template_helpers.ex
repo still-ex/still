@@ -8,14 +8,14 @@ defmodule Still.Compiler.TemplateHelpers do
 
   alias Still.Compiler.{
     Incremental,
+    PreprocessorError,
     TemplateHelpers.Link,
-    TemplateHelpers.UrlFor,
     TemplateHelpers.LinkToCSS,
     TemplateHelpers.LinkToJS,
     TemplateHelpers.ResponsiveImage,
     TemplateHelpers.SafeHTML,
     TemplateHelpers.Truncate,
-    PreprocessorError
+    TemplateHelpers.UrlFor
   }
 
   require Logger

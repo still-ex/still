@@ -67,10 +67,11 @@ defmodule Still.Compiler.PassThroughCopy do
   defp run(file), do: run(file, file)
 
   defp run(file, output_file) do
-    with :ok <- do_run(file, output_file) do
-      Logger.info("Pass through copy #{file}")
-      :ok
-    else
+    case do_run(file, output_file) do
+      :ok ->
+        Logger.info("Pass through copy #{file}")
+        :ok
+
       _ ->
         Logger.error("Failed to process #{file} in #{__MODULE__}")
         :error

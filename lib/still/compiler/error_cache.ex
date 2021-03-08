@@ -31,7 +31,7 @@ defmodule Still.Compiler.ErrorCache do
   @doc """
   Retrieve all saved errors, for all files.
   """
-  def get_errors() do
+  def get_errors do
     GenServer.call(__MODULE__, :get_errors)
   end
 

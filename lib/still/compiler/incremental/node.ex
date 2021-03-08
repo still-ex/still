@@ -24,10 +24,9 @@ defmodule Still.Compiler.Incremental.Node do
 
   use GenServer
 
-  alias Still.{Compiler, SourceFile}
-  alias Still.Compiler.PreprocessorError
-  alias Still.Compiler.ErrorCache
   alias __MODULE__.Compile
+  alias Still.{Compiler, SourceFile}
+  alias Still.Compiler.{ErrorCache, PreprocessorError}
 
   require Logger
 
@@ -109,10 +108,11 @@ defmodule Still.Compiler.Incremental.Node do
   end
 
   def handle_call(:compile, _from, state) do
-    with {:ok, source_file} <- Compile.run(state) do
-      ErrorCache.set({:ok, source_file})
-      {:reply, source_file, %{state | cached_source_file: source_file}}
-    else
+    case Compile.run(state) do
+      {:ok, source_file} ->
+        ErrorCache.set({:ok, source_file})
+        {:reply, source_file, %{state | cached_source_file: source_file}}
+
       other ->
         {:reply, other, state}
     end
@@ -164,7 +164,7 @@ defmodule Still.Compiler.Incremental.Node do
     {:noreply, %{state | subscriptions: subscriptions}}
   end
 
-  defp do_render(data = %{dependency_chain: dependency_chain}, state) do
+  defp do_render(%{dependency_chain: dependency_chain} = data, state) do
     source_file =
       %SourceFile{
         input_file: state.file,

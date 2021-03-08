@@ -7,8 +7,8 @@ defmodule Still.Preprocessor.Save do
   See `Still.Compiler.File.DevLayout`.
   """
 
-  alias Still.Preprocessor
   alias Still.Compiler.Collections
+  alias Still.Preprocessor
 
   use Preprocessor
 
@@ -17,7 +17,7 @@ defmodule Still.Preprocessor.Save do
   require Logger
 
   @impl true
-  def render(file = %{input_file: input_file, run_type: :compile}) do
+  def render(%{input_file: input_file, run_type: :compile} = file) do
     file = %{content: content} = file |> append_development_layout()
 
     with new_file_path <- get_output_path(file),
