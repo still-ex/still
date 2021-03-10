@@ -124,11 +124,23 @@ defmodule Still.Compiler.Incremental.Node do
         source_file: %Still.SourceFile{input_file: state.file, run_type: :compile}
       }
 
+      Logger.error(error)
       ErrorCache.set({:error, error})
+
+      if Application.get_env(:still, :compiling) do
+        System.stop(1)
+      end
+
       {:reply, :ok, state}
 
     :error, %PreprocessorError{} = e ->
+      Logger.error(e)
       ErrorCache.set({:error, e})
+
+      if Application.get_env(:still, :compiling) do
+        System.stop(1)
+      end
+
       {:reply, :ok, state}
   end
 
@@ -189,7 +201,6 @@ defmodule Still.Compiler.Incremental.Node do
       {:reply, error, state}
 
     :error, %PreprocessorError{} = error ->
-      Logger.error(inspect(error))
       ErrorCache.set({:error, error})
 
       {:reply, error, state}

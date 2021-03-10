@@ -8,6 +8,7 @@ defmodule Mix.Tasks.Still.Compile do
 
     Still.Compiler.CompilationStage.subscribe()
 
+    Application.put_env(:still, :compiling, true)
     Application.put_env(:still, :url_fingerprinting, true)
     Application.put_env(:still, :dev_layout, false)
 
