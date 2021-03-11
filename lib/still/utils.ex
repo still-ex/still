@@ -139,6 +139,13 @@ defmodule Still.Utils do
   end
 
   @doc """
+  Returns true when the current execution was started by #{Mix.Tasks.Still.Compile}
+  """
+  def compilation_task? do
+    config(Mix.Tasks.Still.Compile.config_key(), false)
+  end
+
+  @doc """
   Returns the value configured for `:still` by the given key. Errors if it
   doesn't exist.
   """
