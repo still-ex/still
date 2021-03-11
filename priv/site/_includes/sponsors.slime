@@ -6,11 +6,11 @@
 
         p.p Still's maintenance is possible due to contributions from our sponsors:
 
-        = link to: "https://subvisual.com" do
+        = link @env, to: "https://subvisual.com" do
           = responsive_image("_includes/subvisual.png", class: "sponsor-image")
     .legal
       p.p
-        ' Still is #{link "open sourced", to: "https://github.com/still-ex/still"}
-        ' with ❤️ © #{link "Subvisual", to: "https://subvisual.com"} 2021
+        ' Still is #{link @env, "open sourced", to: "https://github.com/still-ex/still"}
+        ' with ❤️ © #{link @env, "Subvisual", to: "https://subvisual.com"} 2021
         br
-        | Hero image by #{link "UnknownArtist", to: "https://wallhaven.cc/w/13gmlv"}
+        | Hero image by #{link @env, "UnknownArtist", to: "https://wallhaven.cc/w/13gmlv"}

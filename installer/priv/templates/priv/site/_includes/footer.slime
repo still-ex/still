@@ -2,5 +2,5 @@ footer
   p Relevant links:
   nav
     ul
-      li = link "Docs", to: "https://hexdocs.pm/still/"
-      li = link "Github", to: "https://github.com/still-ex/still"
+      li = link @env, "Docs", to: "https://hexdocs.pm/still/"
+      li = link @env, "Github", to: "https://github.com/still-ex/still"

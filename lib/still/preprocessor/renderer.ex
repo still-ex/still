@@ -42,6 +42,8 @@ defmodule Still.Preprocessor.Renderer do
       @extensions Keyword.fetch!(unquote(opts), :extensions)
 
       def create(%SourceFile{input_file: input_file, content: content, metadata: metadata} = file) do
+        metadata = Map.put(metadata, :preprocessor, @preprocessor)
+
         metadata[:input_file]
         |> file_path_to_module_name()
         |> create_template_renderer(content, metadata)
@@ -106,10 +108,6 @@ defmodule Still.Preprocessor.Renderer do
             import unquote(module)
           end
         end)
-      end
-
-      defp ensure_preprocessor(metadata) do
-        Map.put_new(metadata, :preprocessor, @preprocessor)
       end
     end
   end

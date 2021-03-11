@@ -9,15 +9,15 @@
         | Much ❤️ to you all.
 
       = for user <- Still.Site.Github.contributors() do
-        = link to: user.url, class: "contributor" do
+        = link @env, to: user.url, class: "contributor" do
           img src="#{user.avatar_url}"
           p
             strong = user.username
 
-      = link to: "https://github.com/still-ex/still", class: "quote" do
+      = link @env, to: "https://github.com/still-ex/still", class: "quote" do
         .mark “
         div
-          = responsive_image(@env, "_includes/stars.png", class: "stars")
+          = responsive_image("_includes/stars.png", class: "stars")
           div Breathtaking, fixed all my issues with static sites.
           div.small -- #{Still.Site.Github.stars} stargazers on GitHub
 
@@ -26,8 +26,8 @@
     .still
       h2.section-title Built With Still
 
-      = link to: "https://github.com/still-ex/still/tree/master/priv/site", class: "btn" do
+      = link @env, to: "https://github.com/still-ex/still/tree/master/priv/site", class: "btn" do
         span This website
 
-      = link to: "https://gabrielpoca.com", class: "btn" do
+      = link @env, to: "https://gabrielpoca.com", class: "btn" do
         span gabrielpoca.com

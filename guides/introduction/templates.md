@@ -35,8 +35,8 @@ function to create hyperlinks between files, otherwise deploys to
 subpaths will not work.** For instance:
 
 ```slim
-= link "Home", to: "/"
-= link "Blog", to: "https://example.org"
+= link @env, "Home", to: "/"
+= link @env, "Blog", to: "https://example.org"
 ```
 
 ### Including images
