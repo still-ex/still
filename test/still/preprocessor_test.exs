@@ -37,16 +37,28 @@ defmodule Still.PreprocessorTest do
       ".css"
     end
 
-    def render(file) do
-      file
+    def render(source_file) do
+      source_file
     end
   end
 
   defmodule TestPreprocessorWithoutExt do
     use Preprocessor
 
-    def render(file) do
-      file
+    def render(source_file) do
+      source_file
+    end
+  end
+
+  defmodule TestPreprocessorWithNext do
+    use Preprocessor
+  end
+
+  defmodule TestPreprocessorWithoutNext do
+    use Preprocessor
+
+    def render(source_file, _next_preprocessors) do
+      source_file
     end
   end
 
@@ -122,14 +134,32 @@ defmodule Still.PreprocessorTest do
   describe "__using__ run/2" do
     test "sets the extension" do
       %{extension: extension} =
-        TestPreprocessorWithExt.run(%SourceFile{content: "", input_file: "test/file.html"})
+        TestPreprocessorWithExt.run(%SourceFile{content: "", input_file: "test/file.html"}, [])
 
       assert extension == ".css"
     end
 
+    test "runs the next preprocessors" do
+      source_file = %SourceFile{
+        input_file: "index.slime",
+        content: "p Hello"
+      }
+
+      assert %{content: "<p>Hello</p>"} = TestPreprocessorWithNext.run(source_file, [Slime])
+    end
+
+    test "doesn't run the next preprocessors" do
+      source_file = %SourceFile{
+        input_file: "index.slime",
+        content: "p Hello"
+      }
+
+      assert %{content: "p Hello"} = TestPreprocessorWithoutNext.run(source_file, [Slime])
+    end
+
     test "doesn't set the extension" do
       %{extension: extension} =
-        TestPreprocessorWithoutExt.run(%SourceFile{content: "", input_file: "test/file.html"})
+        TestPreprocessorWithoutExt.run(%SourceFile{content: "", input_file: "test/file.html"}, [])
 
       assert is_nil(extension)
     end

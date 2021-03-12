@@ -130,9 +130,9 @@ defmodule Still.Preprocessor do
     response
   end
 
-  defp do_run(file, [preprocessor | remaining_preprocessors]) do
-    preprocessor.run(file, remaining_preprocessors)
-    # |> run(remaining_preprocessors)
+  defp do_run(file, [preprocessor | next_preprocessors]) do
+    preprocessor.run(file, next_preprocessors)
+    # |> run(next_preprocessors)
   catch
     :error, %PreprocessorError{} = error ->
       raise error
@@ -172,31 +172,36 @@ defmodule Still.Preprocessor do
       Sets the extension for the current file and calls the `render/1` function.
       """
       @spec run(SourceFile.t(), any()) :: SourceFile.t()
-      def run(file, next_preprocessors) do
-        file
+      def run(source_file, next_preprocessors) do
+        source_file
         |> set_extension()
         |> render(next_preprocessors)
       end
 
+      @doc """
+      Runs the current preprocessor and invokes the next one.
+
+      Returns the resulting #{Still.SourceFile}.
+      """
+      @spec render(SourceFile.t()) :: SourceFile.t()
       def render(source_file) do
         source_file
       end
 
-      def render(source_file, remaining_preprocessors) do
+      @spec render(SourceFile.t(), any()) :: SourceFile.t()
+      def render(source_file, next_preprocessors) do
         render(source_file)
-        |> next(remaining_preprocessors)
+        |> next(next_preprocessors)
       end
 
-      defoverridable render: 1, render: 2
-
       @doc """
-      Returns the extension for the current file.
+      Returns the extension for a source file.
 
       This function can be overridden.
       """
       @spec extension(SourceFile.t()) :: String.t()
-      def extension(file) do
-        file.extension
+      def extension(source_file) do
+        source_file.extension
       end
 
       @spec next(SourceFile.t(), any()) :: SourceFile.t()
@@ -204,8 +209,8 @@ defmodule Still.Preprocessor do
         source_file
       end
 
-      defp next(source_file, [next | remaining_preprocessors]) do
-        next.run(source_file, remaining_preprocessors)
+      defp next(source_file, [next | next_preprocessors]) do
+        next.run(source_file, next_preprocessors)
       end
 
       defp set_extension(file) do
@@ -216,7 +221,7 @@ defmodule Still.Preprocessor do
         end
       end
 
-      defoverridable(extension: 1)
+      defoverridable extension: 1, render: 1, render: 2
     end
   end
 end
