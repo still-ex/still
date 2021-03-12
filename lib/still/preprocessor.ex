@@ -131,8 +131,8 @@ defmodule Still.Preprocessor do
   end
 
   defp do_run(file, [preprocessor | remaining_preprocessors]) do
-    preprocessor.run(file)
-    |> run(remaining_preprocessors)
+    preprocessor.run(file, remaining_preprocessors)
+    # |> run(remaining_preprocessors)
   catch
     :error, %PreprocessorError{} = error ->
       raise error
@@ -160,8 +160,9 @@ defmodule Still.Preprocessor do
   end
 
   @callback render(SourceFile.t()) :: SourceFile.t()
+  @callback render(SourceFile.t(), any()) :: SourceFile.t()
   @callback extension(SourceFile.t()) :: String.t()
-  @optional_callbacks extension: 1
+  @optional_callbacks extension: 1, render: 1, render: 2
 
   defmacro __using__(_opts) do
     quote do
@@ -170,12 +171,23 @@ defmodule Still.Preprocessor do
       @doc """
       Sets the extension for the current file and calls the `render/1` function.
       """
-      @spec run(SourceFile.t()) :: SourceFile.t()
-      def run(file) do
+      @spec run(SourceFile.t(), any()) :: SourceFile.t()
+      def run(file, next_preprocessors) do
         file
         |> set_extension()
-        |> render()
+        |> render(next_preprocessors)
       end
+
+      def render(source_file) do
+        source_file
+      end
+
+      def render(source_file, remaining_preprocessors) do
+        render(source_file)
+        |> next(remaining_preprocessors)
+      end
+
+      defoverridable render: 1, render: 2
 
       @doc """
       Returns the extension for the current file.
@@ -185,6 +197,15 @@ defmodule Still.Preprocessor do
       @spec extension(SourceFile.t()) :: String.t()
       def extension(file) do
         file.extension
+      end
+
+      @spec next(SourceFile.t(), any()) :: SourceFile.t()
+      defp next(source_file, []) do
+        source_file
+      end
+
+      defp next(source_file, [next | remaining_preprocessors]) do
+        next.run(source_file, remaining_preprocessors)
       end
 
       defp set_extension(file) do
