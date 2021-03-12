@@ -21,13 +21,10 @@ defmodule Still.Compiler.File.DevLayout do
       Application.app_dir(:still, @dev_layout)
       |> File.read!()
 
-    Still.Preprocessor.Slime.run(
-      %SourceFile{
-        input_file: @dev_layout,
-        content: content,
-        metadata: %{children: children, file_path: @dev_layout}
-      },
-      []
-    )
+    Still.Preprocessor.Slime.run(%SourceFile{
+      input_file: @dev_layout,
+      content: content,
+      metadata: %{children: children, file_path: @dev_layout}
+    })
   end
 end

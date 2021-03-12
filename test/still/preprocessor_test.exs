@@ -134,7 +134,7 @@ defmodule Still.PreprocessorTest do
   describe "__using__ run/2" do
     test "sets the extension" do
       %{extension: extension} =
-        TestPreprocessorWithExt.run(%SourceFile{content: "", input_file: "test/file.html"}, [])
+        TestPreprocessorWithExt.run(%SourceFile{content: "", input_file: "test/file.html"})
 
       assert extension == ".css"
     end
@@ -159,7 +159,7 @@ defmodule Still.PreprocessorTest do
 
     test "doesn't set the extension" do
       %{extension: extension} =
-        TestPreprocessorWithoutExt.run(%SourceFile{content: "", input_file: "test/file.html"}, [])
+        TestPreprocessorWithoutExt.run(%SourceFile{content: "", input_file: "test/file.html"})
 
       assert is_nil(extension)
     end

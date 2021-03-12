@@ -113,6 +113,7 @@ defmodule Still.Preprocessor do
     |> case do
       nil ->
         Logger.warn("Preprocessors not found for file: #{file}")
+        []
 
       preprocessors ->
         preprocessors
@@ -132,19 +133,6 @@ defmodule Still.Preprocessor do
 
   defp do_run(file, [preprocessor | next_preprocessors]) do
     preprocessor.run(file, next_preprocessors)
-    # |> run(next_preprocessors)
-  catch
-    :error, %PreprocessorError{} = error ->
-      raise error
-
-    kind, payload ->
-      raise PreprocessorError,
-        payload: payload,
-        kind: kind,
-        preprocessor: preprocessor,
-        remaining_preprocessors: remaining_preprocessors,
-        source_file: file,
-        stacktrace: __STACKTRACE__
   end
 
   defp preprocessors do
@@ -171,11 +159,28 @@ defmodule Still.Preprocessor do
       @doc """
       Sets the extension for the current file and calls the `render/1` function.
       """
+      @spec run(SourceFile.t()) :: SourceFile.t()
+      def run(source_file) do
+        run(source_file, [])
+      end
+
       @spec run(SourceFile.t(), any()) :: SourceFile.t()
       def run(source_file, next_preprocessors) do
         source_file
         |> set_extension()
         |> render(next_preprocessors)
+      catch
+        _, %PreprocessorError{} = error ->
+          raise error
+
+        kind, payload ->
+          raise PreprocessorError,
+            payload: payload,
+            kind: kind,
+            preprocessor: __MODULE__,
+            remaining_preprocessors: next_preprocessors,
+            source_file: source_file,
+            stacktrace: __STACKTRACE__
       end
 
       @doc """
