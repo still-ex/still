@@ -1,6 +1,13 @@
 defmodule Still.Case do
   use ExUnit.CaseTemplate
 
+  def ensure_clean_error_cache do
+    case Still.Compiler.ErrorCache.start_link(%{}) do
+      {:ok, _} -> :ok
+      _error -> Still.Compiler.ErrorCache.clear()
+    end
+  end
+
   using do
     quote do
       alias Still.Compiler.ErrorCache
@@ -12,7 +19,7 @@ defmodule Still.Case do
 
         Still.Utils.clean_output_dir()
 
-        {:ok, _} = ErrorCache.start_link(%{})
+        Still.Case.ensure_clean_error_cache()
 
         :ok
       end

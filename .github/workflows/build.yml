@@ -1,4 +1,4 @@
-name: Elixir CI
+name: build
 
 on:
   push:
@@ -31,20 +31,25 @@ jobs:
       uses: actions/cache@v2
       with:
         path: deps
-        key: test-${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-mix-${{ hashFiles('**/mix.lock') }}
-        restore-keys: test-${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-mix-
+        key: ${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-mix-${{ hashFiles('**/mix.lock') }}
+        restore-keys: ${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-mix-
 
     - name: Cache build
       uses: actions/cache@v1
       with:
         path: _build
-        key: test-${{ runner.OS }}-${{ matrix.elixir }}-${{ matrix.otp }}-build-
+        key: ${{ runner.OS }}-${{ matrix.elixir }}-${{ matrix.otp }}-build-
         restore-keys: |
-          test-${{ runner.OS }}-${{ matrix.elixir }}-${{ matrix.otp }}-build-
+          ${{ runner.OS }}-${{ matrix.elixir }}-${{ matrix.otp }}-build-
 
     - name: Install dependencies
       run: |
         mix deps.get
+
+    - name: Compile
+      run: |
+        MIX_ENV=dev mix compile
+        MIX_ENV=test mix compile
 
     - name: Run formatter
       run: mix format --check-formatted

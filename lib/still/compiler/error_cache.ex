@@ -24,8 +24,19 @@ defmodule Still.Compiler.ErrorCache do
     GenServer.call(__MODULE__, {:set, result})
   end
 
+  @doc """
+  Clears the saved errors for the given input file.
+  """
   def clear(input_file) do
     GenServer.cast(__MODULE__, {:clear, input_file})
+  end
+
+  @doc """
+  Clears the errors for all files. This function is dangerous and should be
+  only used for debugging and testing purposes.
+  """
+  def clear do
+    GenServer.cast(__MODULE__, :clear)
   end
 
   @doc """
@@ -68,6 +79,11 @@ defmodule Still.Compiler.ErrorCache do
   @impl true
   def handle_cast({:clear, input_file}, state) do
     {:noreply, state |> Map.delete(input_file)}
+  end
+
+  @impl true
+  def handle_cast(:clear, _state) do
+    {:noreply, %{}}
   end
 
   def handle_cast(_, state) do
