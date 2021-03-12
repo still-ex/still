@@ -117,18 +117,19 @@ defmodule Still.Compiler.Incremental.Node do
         {:reply, other, state}
     end
   catch
-    :exit, {e, _} ->
-      error = %PreprocessorError{
-        message: inspect(e),
-        stacktrace: __STACKTRACE__,
-        source_file: %Still.SourceFile{input_file: state.file, run_type: :compile}
-      }
-
+    _, %PreprocessorError{} = error ->
       handle_compile_error(error)
 
       {:reply, :ok, state}
 
-    :error, %PreprocessorError{} = error ->
+    kind, payload ->
+      error = %PreprocessorError{
+        payload: payload,
+        kind: kind,
+        stacktrace: __STACKTRACE__,
+        source_file: %Still.SourceFile{input_file: state.file, run_type: :compile}
+      }
+
       handle_compile_error(error)
 
       {:reply, :ok, state}
@@ -179,16 +180,17 @@ defmodule Still.Compiler.Incremental.Node do
 
     {:reply, source_file, state}
   catch
-    :exit, {e, _} ->
+    _, %PreprocessorError{} = error ->
+      {:reply, error, state}
+
+    kind, payload ->
       error = %PreprocessorError{
-        message: inspect(e),
+        payload: payload,
+        kind: kind,
         stacktrace: __STACKTRACE__,
         source_file: %Still.SourceFile{input_file: state.file, run_type: :render}
       }
 
-      {:reply, error, state}
-
-    :error, %PreprocessorError{} = error ->
       {:reply, error, state}
   end
 

@@ -134,20 +134,13 @@ defmodule Still.Preprocessor do
     preprocessor.run(file)
     |> run(remaining_preprocessors)
   catch
-    :error, %PreprocessorError{} = e ->
-      raise e
+    :error, %PreprocessorError{} = error ->
+      raise error
 
-    :error, %{description: description} when description != "" ->
+    kind, payload ->
       raise PreprocessorError,
-        message: description,
-        preprocessor: preprocessor,
-        remaining_preprocessors: remaining_preprocessors,
-        source_file: file,
-        stacktrace: __STACKTRACE__
-
-    :error, e ->
-      raise PreprocessorError,
-        message: inspect(e),
+        payload: payload,
+        kind: kind,
         preprocessor: preprocessor,
         remaining_preprocessors: remaining_preprocessors,
         source_file: file,

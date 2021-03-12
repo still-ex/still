@@ -8,6 +8,7 @@ defmodule Still.Web.ErrorFormatter do
     """
     <div class='dev-error'>
       <h1>#{error_title(e)}</h1>
+      <h2>#{error_chain(e)}</h1>
       #{render_stacktrace(e) |> String.trim()}
       <h2>Error</h2>
       <pre>
@@ -19,44 +20,20 @@ defmodule Still.Web.ErrorFormatter do
     |> remove_whitespace()
   end
 
-  defp render_stacktrace(%{stacktrace: nil}), do: ""
-
-  defp render_stacktrace(e) do
+  defp render_stacktrace(error) do
     output =
-      e.stacktrace
-      |> Enum.map(&render_stacktrace_line/1)
-      |> Enum.join("")
+      error.stacktrace
+      |> Exception.format_stacktrace()
+      |> String.split("\n")
+      |> Enum.map(&String.trim/1)
+      |> Enum.join("\n")
+      |> String.trim()
 
     """
       <h2>Stacktrace</h2>
       <pre>
-        <code>
-    #{output}
-        </code>
+        <code>#{output}</code>
       </pre>
-    """
-  end
-
-  defp render_stacktrace_line({mod, fun, args, meta}) when is_list(args) do
-    formatted_args =
-      args
-      |> Enum.map(&inspect/1)
-      |> Enum.join(", ")
-
-    """
-      <div class="dev-stack-item">
-        <div><strong>#{mod}</strong>.#{fun}(#{formatted_args})</div>
-        <div><em>#{Keyword.get(meta, :file)}:#{Keyword.get(meta, :line)}</em></div>
-      </div>
-    """
-  end
-
-  defp render_stacktrace_line({mod, fun, arity, meta}) when is_integer(arity) do
-    """
-      <div class="dev-stack-item">
-        <div><strong>#{mod}</strong>.#{fun}/#{arity}</div>
-        <div><em>#{Keyword.get(meta, :file)}:#{Keyword.get(meta, :line)}</em></div>
-      </div>
     """
   end
 
@@ -66,9 +43,18 @@ defmodule Still.Web.ErrorFormatter do
     |> Floki.raw_html()
   end
 
-  defp error_title(%{message: message, source_file: %{dependency_chain: dependency_chain}}) do
-    files = Enum.join(dependency_chain, " <- ")
+  defp error_chain(%{source_file: %{dependency_chain: dependency_chain}}) do
+    dependency_chain
+    |> Enum.reverse()
+    |> Enum.join(" -> ")
+  end
 
-    "#{files} - #{message}"
+  defp error_title(%{
+         payload: payload,
+         stacktrace: stacktrace,
+         kind: kind
+       }) do
+    Exception.normalize(kind, payload, stacktrace)
+    |> Exception.message()
   end
 end
