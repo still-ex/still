@@ -6,10 +6,7 @@ defmodule Still.Compiler.Traverse do
 
   import Still.Utils
 
-  alias Still.Compiler.{
-    CompilationStage,
-    Incremental
-  }
+  alias Still.Compiler.CompilationStage
 
   def run do
     Still.Compiler.Collections.reset()
@@ -23,7 +20,7 @@ defmodule Still.Compiler.Traverse do
   end
 
   def compilable_files(rel_path \\ "") do
-    path = Path.join(get_input_path, rel_path)
+    path = Path.join(get_input_path(), rel_path)
 
     cond do
       partial?(rel_path) ->

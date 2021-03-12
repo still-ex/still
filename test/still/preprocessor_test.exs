@@ -110,10 +110,12 @@ defmodule Still.PreprocessorTest do
       p = test("args")
       """
 
-      assert_raise PreprocessorError, "undefined function test/1", fn ->
-        %SourceFile{input_file: file, content: content}
-        |> Preprocessor.run()
-      end
+      assert_raise PreprocessorError,
+                   ~r/.*\d+\: undefined function test\/1/,
+                   fn ->
+                     %SourceFile{input_file: file, content: content}
+                     |> Preprocessor.run()
+                   end
     end
   end
 
