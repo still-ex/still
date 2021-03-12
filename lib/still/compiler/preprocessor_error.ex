@@ -1,6 +1,7 @@
 defmodule Still.Compiler.PreprocessorError do
   defexception [
-    :message,
+    :payload,
+    :kind,
     :source_file,
     :preprocessor,
     :remaining_preprocessors,
@@ -9,5 +10,9 @@ defmodule Still.Compiler.PreprocessorError do
 
   require Protocol
 
-  Protocol.derive(Jason.Encoder, __MODULE__, only: [:message, :source_file])
+  Protocol.derive(Jason.Encoder, __MODULE__, only: [:payload, :kind, :source_file])
+
+  def message(error) do
+    Exception.message(error.payload)
+  end
 end

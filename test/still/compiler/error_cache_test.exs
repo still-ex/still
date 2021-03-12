@@ -7,6 +7,8 @@ defmodule Still.Compiler.ErrorCacheTest do
   describe "set/1" do
     test "set an errors for the given" do
       error = %PreprocessorError{
+        payload: :udnef,
+        kind: :error,
         source_file: %SourceFile{
           input_file: "_header.slime",
           dependency_chain: ["index.eex", "_header.slime"]

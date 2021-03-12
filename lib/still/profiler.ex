@@ -104,17 +104,18 @@ defmodule Still.Profiler do
 
     ErrorCache.set({:ok, source_file})
   catch
-    :exit, {e, _} ->
+    _, %PreprocessorError{} = e ->
+      ErrorCache.set({:error, e})
+
+    kind, payload ->
       error = %PreprocessorError{
-        message: inspect(e),
+        payload: payload,
+        kind: kind,
         stacktrace: __STACKTRACE__,
         source_file: source_file
       }
 
       ErrorCache.set({:error, error})
-
-    :error, %PreprocessorError{} = e ->
-      ErrorCache.set({:error, e})
   end
 
   defp add_file_render_info(stats, file, delta) do
