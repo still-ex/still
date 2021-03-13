@@ -109,12 +109,19 @@ defmodule Still.Preprocessor do
   Retrieves the preprocessor pipeline for the given file.
   """
   def for(%{input_file: file}) do
-    preprocessors()[Path.extname(file)]
+    preprocessors()
+    |> Enum.find(fn {key, _value} ->
+      if is_binary(key) do
+        Path.extname(file) == key
+      else
+        Regex.match?(key, file)
+      end
+    end)
     |> case do
       nil ->
         Logger.warn("Preprocessors not found for file: #{file}")
 
-      preprocessors ->
+      {_, preprocessors} ->
         preprocessors
     end
   end
@@ -148,11 +155,16 @@ defmodule Still.Preprocessor do
   end
 
   defp preprocessors do
-    Map.merge(@default_preprocessors, user_defined_preprocessors())
+    preprocessors_to_list(user_defined_preprocessors()) ++
+      preprocessors_to_list(@default_preprocessors)
   end
 
   defp user_defined_preprocessors do
     config(:preprocessors, %{})
+  end
+
+  defp preprocessors_to_list(preprocessors) do
+    Enum.map(preprocessors, fn {key, value} -> {key, value} end)
   end
 
   defp should_profile?(%SourceFile{profilable: profilable}) do
