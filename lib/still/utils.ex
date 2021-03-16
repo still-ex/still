@@ -6,6 +6,15 @@ defmodule Still.Utils do
   alias Still.SourceFile
 
   @doc """
+  Returns true if the given file exists in the input path. Returns false otherwise.
+  """
+  def input_file_exists?(file) do
+    file
+    |> get_input_path()
+    |> File.exists?()
+  end
+
+  @doc """
   Returns the modified time of a given file. Errors if the file does not exist.
   """
   def get_modified_time!(path) do

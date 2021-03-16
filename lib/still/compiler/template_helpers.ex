@@ -18,6 +18,8 @@ defmodule Still.Compiler.TemplateHelpers do
     TemplateHelpers.UrlFor
   }
 
+  import Still.Utils
+
   require Logger
 
   defdelegate responsive_image(file, opts \\ []),
@@ -44,6 +46,8 @@ defmodule Still.Compiler.TemplateHelpers do
   end
 
   def include(env, file, metadata, opts) do
+    ensure_file_exists!(file)
+
     with pid when not is_nil(pid) <- Incremental.Registry.get_or_create_file_process(file),
          subscriber <- include_subscriber(env, opts),
          metadata <- Map.put(metadata, :dependency_chain, env[:dependency_chain] || []),
@@ -128,6 +132,12 @@ defmodule Still.Compiler.TemplateHelpers do
       env[:input_file]
     else
       nil
+    end
+  end
+
+  defp ensure_file_exists!(file) do
+    if not input_file_exists?(file) do
+      raise "File #{file} does not exist in #{get_input_path()}"
     end
   end
 end
