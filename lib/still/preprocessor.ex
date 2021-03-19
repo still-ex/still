@@ -110,13 +110,7 @@ defmodule Still.Preprocessor do
   """
   def for(%{input_file: file}) do
     preprocessors()
-    |> Enum.find(fn {key, _value} ->
-      if is_binary(key) do
-        Path.extname(file) == key
-      else
-        Regex.match?(key, file)
-      end
-    end)
+    |> find_preprocessor_for_file(file)
     |> case do
       nil ->
         Logger.warn("Preprocessors not found for file: #{file}")
@@ -155,20 +149,26 @@ defmodule Still.Preprocessor do
   end
 
   defp preprocessors do
-    preprocessors_to_list(user_defined_preprocessors()) ++
-      preprocessors_to_list(@default_preprocessors)
+    Enum.to_list(user_defined_preprocessors())
+    |> Enum.concat(Enum.to_list(@default_preprocessors))
   end
 
   defp user_defined_preprocessors do
     config(:preprocessors, %{})
   end
 
-  defp preprocessors_to_list(preprocessors) do
-    Enum.map(preprocessors, fn {key, value} -> {key, value} end)
-  end
-
   defp should_profile?(%SourceFile{profilable: profilable}) do
     profilable and Application.get_env(:still, :profiler, false)
+  end
+
+  defp find_preprocessor_for_file(preprocessors, file) do
+    Enum.find(preprocessors, fn {key, _value} ->
+      if is_binary(key) do
+        Path.extname(file) == key
+      else
+        Regex.match?(key, file)
+      end
+    end)
   end
 
   @callback render(SourceFile.t()) :: SourceFile.t()
