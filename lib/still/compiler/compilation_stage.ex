@@ -55,16 +55,16 @@ defmodule Still.Compiler.CompilationStage do
   end
 
   @doc """
-  Register a callback to be run after the compilation cycle but before the
-  subscribers are notified. This function is meant to be used by development
-  libraries only.
+  Register a callback to be run during the compilation cycle, after all the
+  files are compiled but before the subscribers are notified. This function is
+  meant to be used by development libraries only.
 
   It is particularly useful for making last minute additions after all the
   preprocessor pipelines have run, such as adding a generated sitemap or
   minifying assets.
   """
-  def register(fun) do
-    GenServer.cast(__MODULE__, {:register, fun})
+  def on_compile(fun) do
+    GenServer.cast(__MODULE__, {:on_compile, fun})
   end
 
   @impl true
@@ -72,7 +72,7 @@ defmodule Still.Compiler.CompilationStage do
     state = %{
       to_compile: [],
       subscribers: [],
-      callbacks: [],
+      hooks: [],
       changed: false,
       timer: nil
     }
@@ -109,19 +109,21 @@ defmodule Still.Compiler.CompilationStage do
      }}
   end
 
-  def handle_cast({:register, fun}, state) do
-    callbacks = [fun | state.callbacks] |> Enum.uniq()
+  def handle_cast({:on_compile, fun}, state) do
+    hooks = [fun | state.hooks] |> Enum.uniq()
 
-    {:noreply, %{state | callbacks: callbacks}}
+    {:noreply, %{state | hooks: hooks}}
   end
 
   @impl true
   def handle_info(:notify_subscribers, %{to_compile: []} = state) do
-    state.callbacks
-    |> Enum.each(fn fun -> fun.() end)
+    Enum.each(state.hooks, fn
+      {mod, fun, args} -> apply(mod, fun, args)
+      fun when is_function(fun, 0) -> fun.()
+      _ -> :ok
+    end)
 
-    state.subscribers
-    |> Enum.each(fn pid ->
+    Enum.each(state.subscribers, fn pid ->
       send(pid, :bus_empty)
     end)
 
