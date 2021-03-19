@@ -149,8 +149,8 @@ defmodule Still.Preprocessor do
   end
 
   defp preprocessors do
-    Enum.to_list(user_defined_preprocessors())
-    |> Enum.concat(Enum.to_list(@default_preprocessors))
+    Enum.concat(user_defined_preprocessors(), @default_preprocessors)
+    |> Enum.to_list()
   end
 
   defp user_defined_preprocessors do
