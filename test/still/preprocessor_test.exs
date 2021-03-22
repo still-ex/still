@@ -7,7 +7,6 @@ defmodule Still.PreprocessorTest do
     EEx,
     CSSMinify,
     OutputPath,
-    URLFingerprinting,
     AddContent,
     AddLayout,
     Frontmatter,
@@ -51,9 +50,31 @@ defmodule Still.PreprocessorTest do
   end
 
   describe "for/1" do
-    test "returns the preprocessors for a source_file" do
-      assert [AddContent, EEx, CSSMinify, OutputPath, URLFingerprinting, AddLayout, Save] ==
+    test "returns the preprocessors for a source_file using the file extension" do
+      Application.put_env(:still, :preprocessors, %{
+        ".css" => [
+          AddContent,
+          EEx,
+          CSSMinify,
+          OutputPath,
+          Save
+        ]
+      })
+
+      assert [AddContent, EEx, CSSMinify, OutputPath, Save] ==
                %SourceFile{input_file: "app.css"}
+               |> Preprocessor.for()
+    end
+
+    test "returns the preprocessors for a source_file using a regex" do
+      Application.put_env(:still, :preprocessors, %{
+        ~r/^node_tools\/.*\.js/ => [
+          AddContent
+        ]
+      })
+
+      assert [AddContent] ==
+               %SourceFile{input_file: "node_tools/app.js"}
                |> Preprocessor.for()
     end
   end
