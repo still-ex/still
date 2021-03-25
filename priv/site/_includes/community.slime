@@ -26,6 +26,9 @@
     .still
       h2.section-title Built With Still
 
+      = link @env, to: "https://alchemyconf.com", class: "btn" do
+        span Alchemy Conf
+
       = link @env, to: "https://github.com/still-ex/still/tree/master/priv/site", class: "btn" do
         span This website
 
