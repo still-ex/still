@@ -17,8 +17,18 @@ javascript:
   }
 
   window.socket.onopen = () => {
-    window.socket.send("subscribe");
+    waitForConnection(() => window.socket.send("subscribe"), 300);
   };
+
+  function waitForConnection(callback, interval) {
+    if (window.socket.readyState === 1) {
+      callback();
+    } else {
+      setTimeout(function () {
+        waitForConnection(callback, interval);
+      }, interval);
+    }
+  }
 
 css:
   .dev-error-disable-scroll {
