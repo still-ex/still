@@ -12,11 +12,8 @@ defmodule Still.Preprocessor.Slime do
   use Preprocessor
 
   @impl true
-  def extension(_), do: ".html"
-
-  @impl true
   def render(file) do
-    %{file | content: do_render(file)}
+    %{file | content: do_render(file), extension: ".html"}
   end
 
   defp do_render(

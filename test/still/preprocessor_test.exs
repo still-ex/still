@@ -32,20 +32,32 @@ defmodule Still.PreprocessorTest do
   defmodule TestPreprocessorWithExt do
     use Preprocessor
 
-    def extension(_) do
-      ".css"
-    end
-
-    def render(file) do
-      file
+    def render(source_file) do
+      %{source_file | extension: ".css"}
     end
   end
 
   defmodule TestPreprocessorWithoutExt do
     use Preprocessor
 
-    def render(file) do
-      file
+    def render(source_file) do
+      source_file
+    end
+  end
+
+  defmodule TestPreprocessorWithCont do
+    use Preprocessor
+
+    def render(source_file) do
+      {:cont, source_file}
+    end
+  end
+
+  defmodule TestPreprocessorWithHalt do
+    use Preprocessor
+
+    def render(source_file) do
+      {:halt, source_file}
     end
   end
 
@@ -146,6 +158,24 @@ defmodule Still.PreprocessorTest do
         TestPreprocessorWithExt.run(%SourceFile{content: "", input_file: "test/file.html"})
 
       assert extension == ".css"
+    end
+
+    test "runs the next preprocessors" do
+      source_file = %SourceFile{
+        input_file: "index.slime",
+        content: "p Hello"
+      }
+
+      assert %{content: "<p>Hello</p>"} = TestPreprocessorWithCont.run(source_file, [Slime])
+    end
+
+    test "doesn't run the next preprocessors" do
+      source_file = %SourceFile{
+        input_file: "index.slime",
+        content: "p Hello"
+      }
+
+      assert %{content: "p Hello"} = TestPreprocessorWithHalt.run(source_file, [Slime])
     end
 
     test "doesn't set the extension" do

@@ -7,33 +7,16 @@ defmodule Still.Preprocessor do
   markdown file, execute its embedded Elixir, extract metadata from its front
   matter, transform it into HTML and wrap it in a layout.
 
-  The default preprocessor chain is the following:
-
-      %{
-        ".slim" => [AddContent, EEx, Frontmatter, Slime, OutputPath, AddLayout, Save],
-        ".slime" => [AddContent, EEx, Frontmatter, Slime, OutputPath, AddLayout, Save],
-        ".eex" => [AddContent, EEx, Frontmatter, OutputPath, AddLayout, Save],
-        ".css" => [AddContent, EEx, CSSMinify, OutputPath, URLFingerprinting, AddLayout, Save],
-        ".js" => [AddContent, EEx, JS, OutputPath, URLFingerprinting, AddLayout, Save],
-        ".md" => [AddContent, EEx, Frontmatter, Markdown, OutputPath, AddLayout, Save],
-        ".jpg" => [OutputPath, Image],
-        ".png" => [OutputPath, Image]
-      }
-
-
-  If the default preprocessors are not enough, you can extend Still with your
+  There are a few defined chains by default, but you can extend Still with your
   own.
 
   **A custom preprocessor is simply a module that calls `use Still.Preprocessor`
-  and implements the `render/2` and `extension/1` functions.**
+  and implements the `render/1`function.**
 
   Take the following example:
 
       defmodule YourSite.JPEG do
         use Still.Preprocessor
-
-        @impl true
-        def extension(_), do: ".jpeg"
 
         @impl true
         def render(file) do
@@ -42,8 +25,7 @@ defmodule Still.Preprocessor do
       end
 
   In this example, the `render/1` function is used to transform the content and
-  the metadata of a file, and the `extension/1` function is used to set the
-  resulting content type.  This `extension/1` function is not mandatory.
+  the metadata of a #{Still.SourceFile}.
 
   See the [preprocessor guide](preprocessors.html) for more details.
   """
@@ -114,6 +96,7 @@ defmodule Still.Preprocessor do
     |> case do
       nil ->
         Logger.warn("Preprocessors not found for file: #{file}")
+        []
 
       {_, preprocessors} ->
         preprocessors
@@ -131,21 +114,8 @@ defmodule Still.Preprocessor do
     response
   end
 
-  defp do_run(file, [preprocessor | remaining_preprocessors]) do
-    preprocessor.run(file)
-    |> run(remaining_preprocessors)
-  catch
-    :error, %PreprocessorError{} = error ->
-      raise error
-
-    kind, payload ->
-      raise PreprocessorError,
-        payload: payload,
-        kind: kind,
-        preprocessor: preprocessor,
-        remaining_preprocessors: remaining_preprocessors,
-        source_file: file,
-        stacktrace: __STACKTRACE__
+  defp do_run(file, [preprocessor | next_preprocessors]) do
+    preprocessor.run(file, next_preprocessors)
   end
 
   defp preprocessors do
@@ -172,42 +142,77 @@ defmodule Still.Preprocessor do
   end
 
   @callback render(SourceFile.t()) :: SourceFile.t()
-  @callback extension(SourceFile.t()) :: String.t()
-  @optional_callbacks extension: 1
+  @callback after_render(SourceFile.t()) :: SourceFile.t()
+
+  @optional_callbacks render: 1, after_render: 1
 
   defmacro __using__(_opts) do
     quote do
       @behaviour Still.Preprocessor
 
       @doc """
-      Sets the extension for the current file and calls the `render/1` function.
+      Runs the #{Still.SourceFile} through the current preprocessor and the next.
       """
       @spec run(SourceFile.t()) :: SourceFile.t()
-      def run(file) do
-        file
-        |> set_extension()
+      def run(source_file) do
+        run(source_file, [])
+      end
+
+      @spec run(SourceFile.t(), any()) :: SourceFile.t()
+      def run(source_file, next_preprocessors) do
+        source_file
         |> render()
+        |> case do
+          {:cont, source_file} ->
+            source_file
+            |> run_next_preprocessors(next_preprocessors)
+
+          {:halt, source_file} ->
+            source_file
+
+          %SourceFile{} = source_file ->
+            source_file
+            |> run_next_preprocessors(next_preprocessors)
+        end
+        |> after_render()
+      catch
+        _, %PreprocessorError{} = error ->
+          raise error
+
+        kind, payload ->
+          raise PreprocessorError,
+            payload: payload,
+            kind: kind,
+            preprocessor: __MODULE__,
+            remaining_preprocessors: next_preprocessors,
+            source_file: source_file,
+            stacktrace: __STACKTRACE__
+      end
+
+      defp run_next_preprocessors(source_file, []), do: source_file
+
+      defp run_next_preprocessors(source_file, [next_preprocess | remaining_preprocesors]) do
+        next_preprocess.run(source_file, remaining_preprocesors)
       end
 
       @doc """
-      Returns the extension for the current file.
+      Runs after the next preprocessors finish running.
 
-      This function can be overridden.
+      Returns the resulting #{Still.SourceFile}.
       """
-      @spec extension(SourceFile.t()) :: String.t()
-      def extension(file) do
-        file.extension
-      end
+      @spec after_render(SourceFile.t()) :: SourceFile.t()
+      def after_render(source_file), do: source_file
 
-      defp set_extension(file) do
-        if Kernel.function_exported?(__MODULE__, :extension, 1) do
-          %{file | extension: extension(file)}
-        else
-          file
-        end
-      end
+      @doc """
+      Runs the current preprocessor and invokes the next one.
 
-      defoverridable(extension: 1)
+      Returns the resulting #{Still.SourceFile}.
+      """
+      @spec render(SourceFile.t()) ::
+              {:cont, SourceFile.t()} | {:halt, SourceFile.t()} | SourceFile.t()
+      def render(source_file), do: source_file
+
+      defoverridable render: 1, after_render: 1
     end
   end
 end

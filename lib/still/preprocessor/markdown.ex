@@ -9,12 +9,9 @@ defmodule Still.Preprocessor.Markdown do
   use Preprocessor
 
   @impl true
-  def extension(_), do: ".html"
-
-  @impl true
   def render(%{content: content} = file) do
     html_doc = Markdown.to_html(content, fenced_code: true, quote: true)
 
-    %{file | content: html_doc}
+    %{file | content: html_doc, extension: ".html"}
   end
 end
