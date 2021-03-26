@@ -25,15 +25,12 @@ defmodule Still.Preprocessor do
   own.
 
   **A custom preprocessor is simply a module that calls `use Still.Preprocessor`
-  and implements the `render/2` and `extension/1` functions.**
+  and implements the `render/1`function.**
 
   Take the following example:
 
       defmodule YourSite.JPEG do
         use Still.Preprocessor
-
-        @impl true
-        def extension(_), do: ".jpeg"
 
         @impl true
         def render(file) do
@@ -157,7 +154,7 @@ defmodule Still.Preprocessor do
       @behaviour Still.Preprocessor
 
       @doc """
-      Sets the extension for the current file and calls the `render/1` function.
+      Runs the #{Still.SourceFile} through the current preprocessor and the next.
       """
       @spec run(SourceFile.t()) :: SourceFile.t()
       def run(source_file) do
@@ -167,8 +164,20 @@ defmodule Still.Preprocessor do
       @spec run(SourceFile.t(), any()) :: SourceFile.t()
       def run(source_file, next_preprocessors) do
         source_file
-        |> set_extension()
-        |> render(next_preprocessors)
+        |> render()
+        |> case do
+          {:cont, source_file} ->
+            source_file
+            |> run_next_preprocessors(next_preprocessors)
+
+          {:halt, source_file} ->
+            source_file
+
+          %SourceFile{} = source_file ->
+            source_file
+            |> run_next_preprocessors(next_preprocessors)
+        end
+        |> after_render()
       catch
         _, %PreprocessorError{} = error ->
           raise error
@@ -183,50 +192,30 @@ defmodule Still.Preprocessor do
             stacktrace: __STACKTRACE__
       end
 
+      defp run_next_preprocessors(source_file, []), do: source_file
+
+      defp run_next_preprocessors(source_file, [next_preprocess | remaining_preprocesors]) do
+        next_preprocess.run(source_file, remaining_preprocesors)
+      end
+
+      @doc """
+      Runs after the next preprocessors finish running.
+
+      Returns the resulting #{Still.SourceFile}.
+      """
+      @spec after_render(SourceFile.t()) :: SourceFile.t()
+      def after_render(source_file), do: source_file
+
       @doc """
       Runs the current preprocessor and invokes the next one.
 
       Returns the resulting #{Still.SourceFile}.
       """
-      @spec render(SourceFile.t()) :: SourceFile.t()
-      def render(source_file) do
-        source_file
-      end
+      @spec render(SourceFile.t()) ::
+              {:cont, SourceFile.t()} | {:halt, SourceFile.t()} | SourceFile.t()
+      def render(source_file), do: source_file
 
-      @spec render(SourceFile.t(), any()) :: SourceFile.t()
-      def render(source_file, next_preprocessors) do
-        render(source_file)
-        |> next(next_preprocessors)
-      end
-
-      @doc """
-      Returns the extension for a source file.
-
-      This function can be overridden.
-      """
-      @spec extension(SourceFile.t()) :: String.t()
-      def extension(source_file) do
-        source_file.extension
-      end
-
-      @spec next(SourceFile.t(), any()) :: SourceFile.t()
-      defp next(source_file, []) do
-        source_file
-      end
-
-      defp next(source_file, [next | next_preprocessors]) do
-        next.run(source_file, next_preprocessors)
-      end
-
-      defp set_extension(file) do
-        if Kernel.function_exported?(__MODULE__, :extension, 1) do
-          %{file | extension: extension(file)}
-        else
-          file
-        end
-      end
-
-      defoverridable extension: 1, render: 1, render: 2
+      defoverridable render: 1, after_render: 1
     end
   end
 end

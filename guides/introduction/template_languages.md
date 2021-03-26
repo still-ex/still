@@ -68,19 +68,13 @@ Then, you create a new Elixir module somewhere with the following contents:
 defmodule YourSite.SassPreprocessor do
   use Still.Preprocessor
 
-  # overrides the file's extension
-  @impl true
-  def extension(_) do
-    ".css"
-  end
-
   @impl true
   def render(file) do
     {:ok, content} =
       Still.Utils.get_input_path(file.input_file)
       |> Sass.compile_file()
 
-    %{file | content: content}
+    %{file | content: content, extension: ".css"}
   end
 end
 ```

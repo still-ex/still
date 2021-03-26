@@ -24,11 +24,8 @@ defmodule YourSite.JPEG do
   use Still.Preprocessor
 
   @impl true
-  def extension(_), do: ".jpeg"
-
-  @impl true
   def render(file) do
-    file
+    %{file | extension: ".jpeg"}
   end
 end
 ```
