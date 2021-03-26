@@ -7,21 +7,7 @@ defmodule Still.Preprocessor do
   markdown file, execute its embedded Elixir, extract metadata from its front
   matter, transform it into HTML and wrap it in a layout.
 
-  The default preprocessor chain is the following:
-
-      %{
-        ".slim" => [AddContent, EEx, Frontmatter, Slime, OutputPath, AddLayout, Save],
-        ".slime" => [AddContent, EEx, Frontmatter, Slime, OutputPath, AddLayout, Save],
-        ".eex" => [AddContent, EEx, Frontmatter, OutputPath, AddLayout, Save],
-        ".css" => [AddContent, EEx, CSSMinify, OutputPath, URLFingerprinting, AddLayout, Save],
-        ".js" => [AddContent, EEx, JS, OutputPath, URLFingerprinting, AddLayout, Save],
-        ".md" => [AddContent, EEx, Frontmatter, Markdown, OutputPath, AddLayout, Save],
-        ".jpg" => [OutputPath, Image],
-        ".png" => [OutputPath, Image]
-      }
-
-
-  If the default preprocessors are not enough, you can extend Still with your
+  There are a few defined chains by default, but you can extend Still with your
   own.
 
   **A custom preprocessor is simply a module that calls `use Still.Preprocessor`
@@ -39,8 +25,7 @@ defmodule Still.Preprocessor do
       end
 
   In this example, the `render/1` function is used to transform the content and
-  the metadata of a file, and the `extension/1` function is used to set the
-  resulting content type.  This `extension/1` function is not mandatory.
+  the metadata of a #{Still.SourceFile}.
 
   See the [preprocessor guide](preprocessors.html) for more details.
   """
@@ -145,9 +130,9 @@ defmodule Still.Preprocessor do
   end
 
   @callback render(SourceFile.t()) :: SourceFile.t()
-  @callback render(SourceFile.t(), any()) :: SourceFile.t()
-  @callback extension(SourceFile.t()) :: String.t()
-  @optional_callbacks extension: 1, render: 1, render: 2
+  @callback after_render(SourceFile.t()) :: SourceFile.t()
+
+  @optional_callbacks render: 1, after_render: 1
 
   defmacro __using__(_opts) do
     quote do
