@@ -75,9 +75,6 @@
   background-color: var(--c-black);
   text-transform: uppercase;
   font-family: MedulaOne;
-  /* position: absolute; */
-  /* bottom: 0; */
-  /* left: 0; */
   width: 100%;
   position: relative;
   height: var(--s-8);
