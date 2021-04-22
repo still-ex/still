@@ -11,11 +11,12 @@
     .info
       = link @env, "Docs", to: "https://hexdocs.pm/still", class: "cta"
       = link @env, "GitHub", to: "https://github.com/still-ex/still", class: "cta"
-  marquee.marquee
-    span Tonight on display: still (featuring elixir)
-    span Tonight on display: still (featuring elixir)
-    span Tonight on display: still (featuring elixir)
-    span Tonight on display: still (featuring elixir)
-    span Tonight on display: still (featuring elixir)
+  .marquee
+    .content
+      span Tonight on display: still (featuring elixir)
+      span Tonight on display: still (featuring elixir)
+      span Tonight on display: still (featuring elixir)
+      span Tonight on display: still (featuring elixir)
+      span Tonight on display: still (featuring elixir)          
   .overlay
   = responsive_image("_includes/main.jpg", class: "cover", aria_hidden: true)
