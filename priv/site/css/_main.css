@@ -4,7 +4,9 @@
   color: var(--c-white);
   z-index: 1;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
 }
 
 .main > .overlay {
@@ -29,7 +31,7 @@
   object-position: bottom center;
 }
 
-.main .content {
+.main > .content {
   display: grid;
   padding: 0 var(--s-4);
   grid-row-gap: var(--s-6);
@@ -73,13 +75,40 @@
   background-color: var(--c-black);
   text-transform: uppercase;
   font-family: MedulaOne;
-  position: absolute;
-  bottom: 0;
-  left: 0;
   width: 100%;
+  position: relative;
+  height: var(--s-8);
+  overflow: hidden;
 }
 
-.main .marquee > span {
+.main .marquee > .content {
+  display: flex;
+  position: absolute;
+  top: 2px;
+  left: 0%;
+  width: max-content;
+  animation-name: marquee;
+  animation-duration: 60s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+@media (prefers-reduced-motion) {
+  .main .marquee > .content {
+    animation-name: dissolve;
+  }
+}
+
+.main .marquee .content > span {
   white-space: nowrap;
   padding: 1px 1rem;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0%);
+  }
+  to {
+    transform: translateX(-100%);
+  }
 }
