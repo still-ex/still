@@ -79,6 +79,12 @@ $ git clone https://github.com/still-ex/still.git
 ```sh
 $ cd still && ./bin/setup
 ```
+3. Optionally, install an image processor
+
+Some of the tests related to images require an image processor to be installed.
+By default, Still relies on [ImageMagick][imageMagick], but if you install [still-imageflow][still-imageflow] as a 
+dependency it will use [imageflow][imageflow] instead.
+
 From this point onwards, you should be ready to go.
 ### Expected Pull Request contents
 
@@ -116,3 +122,6 @@ Still is released under the [ISC License](./LICENSE).
 [build-badge]: https://img.shields.io/github/workflow/status/still-ex/still/Elixir%20CI?style=flat-square
 [docs-badge]: https://img.shields.io/badge/-docs-informational?style=flat-square
 [issue-tracker]: https://github.com/still-ex/still/issues
+[imageMagick]: https://imagemagick.org/index.php
+[still-imageflow]: https://github.com/still-ex/still_imageflow
+[imageflow]: https://github.com/imazen/imageflow
