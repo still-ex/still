@@ -62,6 +62,46 @@ Create a file `index.slime` in the input folder.
 
 For more information please visit the [website][website].
 
+## Contributing
+
+If you're considering contributing to Still, thank you. We keep an updated list
+of bugs and features on the [issue tracker][issue-tracker]. If you can't find
+the bug or feature you have in mind, please open an issue first, before creating
+a pull request.
+
+### Requirements & Setup
+
+1. Download the repo
+```sh
+$ git clone https://github.com/still-ex/still.git
+```
+2. Move to project directory & Install dependencies
+```sh
+$ cd still && ./bin/setup
+```
+3. Optionally, install an image processor
+
+Some of the tests related to images require an image processor to be installed.
+By default, Still relies on [ImageMagick][imageMagick], but if you install [still-imageflow][still-imageflow] as a 
+dependency it will use [imageflow][imageflow] instead.
+
+From this point onwards, you should be ready to go.
+### Expected Pull Request contents
+
+Please make sure the PR title and description clearly explain the proposed
+changes. Linking to a relevant issue by adding `Closes *ISSUE_NUMBER*` on the PR
+description is very welcomed.
+
+All proposed changes should be accompanied by unit tests that provide coverage
+for those changes.
+
+### Running tests
+
+To run tests, simply run the following  on the project directory.
+```sh
+$ mix test
+```
+
 ## About
 
 Still was created and is maintained with :heart: by [Subvisual][subvisual].
@@ -81,3 +121,7 @@ Still is released under the [ISC License](./LICENSE).
 [hex-badge]: https://img.shields.io/hexpm/v/still?style=flat-square
 [build-badge]: https://img.shields.io/github/workflow/status/still-ex/still/Elixir%20CI?style=flat-square
 [docs-badge]: https://img.shields.io/badge/-docs-informational?style=flat-square
+[issue-tracker]: https://github.com/still-ex/still/issues
+[imageMagick]: https://imagemagick.org/index.php
+[still-imageflow]: https://github.com/still-ex/still_imageflow
+[imageflow]: https://github.com/imazen/imageflow
