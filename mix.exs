@@ -71,6 +71,7 @@ defmodule Still.MixProject do
       {:plug, "~> 1.10"},
       {:plug_cowboy, "~> 2.3"},
       {:slime, "~> 1.2"},
+      {:temple, "~> 0.6.0-rc.0"},
       {:timex, "~> 3.5"},
       {:yaml_elixir, "~> 2.4"}
     ]
