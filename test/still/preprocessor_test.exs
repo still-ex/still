@@ -133,7 +133,7 @@ defmodule Still.PreprocessorTest do
       assert String.ends_with?(content, "<body><p>Hello</p></body></html>")
     end
 
-    test "raises a Compiler.PreprocessorError" do
+    test "raises with Compiler.PreprocessorError when there's an error" do
       file = "index.slime"
 
       content = """
@@ -147,6 +147,21 @@ defmodule Still.PreprocessorTest do
                    ~r/.*\d+\: undefined function test\/1/,
                    fn ->
                      %SourceFile{input_file: file, content: content}
+                     |> Preprocessor.run()
+                   end
+    end
+
+    test "raises when the module doesn't exist" do
+      Application.put_env(:still, :preprocessors, %{
+        ".slime" => [
+          SomeModule
+        ]
+      })
+
+      assert_raise UndefinedFunctionError,
+                   ~r/module SomeModule is not available/,
+                   fn ->
+                     %SourceFile{input_file: "index.slime", content: ""}
                      |> Preprocessor.run()
                    end
     end
