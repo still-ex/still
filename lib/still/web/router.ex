@@ -41,6 +41,8 @@ defmodule Still.Web.Router do
       conn
       |> put_resp_header("Content-Type", "text/html; charset=UTF-8")
       |> send_file(200, file)
+
+      :ok
     else
       :error
     end

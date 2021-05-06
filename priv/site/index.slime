@@ -2,7 +2,6 @@
 layout: _layout.slime
 ---
 
-= include(@env, "_includes/test.html")
 = include(@env, "_includes/main.exs")
 = include(@env, "_includes/manifesto.slime")
 = include(@env, "_includes/getting_started.slime")
