@@ -11,7 +11,8 @@ defmodule Still.PreprocessorTest do
     AddLayout,
     Frontmatter,
     Slime,
-    Save
+    Save,
+    Profiler
   }
 
   setup do
@@ -73,7 +74,7 @@ defmodule Still.PreprocessorTest do
         ]
       })
 
-      assert [AddContent, EEx, CSSMinify, OutputPath, Save] ==
+      assert [Profiler, AddContent, EEx, CSSMinify, OutputPath, Save] ==
                %SourceFile{input_file: "app.css"}
                |> Preprocessor.for()
     end
@@ -85,7 +86,7 @@ defmodule Still.PreprocessorTest do
         ]
       })
 
-      assert [AddContent] ==
+      assert [Profiler, AddContent] ==
                %SourceFile{input_file: "node_tools/app.js"}
                |> Preprocessor.for()
     end
