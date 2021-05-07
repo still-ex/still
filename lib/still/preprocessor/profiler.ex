@@ -10,7 +10,7 @@ defmodule Still.Preprocessor.Profiler do
     if should_profile?(file) do
       start_time = Profiler.timestamp()
 
-      metadata = Map.put(metadata, :start_time, start_time)
+      metadata = Map.put(metadata, :_profiler_start_time, start_time)
 
       %{file | metadata: metadata}
     else
@@ -19,11 +19,9 @@ defmodule Still.Preprocessor.Profiler do
   end
 
   @impl true
-  def after_render(%{metadata: %{start_time: start_time}} = file) do
-    if should_profile?(file) do
-      end_time = Profiler.timestamp()
-      Profiler.register(file, end_time - start_time)
-    end
+  def after_render(%{metadata: %{_profiler_start_time: start_time}} = file) do
+    end_time = Profiler.timestamp()
+    Profiler.register(file, end_time - start_time)
 
     file
   end
