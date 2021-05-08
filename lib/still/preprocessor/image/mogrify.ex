@@ -86,7 +86,8 @@ defmodule Still.Preprocessor.Image.Mogrify do
     |> Enum.map(fn {size, output_file} ->
       Task.async(fn ->
         tmp_file
-        |> resize("x#{size}")
+        |> resize(size)
+        |> quality(config(:image_quality, 90))
         |> save(path: get_output_path(output_file))
       end)
     end)
