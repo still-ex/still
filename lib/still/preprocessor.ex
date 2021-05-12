@@ -51,15 +51,13 @@ defmodule Still.Preprocessor do
     Save,
     AddLayout,
     AddContent,
-    Image,
-    Temple
+    Image
   }
 
   @default_preprocessors %{
     ".slim" => [AddContent, EEx, Frontmatter, Slime, OutputPath, AddLayout, Save],
     ".slime" => [AddContent, EEx, Frontmatter, Slime, OutputPath, AddLayout, Save],
     ".eex" => [AddContent, EEx, Frontmatter, OutputPath, AddLayout, Save],
-    ".exs" => [AddContent, Frontmatter, Temple, EEx, OutputPath, AddLayout, Save],
     ".css" => [AddContent, EEx, CSSMinify, OutputPath, URLFingerprinting, AddLayout, Save],
     ".js" => [AddContent, EEx, JS, OutputPath, URLFingerprinting, AddLayout, Save],
     ".md" => [AddContent, EEx, Frontmatter, Markdown, OutputPath, AddLayout, Save],
@@ -143,32 +141,10 @@ defmodule Still.Preprocessor do
     end)
   end
 
-  @type render_result ::
-          {:cont, SourceFile.t()}
-          | {:halt, SourceFile.t()}
-          | SourceFile.t()
-
-  @callback render(SourceFile.t()) :: render_result()
-
+  @callback render(SourceFile.t()) :: SourceFile.t()
   @callback after_render(SourceFile.t()) :: SourceFile.t()
 
   @optional_callbacks render: 1, after_render: 1
-
-  @doc """
-  Identity function to silence pattern matching warnings from
-  Dialyzer.
-
-  Each preprocessor implements the `run/1` and `render/1` functions, so Dialyzer
-  knows whether all the branches in `case` statement are essential. They never
-  are, and most processors only return one type. So there's always going to a
-  warning there that's not helpful. Using this identity function that's only
-  defined once, we force Dialyzer to accept that those branches in `case` are
-  necessary.
-  """
-  @spec handle_return(result :: render_result()) :: render_result()
-  def handle_return(value) do
-    value
-  end
 
   defmacro __using__(_opts) do
     quote do
@@ -186,7 +162,6 @@ defmodule Still.Preprocessor do
       def run(source_file, next_preprocessors) do
         source_file
         |> render()
-        |> Still.Preprocessor.handle_return()
         |> case do
           {:cont, source_file} ->
             source_file
@@ -225,7 +200,7 @@ defmodule Still.Preprocessor do
 
       Returns the resulting #{Still.SourceFile}.
       """
-      @impl true
+      @spec after_render(SourceFile.t()) :: SourceFile.t()
       def after_render(source_file), do: source_file
 
       @doc """
@@ -233,10 +208,11 @@ defmodule Still.Preprocessor do
 
       Returns the resulting #{Still.SourceFile}.
       """
-      @impl true
+      @spec render(SourceFile.t()) ::
+              {:cont, SourceFile.t()} | {:halt, SourceFile.t()} | SourceFile.t()
       def render(source_file), do: source_file
 
-      defoverridable(Still.Preprocessor)
+      defoverridable render: 1, after_render: 1
     end
   end
 end
