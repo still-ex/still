@@ -49,12 +49,12 @@ defmodule Still.Compiler.TemplateHelpers do
     ensure_file_exists!(file)
 
     with pid when not is_nil(pid) <- Incremental.Registry.get_or_create_file_process(file),
-         subscriber <- include_subscriber(env, opts),
+         #  subscriber <- include_subscriber(env, opts),
          metadata <- Map.put(metadata, :dependency_chain, env[:dependency_chain] || []),
-         %SourceFile{content: content} <- Incremental.Node.render(pid, metadata, subscriber) do
-      if subscriber do
-        Incremental.Node.add_subscription(self(), file)
-      end
+         %SourceFile{content: content} <- Incremental.Node.render(pid, metadata, nil) do
+      # if subscriber do
+      #   Incremental.Node.add_subscription(self(), file)
+      # end
 
       content
     else
@@ -127,13 +127,13 @@ defmodule Still.Compiler.TemplateHelpers do
     end
   end
 
-  defp include_subscriber(env, opts) do
-    if Keyword.get(opts, :subscribe, true) do
-      env[:input_file]
-    else
-      nil
-    end
-  end
+  # defp include_subscriber(env, opts) do
+  #   if Keyword.get(opts, :subscribe, true) do
+  #     env[:input_file]
+  #   else
+  #     nil
+  #   end
+  # end
 
   defp ensure_file_exists!(file) do
     if not input_file_exists?(file) do

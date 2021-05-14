@@ -5,10 +5,9 @@ defmodule Mix.Tasks.Still.Compile do
 
   @doc false
   def run(_) do
+    # TO BE FIXED
     Mix.Task.run("compile")
     Mix.Task.run("app.start")
-
-    Still.Compiler.CompilationStage.subscribe()
 
     Application.put_env(:still, @config_key, true)
     Application.put_env(:still, :url_fingerprinting, true)

@@ -6,8 +6,6 @@ defmodule Still.Compiler.Traverse do
 
   import Still.Utils
 
-  alias Still.Compiler.CompilationStage
-
   def run do
     Still.Compiler.Collections.reset()
 
@@ -15,7 +13,14 @@ defmodule Still.Compiler.Traverse do
          _ <- File.rmdir(get_output_path()),
          :ok <- File.mkdir_p(get_output_path()) do
       compilable_files()
-      |> CompilationStage.compile()
+      |> Enum.map(fn file ->
+        Task.async(fn ->
+          compile_file(file, :dry)
+        end)
+      end)
+      |> Enum.each(fn task ->
+        Task.await(task, :infinity)
+      end)
     end
   end
 

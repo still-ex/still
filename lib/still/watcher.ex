@@ -8,7 +8,7 @@ defmodule Still.Watcher do
   use GenServer
 
   alias Still.Compiler
-  alias Still.Compiler.{CompilationStage, Incremental}
+  alias Still.Compiler.{Incremental}
 
   import Still.Utils
 
@@ -73,7 +73,10 @@ defmodule Still.Watcher do
       file
       |> get_relative_input_path()
 
+    Incremental.Registry.get_or_create_file_process(file)
+    |> Incremental.Node.changed()
+
     Still.Compiler.ContentCache.clear(file)
-    CompilationStage.compile(file)
+    Still.Web.BrowserSubscriptions.notify()
   end
 end

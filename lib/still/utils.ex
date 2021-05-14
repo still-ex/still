@@ -4,6 +4,17 @@ defmodule Still.Utils do
   """
 
   alias Still.SourceFile
+  alias Still.Compiler.Incremental.{Node, Registry}
+
+  def compile_file(file) do
+    Registry.get_or_create_file_process(file)
+    |> Node.compile()
+  end
+
+  def compile_file(file, type) do
+    Registry.get_or_create_file_process(file)
+    |> Node.compile(type)
+  end
 
   @doc """
   Returns true if the given file exists in the input path. Returns false otherwise.

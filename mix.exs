@@ -61,6 +61,7 @@ defmodule Still.MixProject do
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:ex_doc, "~> 0.23", only: :dev, runtime: false},
+      {:mime, "~> 1.0"},
       {:ex_image_info, "~> 0.2.4"},
       {:file_system, "~> 0.2.10"},
       {:floki, "~> 0.29.0"},

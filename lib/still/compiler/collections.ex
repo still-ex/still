@@ -5,8 +5,6 @@ defmodule Still.Compiler.Collections do
 
   use GenServer
 
-  alias Still.Compiler.CompilationStage
-
   def start_link(_) do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
   end
@@ -23,14 +21,14 @@ defmodule Still.Compiler.Collections do
   future changes.
   """
   def get(collection, parent_file) do
-    GenServer.call(__MODULE__, {:get, collection, parent_file})
+    GenServer.call(__MODULE__, {:get, collection, parent_file}, :infinity)
   end
 
   @doc """
   Adds a file to its collections.
   """
   def add(file) do
-    GenServer.call(__MODULE__, {:add, file |> Map.from_struct()})
+    GenServer.call(__MODULE__, {:add, file |> Map.from_struct()}, :infinity)
   end
 
   @impl true
@@ -40,8 +38,6 @@ defmodule Still.Compiler.Collections do
 
   @impl true
   def handle_call({:add, file}, _, state) do
-    notify_subscribers(file, state)
-
     files = insert_file(file, state.files)
 
     {:reply, :ok, %{state | files: files}}
@@ -77,15 +73,5 @@ defmodule Still.Compiler.Collections do
     files
     |> Enum.filter(&(&1[:input_file] != file[:input_file]))
     |> Enum.concat([file])
-  end
-
-  defp notify_subscribers(file, state) do
-    file
-    |> Map.get(:metadata)
-    |> Map.get(:tag, [])
-    |> Enum.map(fn tag ->
-      Map.get(state.subscribers, tag, [])
-      |> CompilationStage.compile()
-    end)
   end
 end

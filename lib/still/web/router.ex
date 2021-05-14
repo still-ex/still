@@ -3,19 +3,20 @@ defmodule Still.Web.Router do
 
   use Plug.Router
   use Plug.Debugger
+
   require Logger
 
   import Still.Utils
 
   plug(Plug.Logger, log: :debug)
-  plug(Plug.Static, from: "_site", at: "/")
+  plug(:reload)
   plug(:match)
   plug(:dispatch)
 
   get "/" do
     conn
     |> put_resp_header("Content-Type", "text/html; charset=UTF-8")
-    |> send_file(Path.join(get_output_path(), "index.html"))
+    |> try_send_file(Path.join(get_output_path(), "index.html"))
     |> case do
       :error ->
         %{content: content} = Still.Compiler.File.DevLayout.wrap("")
@@ -27,24 +28,37 @@ defmodule Still.Web.Router do
   end
 
   get "*path" do
-    full_path = path |> Enum.join("/") |> get_output_path()
+    full_path =
+      path
+      |> Enum.join("/")
+      |> get_output_path()
 
-    with :error <- send_file(conn, "#{full_path}/index.html"),
-         :error <- send_file(conn, "#{full_path}.html") do
+    with :error <- try_send_file(conn, full_path),
+         :error <- try_send_file(conn, "#{full_path}/index.html"),
+         :error <- try_send_file(conn, "#{full_path}.html") do
       conn
       |> send_resp(404, "File not found")
     end
   end
 
-  defp send_file(conn, file) do
-    if File.exists?(file) do
+  defp try_send_file(conn, file) do
+    if File.exists?(file) and not File.dir?(file) do
+      Registry.dispatch(Still.Compiler.NodeRegistry, file, fn entries ->
+        for {pid, _} <- entries, do: apply(Still.Compiler.Incremental.Node, :compile, [pid])
+      end)
+
       conn
-      |> put_resp_header("Content-Type", "text/html; charset=UTF-8")
+      |> put_resp_header("content-type", MIME.from_path(file))
       |> send_file(200, file)
 
       :ok
     else
       :error
     end
+  end
+
+  def reload(conn, _) do
+    Still.Web.CodeReloader.reload()
+    conn
   end
 end
