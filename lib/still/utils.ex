@@ -11,9 +11,9 @@ defmodule Still.Utils do
     |> Node.compile()
   end
 
-  def compile_file(file, type) do
+  def dry_compile_file(file) do
     Registry.get_or_create_file_process(file)
-    |> Node.compile(type)
+    |> Node.dry_compile()
   end
 
   @doc """

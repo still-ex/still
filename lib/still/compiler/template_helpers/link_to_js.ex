@@ -30,7 +30,7 @@ defmodule Still.Compiler.TemplateHelpers.LinkToJS do
       |> Enum.join(" ")
 
     with pid when not is_nil(pid) <- Incremental.Registry.get_or_create_file_process(file),
-         %{output_file: output_file} <- Incremental.Node.compile(pid, :dry) do
+         %{output_file: output_file} <- Incremental.Node.dry_compile(pid) do
       """
       <script #{link_opts} src=#{UrlFor.render(output_file)}></script>
       """

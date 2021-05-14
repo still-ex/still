@@ -39,23 +39,18 @@ defmodule Still.Compiler.TemplateHelpers do
   `include/3` is invoked, when the target `file` changes. This behaviour
   can be disabled by passing the `:subscribe` option as `false`.
   """
-  def include(env, file, metadata \\ %{}, opts \\ [])
+  def include(env, file, metadata \\ %{})
 
-  def include(env, file, metadata, opts) when is_list(metadata) do
-    include(env, file, metadata |> Enum.into(%{}), opts)
+  def include(env, file, metadata) when is_list(metadata) do
+    include(env, file, metadata |> Enum.into(%{}))
   end
 
-  def include(env, file, metadata, opts) do
+  def include(env, file, metadata) do
     ensure_file_exists!(file)
 
     with pid when not is_nil(pid) <- Incremental.Registry.get_or_create_file_process(file),
-         #  subscriber <- include_subscriber(env, opts),
          metadata <- Map.put(metadata, :dependency_chain, env[:dependency_chain] || []),
          %SourceFile{content: content} <- Incremental.Node.render(pid, metadata, nil) do
-      # if subscriber do
-      #   Incremental.Node.add_subscription(self(), file)
-      # end
-
       content
     else
       %PreprocessorError{} = e ->
@@ -126,14 +121,6 @@ defmodule Still.Compiler.TemplateHelpers do
       truncated
     end
   end
-
-  # defp include_subscriber(env, opts) do
-  #   if Keyword.get(opts, :subscribe, true) do
-  #     env[:input_file]
-  #   else
-  #     nil
-  #   end
-  # end
 
   defp ensure_file_exists!(file) do
     if not input_file_exists?(file) do

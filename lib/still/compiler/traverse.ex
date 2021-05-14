@@ -13,14 +13,7 @@ defmodule Still.Compiler.Traverse do
          _ <- File.rmdir(get_output_path()),
          :ok <- File.mkdir_p(get_output_path()) do
       compilable_files()
-      |> Enum.map(fn file ->
-        Task.async(fn ->
-          compile_file(file, :dry)
-        end)
-      end)
-      |> Enum.each(fn task ->
-        Task.await(task, :infinity)
-      end)
+      |> compile_files()
     end
   end
 
@@ -42,6 +35,18 @@ defmodule Still.Compiler.Traverse do
         []
     end
     |> List.flatten()
+  end
+
+  def compile_files(files) do
+    files
+    |> Enum.map(fn file ->
+      Task.async(fn ->
+        dry_compile_file(file)
+      end)
+    end)
+    |> Enum.each(fn task ->
+      Task.await(task, :infinity)
+    end)
   end
 
   defp partial?(path), do: String.starts_with?(path, "_")

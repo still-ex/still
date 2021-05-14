@@ -48,8 +48,8 @@ defmodule Still.Compiler.Incremental.Node do
     GenServer.call(pid, {:compile, :real}, compilation_timeout())
   end
 
-  def compile(pid, type) do
-    GenServer.call(pid, {:compile, type}, compilation_timeout())
+  def dry_compile(pid) do
+    GenServer.call(pid, {:compile, :dry}, compilation_timeout())
   end
 
   @doc """
@@ -63,22 +63,6 @@ defmodule Still.Compiler.Incremental.Node do
   def render(pid, data, subscriber \\ nil) do
     GenServer.call(pid, {:render, data, subscriber}, compilation_timeout())
   end
-
-  @doc """
-  Adds a file to the list of files this process is subscribed to.
-  """
-
-  # def add_subscription(pid, file) do
-  #   GenServer.cast(pid, {:add_subscription, file})
-  # end
-
-  @doc """
-  Removes a file from the list of files subscribing to this process.
-  """
-
-  # def remove_subscriber(pid, file) do
-  #   GenServer.cast(pid, {:remove_subscriber, file})
-  # end
 
   @doc """
   Returns the compilation timeout defined in the config.
@@ -127,13 +111,11 @@ defmodule Still.Compiler.Incremental.Node do
             {__MODULE__, :compile}
           )
 
-          # {:reply, source_file, %{state | cached_source_file: source_file}}
           Enum.each(froms, &GenServer.reply(&1, source_file))
 
-          {:noreply, state}
+          {:noreply, %{state | cached_source_file: source_file}}
 
         other ->
-          # {:reply, other, state}
           Enum.each(froms, &GenServer.reply(&1, other))
           {:noreply, state}
       end
@@ -141,7 +123,6 @@ defmodule Still.Compiler.Incremental.Node do
       _, %PreprocessorError{} = error ->
         handle_compile_error(error)
 
-        # {:reply, :ok, state}
         Enum.each(froms, &GenServer.reply(&1, :ok))
         {:noreply, state}
 
@@ -155,18 +136,9 @@ defmodule Still.Compiler.Incremental.Node do
 
         handle_compile_error(error)
 
-        # {:reply, :ok, state}
         Enum.each(froms, &GenServer.reply(&1, :ok))
 
         {:noreply, state}
-    end
-  end
-
-  defp all_waiting(acc) do
-    receive do
-      {:"$gen_call", from, {:compile, _}} -> all_waiting([from | acc])
-    after
-      0 -> acc
     end
   end
 
@@ -190,17 +162,13 @@ defmodule Still.Compiler.Incremental.Node do
     {:noreply, %{state | cached_source_file: nil}}
   end
 
-  # def handle_cast({:remove_subscriber, file}, state) do
-  #   subscribers = Enum.reject(state.subscribers, &(&1 == file))
-
-  #   {:noreply, %{state | subscribers: subscribers}}
-  # end
-
-  # def handle_cast({:add_subscription, file}, state) do
-  #   subscriptions = [file | state.subscriptions] |> Enum.uniq()
-
-  #   {:noreply, %{state | subscriptions: subscriptions}}
-  # end
+  defp all_waiting(acc) do
+    receive do
+      {:"$gen_call", from, {:compile, _}} -> all_waiting([from | acc])
+    after
+      0 -> acc
+    end
+  end
 
   defp do_render(%{dependency_chain: dependency_chain} = data, state) do
     source_file =
