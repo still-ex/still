@@ -1,6 +1,8 @@
 defmodule Still.Web.Router do
   @moduledoc false
 
+  alias Still.Compiler.Incremental.OutputFileRegistry
+
   use Plug.Router
   use Plug.Debugger
 
@@ -43,9 +45,7 @@ defmodule Still.Web.Router do
 
   defp try_send_file(conn, file) do
     if File.exists?(file) and not File.dir?(file) do
-      Registry.dispatch(Still.Compiler.NodeRegistry, file, fn entries ->
-        for {pid, _} <- entries, do: apply(Still.Compiler.Incremental.Node, :compile, [pid])
-      end)
+      OutputFileRegistry.recompile(file)
 
       conn
       |> put_resp_header("content-type", MIME.from_path(file))

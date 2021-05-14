@@ -12,7 +12,7 @@ defmodule Still.Compiler.Supervisor do
   @impl true
   def init(_) do
     children = [
-      {Registry, keys: :unique, name: Still.Compiler.NodeRegistry},
+      {Registry, keys: :unique, name: Compiler.Incremental.OutputFileRegistry},
       Compiler.Collections,
       Compiler.Incremental.Registry,
       Compiler.ErrorCache

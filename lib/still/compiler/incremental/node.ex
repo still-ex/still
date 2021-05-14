@@ -26,7 +26,7 @@ defmodule Still.Compiler.Incremental.Node do
 
   alias __MODULE__.Compile
   alias Still.{Compiler, SourceFile}
-  alias Still.Compiler.{ErrorCache, PreprocessorError}
+  alias Still.Compiler.{ErrorCache, PreprocessorError, Incremental.OutputFileRegistry}
 
   require Logger
 
@@ -105,11 +105,7 @@ defmodule Still.Compiler.Incremental.Node do
         {:ok, %{output_file: output_file} = source_file} ->
           ErrorCache.set({:ok, source_file})
 
-          Registry.register(
-            Still.Compiler.NodeRegistry,
-            output_file |> Still.Utils.get_output_path(),
-            {__MODULE__, :compile}
-          )
+          OutputFileRegistry.register(output_file)
 
           Enum.each(froms, &GenServer.reply(&1, source_file))
 

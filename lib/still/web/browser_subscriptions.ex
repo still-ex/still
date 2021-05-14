@@ -26,7 +26,6 @@ defmodule Still.Web.BrowserSubscriptions do
 
   @impl true
   def init(_) do
-    # Process.send_after(self(), :subscribe, 100)
     {:ok, %{subscribers: [], timer_ref: nil}}
   end
 
@@ -52,18 +51,4 @@ defmodule Still.Web.BrowserSubscriptions do
       100 -> :ok
     end
   end
-
-  # @impl true
-  # def handle_info(:bus_empty, state) do
-  #   state.subscribers
-  #   |> Enum.each(&send(&1, Jason.encode!(%{type: "reload"})))
-
-  #   {:noreply, state}
-  # end
-
-  # @impl true
-  # def handle_info(:subscribe, state) do
-  #   CompilationStage.subscribe()
-  #   {:noreply, state}
-  # end
 end
