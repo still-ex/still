@@ -28,19 +28,6 @@ defmodule Still.Compiler.Incremental.NodeTest do
 
       assert File.exists?(get_output_path("about.html"))
     end
-
-    test "notifies subscribers" do
-      file_pid = Registry.get_or_create_file_process("about.slime")
-      :erlang.trace(file_pid, true, [:receive])
-
-      other_pid = Registry.get_or_create_file_process("_includes/header.slime")
-
-      Node.render(other_pid, %{dependency_chain: ["about.slime"]}, "about.slime")
-
-      Node.compile(other_pid)
-
-      assert_receive {:trace, ^file_pid, :receive, {:"$gen_call", _, :compile}}, 500
-    end
   end
 
   describe "render" do

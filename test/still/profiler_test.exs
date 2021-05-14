@@ -8,7 +8,8 @@ defmodule Still.ProfilerTest do
     test "saves the source file and the delta" do
       source_file = source_file_fixture()
 
-      {:noreply, state} = Profiler.handle_cast({:register, source_file, 100}, %{stats: %{}})
+      {:noreply, state} =
+        Profiler.handle_cast({:register, source_file, 100}, %{timer: nil, stats: %{}})
 
       assert [
                %{
@@ -23,7 +24,9 @@ defmodule Still.ProfilerTest do
     test "saves the number of times a file is rendered" do
       source_file = source_file_fixture()
 
-      {:noreply, state} = Profiler.handle_cast({:register, source_file, 100}, %{stats: %{}})
+      {:noreply, state} =
+        Profiler.handle_cast({:register, source_file, 100}, %{timer: nil, stats: %{}})
+
       {:noreply, state} = Profiler.handle_cast({:register, source_file, 100}, state)
 
       assert [
@@ -40,7 +43,9 @@ defmodule Still.ProfilerTest do
       source_file_1 = source_file_fixture(input_file: "file1.md")
       source_file_2 = source_file_fixture(input_file: "file2.md")
 
-      {:noreply, state} = Profiler.handle_cast({:register, source_file_1, 100}, %{stats: %{}})
+      {:noreply, state} =
+        Profiler.handle_cast({:register, source_file_1, 100}, %{timer: nil, stats: %{}})
+
       {:noreply, state} = Profiler.handle_cast({:register, source_file_2, 100}, state)
 
       assert [_, _] = Map.values(state.stats)
@@ -50,7 +55,9 @@ defmodule Still.ProfilerTest do
       source_file_1 = source_file_fixture(input_file: "file.md", metadata: %{a: 1})
       source_file_2 = source_file_fixture(input_file: "file.md", metadata: %{b: 1})
 
-      {:noreply, state} = Profiler.handle_cast({:register, source_file_1, 100}, %{stats: %{}})
+      {:noreply, state} =
+        Profiler.handle_cast({:register, source_file_1, 100}, %{timer: nil, stats: %{}})
+
       {:noreply, state} = Profiler.handle_cast({:register, source_file_2, 100}, state)
 
       assert [_, _] = Map.values(state.stats)
@@ -60,7 +67,9 @@ defmodule Still.ProfilerTest do
       source_file_1 = source_file_fixture(input_file: "file.md", metadata: %{a: 1})
       source_file_2 = source_file_fixture(input_file: "file.md", metadata: %{"a" => 1})
 
-      {:noreply, state} = Profiler.handle_cast({:register, source_file_1, 100}, %{stats: %{}})
+      {:noreply, state} =
+        Profiler.handle_cast({:register, source_file_1, 100}, %{timer: nil, stats: %{}})
+
       {:noreply, state} = Profiler.handle_cast({:register, source_file_2, 100}, state)
 
       assert [_] = Map.values(state.stats)
