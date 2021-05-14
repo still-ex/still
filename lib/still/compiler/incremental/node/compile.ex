@@ -9,10 +9,7 @@ defmodule Still.Compiler.Incremental.Node.Compile do
 
   alias Still.Compiler
 
-  alias Still.Compiler.{
-    Incremental,
-    PassThroughCopy
-  }
+  alias Still.Compiler.PassThroughCopy
 
   def run(state) do
     case try_pass_through_copy(state) do

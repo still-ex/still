@@ -13,14 +13,9 @@ defmodule Mix.Tasks.Still.Compile do
     Application.put_env(:still, :url_fingerprinting, true)
     Application.put_env(:still, :dev_layout, false)
 
-    Still.Compiler.Traverse.run()
-
-    receive do
-      :bus_empty -> :ok
-    after
-      :infinity -> :error
-    end
+    Still.Compiler.Compile.run()
   end
 
+  @spec config_key :: :compilation_task
   def config_key, do: @config_key
 end

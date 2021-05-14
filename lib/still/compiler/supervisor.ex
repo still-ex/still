@@ -15,7 +15,8 @@ defmodule Still.Compiler.Supervisor do
       {Registry, keys: :unique, name: Compiler.Incremental.OutputFileRegistry},
       Compiler.Collections,
       Compiler.Incremental.Registry,
-      Compiler.ErrorCache
+      Compiler.ErrorCache,
+      Compiler.Compile
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

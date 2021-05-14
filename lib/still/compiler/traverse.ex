@@ -7,8 +7,6 @@ defmodule Still.Compiler.Traverse do
   import Still.Utils
 
   def run do
-    Still.Compiler.Collections.reset()
-
     with true <- File.dir?(get_input_path()),
          _ <- File.rmdir(get_output_path()),
          :ok <- File.mkdir_p(get_output_path()) do
@@ -41,7 +39,7 @@ defmodule Still.Compiler.Traverse do
     files
     |> Enum.map(fn file ->
       Task.async(fn ->
-        dry_compile_file(file)
+        compile_file(file)
       end)
     end)
     |> Enum.each(fn task ->
