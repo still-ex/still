@@ -5,7 +5,6 @@ defmodule Mix.Tasks.Still.Compile do
 
   @doc false
   def run(_) do
-    # TO BE FIXED
     Mix.Task.run("compile")
     Mix.Task.run("app.start")
 
@@ -16,6 +15,5 @@ defmodule Mix.Tasks.Still.Compile do
     Still.Compiler.Compile.run()
   end
 
-  @spec config_key :: :compilation_task
   def config_key, do: @config_key
 end
