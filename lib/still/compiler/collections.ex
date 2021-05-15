@@ -1,6 +1,6 @@
 defmodule Still.Compiler.Collections do
   @moduledoc """
-  Keeps track of all the collections within a compilation cycle.
+  Keeps track of collections.
   """
 
   use GenServer
@@ -10,7 +10,7 @@ defmodule Still.Compiler.Collections do
   end
 
   @doc """
-  Resets the saved collections.
+  Resets the collections.
   """
   def reset do
     GenServer.call(__MODULE__, :reset)
@@ -20,8 +20,8 @@ defmodule Still.Compiler.Collections do
   Returns the collection with a given name, subscribing caller's file to any
   future changes.
   """
-  def get(collection, parent_file) do
-    GenServer.call(__MODULE__, {:get, collection, parent_file}, :infinity)
+  def get(collection) do
+    GenServer.call(__MODULE__, {:get, collection}, :infinity)
   end
 
   @doc """
@@ -33,7 +33,7 @@ defmodule Still.Compiler.Collections do
 
   @impl true
   def init(_) do
-    {:ok, %{files: [], subscribers: %{}}}
+    {:ok, %{files: []}}
   end
 
   @impl true
@@ -44,29 +44,18 @@ defmodule Still.Compiler.Collections do
   end
 
   def handle_call(:reset, _from, _state) do
-    {:reply, :ok, %{files: [], subscribers: %{}}}
+    {:reply, :ok, %{files: []}}
   end
 
-  def handle_call({:get, collection, parent_file}, _from, state) do
+  def handle_call({:get, collection}, _from, state) do
     found = find_files(collection, state.files)
 
-    subscribers = insert_subscriber(collection, parent_file, state.subscribers)
-
-    {:reply, found, %{state | subscribers: subscribers}}
+    {:reply, found, state}
   end
 
   defp find_files(collection, files) do
     files
     |> Enum.filter(&Enum.member?(Map.get(&1[:metadata], :tag, []), collection))
-  end
-
-  defp insert_subscriber(collection, new_subscriber, subscribers) do
-    collection_subscribers =
-      Map.get(subscribers, collection, [])
-      |> Enum.concat([new_subscriber])
-      |> Enum.uniq()
-
-    Map.put(subscribers, collection, collection_subscribers)
   end
 
   defp insert_file(file, files) do

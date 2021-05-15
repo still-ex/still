@@ -18,6 +18,9 @@ defmodule Still.Web.BrowserSubscriptions do
     GenServer.cast(__MODULE__, {:add, pid})
   end
 
+  @doc """
+  Sends a reload message to the subscriptions.
+  """
   def notify() do
     GenServer.cast(__MODULE__, :notify)
   end

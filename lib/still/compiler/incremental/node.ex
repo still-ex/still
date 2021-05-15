@@ -102,10 +102,10 @@ defmodule Still.Compiler.Incremental.Node do
 
     try do
       case Compile.run(state) do
-        {:ok, %{output_file: output_file} = source_file} ->
+        {:ok, %{output_file: output_file, input_file: input_file} = source_file} ->
           ErrorCache.set({:ok, source_file})
 
-          OutputFileRegistry.register(output_file)
+          OutputFileRegistry.register(input_file, output_file)
 
           Enum.each(froms, &GenServer.reply(&1, source_file))
 

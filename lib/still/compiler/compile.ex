@@ -1,4 +1,8 @@
 defmodule Still.Compiler.Compile do
+  @moduledoc """
+  Compiles the site.
+  """
+
   use GenServer
 
   def start_link(_) do

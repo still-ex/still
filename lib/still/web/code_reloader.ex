@@ -1,6 +1,8 @@
 defmodule Still.Web.CodeReloader do
   @moduledoc """
-  Based on https://github.com/phoenixframework/phoenix/blob/431c51e20d8840fa1f851160b659f78c6bb484c6/lib/phoenix/code_reloader/server.ex
+  Handles automatic code reloading.
+
+  Inspired by [Phoenix's](https://github.com/phoenixframework/phoenix/blob/431c51e20d8840fa1f851160b659f78c6bb484c6/lib/phoenix/code_reloader/server.ex).
   """
   use GenServer
 
@@ -10,6 +12,9 @@ defmodule Still.Web.CodeReloader do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
+  @doc """
+  Reloads the code.
+  """
   def reload do
     GenServer.call(__MODULE__, :reload)
   end

@@ -33,11 +33,7 @@ defmodule Still.Compiler.TemplateHelpers do
   defdelegate link_to_js(path, opts \\ []), to: LinkToJS, as: :render
 
   @doc """
-  Renders a file and includes it in the page, using the variables defined in `metadata`.
-
-  By default, it creates a subscription to recompile the file in which
-  `include/3` is invoked, when the target `file` changes. This behaviour
-  can be disabled by passing the `:subscribe` option as `false`.
+  Renders a file in the page using the variables defined in `metadata`.
   """
   def include(env, file, metadata \\ %{})
 
@@ -85,8 +81,8 @@ defmodule Still.Compiler.TemplateHelpers do
   @doc """
   Returns the collections for the current file.
   """
-  def get_collections(env, collection) do
-    Still.Compiler.Collections.get(collection, env[:input_file])
+  def get_collections(_env, collection) do
+    Still.Compiler.Collections.get(collection)
   end
 
   @doc """

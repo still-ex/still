@@ -15,9 +15,6 @@ defmodule Still.Compiler.TemplateHelpers.LinkToCSS do
   Generates a `link` HTML tag to the target CSS file.
 
   All options are converted to the `attr=value` format.
-
-  This file must exist and to ensure that, it **will be compiled** outside
-  `Still.Compiler.CompilationStage`.
   """
   @spec render(String.t(), list(any())) :: String.t()
   def render(file, opts) do

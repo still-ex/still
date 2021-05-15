@@ -12,7 +12,7 @@ defmodule Still.Compiler.CollectionsTest do
 
       Collections.add(file)
 
-      assert Collections.get("post", "file") |> length() == 1
+      assert Collections.get("post") |> length() == 1
     end
   end
 end

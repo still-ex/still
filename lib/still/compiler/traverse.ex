@@ -1,11 +1,13 @@
 defmodule Still.Compiler.Traverse do
   @moduledoc """
-  First step in the compilation stage. Traverses the input directory, adding any
-  files or folders to `Still.Compiler.Incremental.Registry`.
+  Traverses the input directory, compiling every file.
   """
 
   import Still.Utils
 
+  @doc """
+  Compiles every file in the input folder.
+  """
   def run do
     with true <- File.dir?(get_input_path()),
          _ <- File.rmdir(get_output_path()),
@@ -15,7 +17,7 @@ defmodule Still.Compiler.Traverse do
     end
   end
 
-  def compilable_files(rel_path \\ "") do
+  defp compilable_files(rel_path \\ "") do
     path = Path.join(get_input_path(), rel_path)
 
     cond do
@@ -35,7 +37,7 @@ defmodule Still.Compiler.Traverse do
     |> List.flatten()
   end
 
-  def compile_files(files) do
+  defp compile_files(files) do
     files
     |> Enum.map(fn file ->
       Task.async(fn ->
