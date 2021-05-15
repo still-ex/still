@@ -33,6 +33,7 @@ defmodule Still.Web.Router do
     full_path =
       path
       |> Enum.join("/")
+      |> String.replace_prefix(get_base_url(), "")
       |> get_output_path()
 
     with :error <- try_send_file(conn, full_path),

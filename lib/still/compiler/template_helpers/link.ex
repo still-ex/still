@@ -56,7 +56,7 @@ defmodule Still.Compiler.TemplateHelpers.Link do
   end
 
   defp add_base_url("/" <> path), do: add_base_url(path)
-  defp add_base_url(path), do: get_base_url() <> "/" <> path
+  defp add_base_url(path), do: "/#{get_base_url()}/#{path}"
 
   defp add_absolute_path_opts(opts) do
     opts

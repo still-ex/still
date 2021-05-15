@@ -2,7 +2,7 @@
 seo_title: Still
 description: Still is a composable static site generator for Elixir.
 keywords: elixir, static, site, generator, open-source, opensource, static-site
-url: <%= Still.Utils.config!(:base_url) %>
+url: https://stillstatic.io
 banner_url: <%= url_for("../images/banner.png") %>
 ---
 

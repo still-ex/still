@@ -116,7 +116,7 @@ defmodule Still.Utils do
   Returns the site's base URL.
   """
   def get_base_url do
-    config!(:base_url)
+    config(:base_url, "")
   end
 
   @doc """
