@@ -1,4 +1,4 @@
-defmodule Still.Compiler.Incremental.OutputFileRegistry do
+defmodule Still.Compiler.Incremental.OutputToInputFileRegistry do
   @moduledoc """
   Keeps track of which input file generates an output file.
   This is used to compile a file when it's requested by the browser.
