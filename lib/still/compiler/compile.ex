@@ -29,6 +29,10 @@ defmodule Still.Compiler.Compile do
   end
 
   def handle_call(:run, _from, state) do
+    # Traverse has to run twice because there's no guarantee that the collections
+    # available to each file are correct on the first run. Therefore the first run
+    # is to collect the relevant metadata, and the second run is to compile the
+    # final version of each file.
     Still.Compiler.Traverse.run()
     Still.Compiler.Traverse.run()
 
