@@ -21,6 +21,11 @@ defmodule Still.Preprocessor.Image do
 
     config :still, :image_adapter, Still.Preprocessor.Image.Imageflow
 
+  The default quality value is 90. To change it, set the `:image_quality` key
+  in the config:
+
+    config :still, :image_quality, 80
+
   For more information see [Mogrify](https://github.com/route/mogrify)'s
   options or [ImageMagick's
   docs](https://imagemagick.org/script/command-line-options.php) information.
