@@ -27,7 +27,7 @@ defmodule Still.Compiler.TemplateHelpers.LinkToJS do
       end)
       |> Enum.join(" ")
 
-    case dry_compile_file(file) do
+    case compile_file(file, use_cache: true) do
       %{output_file: output_file} ->
         """
         <script #{link_opts} src=#{UrlFor.render(output_file)}></script>

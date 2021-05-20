@@ -26,7 +26,7 @@ defmodule Still.Compiler.TemplateHelpers.LinkToCSS do
       end)
       |> Enum.join(" ")
 
-    case dry_compile_file(file) do
+    case compile_file(file, use_cache: true) do
       %{output_file: output_file} ->
         """
         <link rel="stylesheet" #{link_opts} href=#{UrlFor.render(output_file)} />

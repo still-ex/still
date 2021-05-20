@@ -38,12 +38,8 @@ defmodule Still.Compiler.Incremental.Node do
   For difference between compilation and renderisation see
   `Still.Compiler.File`.
   """
-  def compile(pid) do
-    GenServer.call(pid, {:compile, :real}, compilation_timeout())
-  end
-
-  def dry_compile(pid) do
-    GenServer.call(pid, {:compile, :dry}, compilation_timeout())
+  def compile(pid, opts \\ []) do
+    GenServer.call(pid, {:compile, opts}, compilation_timeout())
   end
 
   @doc """
@@ -86,7 +82,7 @@ defmodule Still.Compiler.Incremental.Node do
   end
 
   @impl true
-  def handle_call({:compile, :dry}, _from, %{cached_source_file: source_file} = state)
+  def handle_call({:compile, use_cache: true}, _from, %{cached_source_file: source_file} = state)
       when not is_nil(source_file) do
     {:reply, source_file, state}
   end
