@@ -31,7 +31,6 @@ defmodule Still.Preprocessor do
   """
 
   alias Still.Compiler.PreprocessorError
-  alias Still.Profiler
   alias Still.SourceFile
 
   require Logger
@@ -51,7 +50,8 @@ defmodule Still.Preprocessor do
     Save,
     AddLayout,
     AddContent,
-    Image
+    Image,
+    Profiler
   }
 
   @default_preprocessors %{
@@ -79,12 +79,8 @@ defmodule Still.Preprocessor do
     file
   end
 
-  def run(file, preprocessors) do
-    if should_profile?(file) do
-      run_with_profiler(file, preprocessors)
-    else
-      do_run(file, preprocessors)
-    end
+  def run(file, [preprocessor | next_preprocessors]) do
+    preprocessor.run(file, next_preprocessors)
   end
 
   @doc """
@@ -99,23 +95,8 @@ defmodule Still.Preprocessor do
         []
 
       {_, preprocessors} ->
-        preprocessors
+        [Profiler | preprocessors]
     end
-  end
-
-  defp run_with_profiler(file, preprocessors) do
-    start_time = Profiler.timestamp()
-
-    response = do_run(file, preprocessors)
-
-    end_time = Profiler.timestamp()
-    Profiler.register(response, end_time - start_time)
-
-    response
-  end
-
-  defp do_run(file, [preprocessor | next_preprocessors]) do
-    preprocessor.run(file, next_preprocessors)
   end
 
   defp preprocessors do
@@ -125,10 +106,6 @@ defmodule Still.Preprocessor do
 
   defp user_defined_preprocessors do
     config(:preprocessors, %{})
-  end
-
-  defp should_profile?(%SourceFile{profilable: profilable}) do
-    profilable and Application.get_env(:still, :profiler, false)
   end
 
   defp find_preprocessor_for_file(preprocessors, file) do
