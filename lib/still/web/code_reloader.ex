@@ -2,7 +2,7 @@ defmodule Still.Web.CodeReloader do
   @moduledoc """
   Handles automatic code reloading.
 
-  Inspired by [Phoenix's](https://github.com/phoenixframework/phoenix/blob/431c51e20d8840fa1f851160b659f78c6bb484c6/lib/phoenix/code_reloader/server.ex).
+  Taken from [Phoenix](https://github.com/phoenixframework/phoenix/blob/431c51e20d8840fa1f851160b659f78c6bb484c6/lib/phoenix/code_reloader/server.ex).
   """
   use GenServer
 
