@@ -50,8 +50,7 @@ defmodule Still.Preprocessor do
     Save,
     AddLayout,
     AddContent,
-    Image
-    Temple,
+    Image,
     Profiler
   }
 
