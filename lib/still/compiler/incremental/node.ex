@@ -188,7 +188,11 @@ defmodule Still.Compiler.Incremental.Node do
         payload: payload,
         kind: kind,
         stacktrace: __STACKTRACE__,
-        source_file: %Still.SourceFile{input_file: state.file, run_type: :render}
+        source_file: %Still.SourceFile{
+          input_file: state.file,
+          run_type: :render,
+          dependency_chain: [state.file | dependency_chain]
+        }
       }
 
       {:reply, error, state}
@@ -196,10 +200,11 @@ defmodule Still.Compiler.Incremental.Node do
 
   defp handle_compile_error(error) do
     Logger.error(error)
-    ErrorCache.set({:error, error})
 
     if Still.Utils.compilation_task?() do
       System.stop(1)
+    else
+      ErrorCache.set({:error, error})
     end
   end
 end
