@@ -1,12 +1,6 @@
 defmodule Still.Compiler.Incremental.Node do
   @moduledoc """
-  An incremental node represents a file, or folder, that is processed
-  individually.
-
-  Each file has a list of subscriptions and subcribers. The subscriptions are
-  the files included by the current file. The subscribers are the files that the
-  current file includes. When the current file changes, it notifies the
-  subscribers and updates the subscriptions.
+  An incremental node represents a file that is processed individually.
 
   A file can be compiled or rendered:
 
@@ -26,7 +20,7 @@ defmodule Still.Compiler.Incremental.Node do
 
   alias __MODULE__.Compile
   alias Still.{Compiler, SourceFile}
-  alias Still.Compiler.{ErrorCache, PreprocessorError, Incremental.OutputToInputFileRegistry}
+  alias Still.Compiler.{ErrorCache, Incremental.OutputToInputFileRegistry, PreprocessorError}
 
   require Logger
 
@@ -98,21 +92,17 @@ defmodule Still.Compiler.Incremental.Node do
   end
 
   def handle_call({:compile, _}, from, state) do
-    froms = all_waiting([from])
+    froms = all_waiting_compile([from])
 
     try do
-      case Compile.run(state) do
-        {:ok, %{output_file: output_file, input_file: input_file} = source_file} ->
-          ErrorCache.set({:ok, source_file})
+      result = do_compile(state)
+      Enum.each(froms, &GenServer.reply(&1, result))
 
-          OutputToInputFileRegistry.register(input_file, output_file)
-
-          Enum.each(froms, &GenServer.reply(&1, source_file))
-
+      case result do
+        %SourceFile{} = source_file ->
           {:noreply, %{state | cached_source_file: source_file}}
 
-        other ->
-          Enum.each(froms, &GenServer.reply(&1, other))
+        _ ->
           {:noreply, state}
       end
     catch
@@ -120,6 +110,7 @@ defmodule Still.Compiler.Incremental.Node do
         handle_compile_error(error)
 
         Enum.each(froms, &GenServer.reply(&1, :ok))
+
         {:noreply, state}
 
       kind, payload ->
@@ -158,11 +149,15 @@ defmodule Still.Compiler.Incremental.Node do
     {:noreply, %{state | cached_source_file: nil}}
   end
 
-  defp all_waiting(acc) do
-    receive do
-      {:"$gen_call", from, {:compile, _}} -> all_waiting([from | acc])
-    after
-      0 -> acc
+  defp do_compile(state) do
+    case Compile.run(state) do
+      {:ok, %{output_file: output_file, input_file: input_file} = source_file} ->
+        ErrorCache.set({:ok, source_file})
+        OutputToInputFileRegistry.register(input_file, output_file)
+        source_file
+
+      other ->
+        other
     end
   end
 
@@ -204,6 +199,14 @@ defmodule Still.Compiler.Incremental.Node do
       System.stop(1)
     else
       ErrorCache.set({:error, error})
+    end
+  end
+
+  defp all_waiting_compile(acc) do
+    receive do
+      {:"$gen_call", from, {:compile, _}} -> all_waiting_compile([from | acc])
+    after
+      0 -> acc
     end
   end
 end

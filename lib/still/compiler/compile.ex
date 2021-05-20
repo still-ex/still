@@ -1,6 +1,7 @@
 defmodule Still.Compiler.Compile do
   @moduledoc """
-  Compiles the site.
+  Compiles the site by running the #{Still.Compiler.Traverse} twice.
+  The second run is to ensure that each file is recompiled using the correct set of files in each collection.
   """
 
   use GenServer
@@ -9,10 +10,16 @@ defmodule Still.Compiler.Compile do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
+  @doc """
+  Compiles the site.
+  """
   def run do
     GenServer.call(__MODULE__, :run, :infinity)
   end
 
+  @doc """
+  Registers a callback to be called when the compilation process finishes.
+  """
   def on_compile(fun) do
     GenServer.cast(__MODULE__, {:on_compile, fun})
   end

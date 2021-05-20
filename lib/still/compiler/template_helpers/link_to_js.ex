@@ -6,10 +6,11 @@ defmodule Still.Compiler.TemplateHelpers.LinkToJS do
   `Still.Compiler.CompilationStage`.
   """
 
-  alias Still.Compiler.Incremental
   alias Still.Compiler.TemplateHelpers.UrlFor
 
   require Logger
+
+  import Still.Utils
 
   @doc """
   Generates a `script` HTML tag to the target JS file.
@@ -26,12 +27,12 @@ defmodule Still.Compiler.TemplateHelpers.LinkToJS do
       end)
       |> Enum.join(" ")
 
-    with pid when not is_nil(pid) <- Incremental.Registry.get_or_create_file_process(file),
-         %{output_file: output_file} <- Incremental.Node.dry_compile(pid) do
-      """
-      <script #{link_opts} src=#{UrlFor.render(output_file)}></script>
-      """
-    else
+    case dry_compile_file(file) do
+      %{output_file: output_file} ->
+        """
+        <script #{link_opts} src=#{UrlFor.render(output_file)}></script>
+        """
+
       _ ->
         Logger.error("File process not found for #{file}")
         ""

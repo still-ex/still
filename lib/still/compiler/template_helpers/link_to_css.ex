@@ -6,8 +6,9 @@ defmodule Still.Compiler.TemplateHelpers.LinkToCSS do
   `Still.Compiler.CompilationStage`.
   """
 
-  alias Still.Compiler.Incremental
   alias Still.Compiler.TemplateHelpers.UrlFor
+
+  import Still.Utils
 
   require Logger
 
@@ -25,12 +26,12 @@ defmodule Still.Compiler.TemplateHelpers.LinkToCSS do
       end)
       |> Enum.join(" ")
 
-    with pid when not is_nil(pid) <- Incremental.Registry.get_or_create_file_process(file),
-         %{output_file: output_file} <- Incremental.Node.dry_compile(pid) do
-      """
-      <link rel="stylesheet" #{link_opts} href=#{UrlFor.render(output_file)} />
-      """
-    else
+    case dry_compile_file(file) do
+      %{output_file: output_file} ->
+        """
+        <link rel="stylesheet" #{link_opts} href=#{UrlFor.render(output_file)} />
+        """
+
       _ ->
         Logger.error("File process not found for #{file}")
         ""
