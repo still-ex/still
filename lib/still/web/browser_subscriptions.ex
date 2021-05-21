@@ -21,7 +21,7 @@ defmodule Still.Web.BrowserSubscriptions do
   @doc """
   Sends a reload message to the subscriptions.
   """
-  def notify() do
+  def notify do
     GenServer.cast(__MODULE__, :notify)
   end
 
@@ -45,7 +45,7 @@ defmodule Still.Web.BrowserSubscriptions do
     {:noreply, state}
   end
 
-  defp all_waiting() do
+  defp all_waiting do
     receive do
       {:"$gen_cast", :notify} -> all_waiting()
     after

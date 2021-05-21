@@ -142,7 +142,8 @@ defmodule Still.Utils do
   Recursively removes all files from the site's output directory.
   """
   def clean_output_dir do
-    File.rm_rf(Path.join(get_output_path(), "*"))
+    File.rm_rf(get_output_path())
+    File.mkdir!(get_output_path())
   end
 
   @doc """
@@ -150,7 +151,8 @@ defmodule Still.Utils do
   directory.
   """
   def clean_output_dir(path) do
-    File.rm_rf(Path.join(path, "*"))
+    File.rm_rf(get_output_path(path))
+    File.mkdir!(get_output_path(path))
   end
 
   @doc """

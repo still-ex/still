@@ -1,7 +1,11 @@
+alias Still.Compiler
 alias Still.Compiler.{Incremental, Collections}
 
 {:ok, _} = Application.ensure_all_started(:timex)
 {:ok, _} = Application.ensure_all_started(:cachex)
+
+{:ok, _pid} =
+  Registry.start_link(keys: :unique, name: Compiler.Incremental.OutputToInputFileRegistry)
 
 {:ok, _pid} = Incremental.Registry.start_link(%{})
 {:ok, _pid} = Collections.start_link(%{})

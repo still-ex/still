@@ -8,7 +8,7 @@ defmodule Still.Watcher do
   use GenServer
 
   alias Still.Compiler
-  alias Still.Compiler.{Incremental}
+  alias Still.Compiler.Incremental
 
   import Still.Utils
 
