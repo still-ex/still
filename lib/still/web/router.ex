@@ -45,14 +45,12 @@ defmodule Still.Web.Router do
   end
 
   defp try_send_file(conn, file) do
-    if File.exists?(file) and not File.dir?(file) do
-      OutputToInputFileRegistry.recompile(file)
+    OutputToInputFileRegistry.recompile(file)
 
+    if File.exists?(file) and not File.dir?(file) do
       conn
       |> put_resp_header("content-type", MIME.from_path(file))
       |> send_file(200, file)
-
-      :ok
     else
       :error
     end
