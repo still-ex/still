@@ -12,7 +12,15 @@ defmodule Still.Compiler.PreprocessorError do
 
   Protocol.derive(Jason.Encoder, __MODULE__, only: [:payload, :kind, :source_file])
 
-  def message(error) do
-    Exception.message(error.payload)
+  @spec message(%{
+          :payload => atom | %{:__exception__ => true, :__struct__ => atom, optional(any) => any},
+          optional(any) => any
+        }) :: binary
+  def message(%{payload: payload}) when is_atom(payload) do
+    payload |> to_string()
+  end
+
+  def message(%{payload: payload}) do
+    Exception.message(payload)
   end
 end

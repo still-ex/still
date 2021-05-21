@@ -62,6 +62,12 @@ defmodule Still.PreprocessorTest do
     end
   end
 
+  defmodule TestPreprocessorWithoutRun do
+    def render(source_file) do
+      {:halt, source_file}
+    end
+  end
+
   describe "for/1" do
     test "returns the preprocessors for a source_file using the file extension" do
       Application.put_env(:still, :preprocessors, %{
@@ -159,8 +165,23 @@ defmodule Still.PreprocessorTest do
         ]
       })
 
-      assert_raise UndefinedFunctionError,
-                   ~r/module SomeModule is not available/,
+      assert_raise Still.Compiler.PreprocessorError,
+                   ~r/SomeModule does not exist/,
+                   fn ->
+                     %SourceFile{input_file: "index.slime", content: ""}
+                     |> Preprocessor.run()
+                   end
+    end
+
+    test "raises when the module doesn't have a run/2 function" do
+      Application.put_env(:still, :preprocessors, %{
+        ".slime" => [
+          TestPreprocessorWithoutRun
+        ]
+      })
+
+      assert_raise Still.Compiler.PreprocessorError,
+                   ~r/Function run\/2 in module/,
                    fn ->
                      %SourceFile{input_file: "index.slime", content: ""}
                      |> Preprocessor.run()

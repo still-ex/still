@@ -168,8 +168,17 @@ defmodule Still.Preprocessor do
 
       defp run_next_preprocessors(source_file, []), do: source_file
 
-      defp run_next_preprocessors(source_file, [next_preprocess | remaining_preprocesors]) do
-        next_preprocess.run(source_file, remaining_preprocesors)
+      defp run_next_preprocessors(source_file, [next_preprocessor | remaining_preprocesors]) do
+        cond do
+          :module != elem(Code.ensure_compiled(next_preprocessor), 0) ->
+            raise "Module #{next_preprocessor} does not exist"
+
+          not function_exported?(next_preprocessor, :run, 2) ->
+            raise "Function run/2 in module #{next_preprocessor} does not exist"
+
+          true ->
+            next_preprocessor.run(source_file, remaining_preprocesors)
+        end
       end
 
       @doc """

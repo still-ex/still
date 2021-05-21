@@ -1,7 +1,7 @@
 defmodule Still.Compiler.Compile do
   @moduledoc """
   Compiles the site by running the #{Still.Compiler.Traverse} twice.
-  The second run is to ensure that each file is recompiled using the correct set of files in each collection.
+  The second run is to ensure that each file is compiled using the correct set of files in the collection.
   """
 
   use GenServer
