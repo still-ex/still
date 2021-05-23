@@ -7,29 +7,27 @@ defmodule Still.Compiler.Incremental.Node.Compile do
   notifying any relevant subscribers of changes.
   """
 
-  alias Still.Compiler
-
+  alias Still.Preprocessor
   alias Still.Compiler.PassThroughCopy
 
-  def run(state) do
-    case try_pass_through_copy(state) do
+  def run(source_file) do
+    case try_pass_through_copy(source_file) do
       :ok -> :ok
-      _ -> do_compile(state)
+      _ -> do_compile(source_file)
     end
   end
 
-  defp try_pass_through_copy(state) do
-    PassThroughCopy.try(state.file)
+  defp try_pass_through_copy(source_file) do
+    PassThroughCopy.try(source_file.input_file)
   end
 
-  defp do_compile(state) do
+  defp do_compile(source_file) do
     cond do
-      should_be_ignored?(state.file) ->
+      should_be_ignored?(source_file.input_file) ->
         :error
 
       true ->
-        response = Compiler.File.compile(state.file)
-        response
+        Preprocessor.run(source_file)
     end
   end
 

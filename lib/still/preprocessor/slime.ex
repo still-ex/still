@@ -12,8 +12,11 @@ defmodule Still.Preprocessor.Slime do
   use Preprocessor
 
   @impl true
-  def render(file) do
-    %{file | content: do_render(file), extension: ".html"}
+  def render(%{run_type: :metadata} = source_file),
+    do: %{source_file | extension: ".html"}
+
+  def render(source_file) do
+    %{source_file | content: do_render(source_file), extension: ".html"}
   end
 
   defp do_render(

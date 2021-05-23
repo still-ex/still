@@ -11,11 +11,13 @@ defmodule Still.Preprocessor.URLFingerprinting do
   use Preprocessor
 
   @impl true
+  def render(%{run_type: :metadata} = source_file),
+    do: source_file
+
   def render(%{output_file: nil} = file) do
     file
   end
 
-  @impl true
   def render(file) do
     if enabled?() do
       do_render(file)

@@ -76,9 +76,16 @@ defmodule Still.Preprocessor.Image.Mogrify do
   end
 
   defp process_input_file(input_file, opts, output_files) do
+    tmp_file = Path.join(System.tmp_dir!(), input_file)
+
+    tmp_file |> Path.dirname() |> File.mkdir_p!()
+
+    input_file
+    |> get_input_path()
+    |> File.cp!(tmp_file)
+
     tmp_file =
-      input_file
-      |> get_input_path()
+      tmp_file
       |> open()
       |> apply_transformations(Map.get(opts, :transformations))
 

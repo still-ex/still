@@ -19,7 +19,7 @@ defmodule Still.Compiler.Incremental.Node do
   use GenServer
 
   alias __MODULE__.Compile
-  alias Still.{Compiler, SourceFile}
+  alias Still.{Preprocessor, SourceFile}
   alias Still.Compiler.{ErrorCache, Incremental.OutputToInputFileRegistry, PreprocessorError}
 
   require Logger
@@ -65,6 +65,10 @@ defmodule Still.Compiler.Incremental.Node do
     Still.Utils.config(:compilation_timeout, @default_compilation_timeout)
   end
 
+  def metadata(pid, data \\ %{}) do
+    GenServer.call(pid, {:metadata, data}, compilation_timeout())
+  end
+
   def changed(pid) do
     GenServer.cast(pid, :changed)
   end
@@ -82,7 +86,7 @@ defmodule Still.Compiler.Incremental.Node do
   end
 
   @impl true
-  def handle_call({:compile, use_cache: true}, _from, %{cached_source_file: source_file} = state)
+  def handle_call({_, use_cache: true}, _from, %{cached_source_file: source_file} = state)
       when not is_nil(source_file) do
     {:reply, source_file, state}
   end
@@ -141,34 +145,54 @@ defmodule Still.Compiler.Incremental.Node do
   end
 
   @impl true
+  def handle_call({:metadata, data}, _from, state) do
+    # do_metadata(data, state)
+    {:reply, :ok, state}
+  end
+
+  @impl true
   def handle_cast(:changed, state) do
     {:noreply, %{state | cached_source_file: nil}}
   end
 
-  defp do_compile(state) do
-    case Compile.run(state) do
-      {:ok, %{output_file: output_file, input_file: input_file} = source_file} ->
+  defp do_compile(%{file: input_file}) do
+    source_file = %SourceFile{
+      input_file: input_file,
+      dependency_chain: [input_file],
+      run_type: :compile
+    }
+
+    case __MODULE__.Compile.run(source_file) do
+      %{output_file: output_file, input_file: input_file} = source_file ->
         ErrorCache.set({:ok, source_file})
         OutputToInputFileRegistry.register(input_file, output_file)
         source_file
 
       other ->
+        Logger.error("Failed to compile #{source_file.input_file}")
         other
     end
   end
 
   defp do_render(%{dependency_chain: dependency_chain} = data, state) do
-    source_file =
-      %SourceFile{
-        input_file: state.file,
-        dependency_chain: [state.file | dependency_chain],
-        metadata: Map.drop(data, [:dependency_chain])
-      }
-      |> Compiler.File.render()
+    %SourceFile{
+      input_file: state.file,
+      dependency_chain: [state.file | dependency_chain],
+      run_type: :render,
+      metadata: Map.drop(data, [:dependency_chain])
+    }
+    |> Preprocessor.run()
+    |> case do
+      %SourceFile{} = source_file ->
+        Logger.debug("Rendered #{state.file}")
+        ErrorCache.set({:ok, source_file})
+        {:reply, source_file, state}
 
-    ErrorCache.set({:ok, source_file})
-
-    {:reply, source_file, state}
+      error ->
+        Logger.error("Failed to render #{state.file}")
+        ErrorCache.set(error)
+        {:reply, error, state}
+    end
   catch
     _, %PreprocessorError{} = error ->
       {:reply, error, state}

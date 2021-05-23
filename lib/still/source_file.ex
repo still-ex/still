@@ -28,6 +28,6 @@ defmodule Still.SourceFile do
           metadata: map(),
           output_file: binary() | nil,
           profilable: boolean(),
-          run_type: :render | :compile
+          run_type: :render | :compile | :metadata
         }
 end
