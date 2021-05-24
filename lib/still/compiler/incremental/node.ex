@@ -18,9 +18,7 @@ defmodule Still.Compiler.Incremental.Node do
 
   use GenServer
 
-  alias __MODULE__.Compile
-  alias Still.{Preprocessor, SourceFile}
-  alias Still.Compiler.{ErrorCache, Incremental.OutputToInputFileRegistry, PreprocessorError}
+  alias Still.Compiler.PreprocessorError
 
   require Logger
 
@@ -50,8 +48,8 @@ defmodule Still.Compiler.Incremental.Node do
   For difference between compilation and renderisation see
   `Still.Compiler.File`.
   """
-  def render(pid, data, subscriber \\ nil) do
-    GenServer.call(pid, {:render, data, subscriber}, compilation_timeout())
+  def render(pid, data) do
+    GenServer.call(pid, {:render, data}, compilation_timeout())
   end
 
   @doc """
@@ -65,8 +63,8 @@ defmodule Still.Compiler.Incremental.Node do
     Still.Utils.config(:compilation_timeout, @default_compilation_timeout)
   end
 
-  def metadata(pid, data \\ %{}) do
-    GenServer.call(pid, {:metadata, data}, compilation_timeout())
+  def metadata(pid) do
+    GenServer.call(pid, :metadata, compilation_timeout())
   end
 
   def changed(pid) do
@@ -95,34 +93,13 @@ defmodule Still.Compiler.Incremental.Node do
     froms = all_waiting_compile([from])
 
     try do
-      result = do_compile(state)
-      Enum.each(froms, &GenServer.reply(&1, result))
+      source_file = __MODULE__.Compile.run(state.file)
 
-      case result do
-        %SourceFile{} = source_file ->
-          {:noreply, %{state | cached_source_file: source_file}}
+      Enum.each(froms, &GenServer.reply(&1, source_file))
 
-        _ ->
-          {:noreply, state}
-      end
+      {:noreply, %{state | cached_source_file: source_file}}
     catch
-      _, %PreprocessorError{} = error ->
-        handle_compile_error(error)
-
-        Enum.each(froms, &GenServer.reply(&1, :ok))
-
-        {:noreply, state}
-
-      kind, payload ->
-        error = %PreprocessorError{
-          payload: payload,
-          kind: kind,
-          stacktrace: __STACKTRACE__,
-          source_file: %Still.SourceFile{input_file: state.file, run_type: :compile}
-        }
-
-        handle_compile_error(error)
-
+      _, %PreprocessorError{} ->
         Enum.each(froms, &GenServer.reply(&1, :ok))
 
         {:noreply, state}
@@ -130,96 +107,28 @@ defmodule Still.Compiler.Incremental.Node do
   end
 
   @impl true
-  def handle_call({:render, data, nil}, _from, state) do
-    do_render(data, state)
+  def handle_call({:render, data}, _from, state) do
+    source_file = __MODULE__.Render.run(state.file, data)
+
+    {:reply, source_file, state}
+  catch
+    _, %PreprocessorError{} = error ->
+      {:reply, error, state}
   end
 
   @impl true
-  def handle_call({:render, data, subscriber}, _from, state) do
-    subscribers =
-      [subscriber | state.subscribers]
-      |> Enum.uniq()
-      |> Enum.reject(&is_nil/1)
+  def handle_call(:metadata, _from, state) do
+    source_file = __MODULE__.Compile.run(state.file, :metadata)
 
-    do_render(data, %{state | subscribers: subscribers})
-  end
-
-  @impl true
-  def handle_call({:metadata, data}, _from, state) do
-    # do_metadata(data, state)
-    {:reply, :ok, state}
+    {:reply, source_file, %{state | cached_source_file: source_file}}
+  catch
+    _, %PreprocessorError{} ->
+      {:reply, :ok, state}
   end
 
   @impl true
   def handle_cast(:changed, state) do
     {:noreply, %{state | cached_source_file: nil}}
-  end
-
-  defp do_compile(%{file: input_file}) do
-    source_file = %SourceFile{
-      input_file: input_file,
-      dependency_chain: [input_file],
-      run_type: :compile
-    }
-
-    case __MODULE__.Compile.run(source_file) do
-      %{output_file: output_file, input_file: input_file} = source_file ->
-        ErrorCache.set({:ok, source_file})
-        OutputToInputFileRegistry.register(input_file, output_file)
-        source_file
-
-      other ->
-        Logger.error("Failed to compile #{source_file.input_file}")
-        other
-    end
-  end
-
-  defp do_render(%{dependency_chain: dependency_chain} = data, state) do
-    %SourceFile{
-      input_file: state.file,
-      dependency_chain: [state.file | dependency_chain],
-      run_type: :render,
-      metadata: Map.drop(data, [:dependency_chain])
-    }
-    |> Preprocessor.run()
-    |> case do
-      %SourceFile{} = source_file ->
-        Logger.debug("Rendered #{state.file}")
-        ErrorCache.set({:ok, source_file})
-        {:reply, source_file, state}
-
-      error ->
-        Logger.error("Failed to render #{state.file}")
-        ErrorCache.set(error)
-        {:reply, error, state}
-    end
-  catch
-    _, %PreprocessorError{} = error ->
-      {:reply, error, state}
-
-    kind, payload ->
-      error = %PreprocessorError{
-        payload: payload,
-        kind: kind,
-        stacktrace: __STACKTRACE__,
-        source_file: %Still.SourceFile{
-          input_file: state.file,
-          run_type: :render,
-          dependency_chain: [state.file | dependency_chain]
-        }
-      }
-
-      {:reply, error, state}
-  end
-
-  defp handle_compile_error(error) do
-    Logger.error(error)
-
-    if Still.Utils.compilation_task?() do
-      System.stop(1)
-    else
-      ErrorCache.set({:error, error})
-    end
   end
 
   defp all_waiting_compile(acc) do

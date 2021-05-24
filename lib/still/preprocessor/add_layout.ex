@@ -21,7 +21,6 @@ defmodule Still.Preprocessor.AddLayout do
   def render(
         %{
           content: children,
-          input_file: input_file,
           dependency_chain: dependency_chain,
           metadata: %{layout: layout_file} = metadata
         } = file
@@ -35,7 +34,7 @@ defmodule Still.Preprocessor.AddLayout do
 
     layout_file
     |> Incremental.Registry.get_or_create_file_process()
-    |> Incremental.Node.render(layout_metadata, input_file)
+    |> Incremental.Node.render(layout_metadata)
     |> case do
       %{content: content} ->
         %{file | content: content}

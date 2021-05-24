@@ -46,7 +46,7 @@ defmodule Still.Compiler.TemplateHelpers do
 
     with pid when not is_nil(pid) <- Incremental.Registry.get_or_create_file_process(file),
          metadata <- Map.put(metadata, :dependency_chain, env[:dependency_chain] || []),
-         %SourceFile{content: content} <- Incremental.Node.render(pid, metadata, nil) do
+         %SourceFile{content: content} <- Incremental.Node.render(pid, metadata) do
       content
     else
       %PreprocessorError{} = e ->
