@@ -33,8 +33,8 @@ defmodule Still.Compiler.Compile do
     # available to each file are correct on the first run. Therefore the first run
     # is to collect the relevant metadata, and the second run is to compile the
     # final version of each file.
-    Still.Compiler.Traverse.run()
-    Still.Compiler.Traverse.run()
+    Still.Compiler.Traverse.run(&Still.Utils.compile_file_metadata/1)
+    Still.Compiler.Traverse.run(&Still.Utils.compile_file/1)
 
     all_waiting(state.hooks)
     |> Enum.uniq()

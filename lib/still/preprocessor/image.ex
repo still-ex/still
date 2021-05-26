@@ -39,7 +39,7 @@ defmodule Still.Preprocessor.Image do
   import Still.Utils
 
   @impl true
-  def render(%{run_type: :metadata} = source_file), do: source_file
+  def render(%{run_type: :compile_metadata} = source_file), do: source_file
 
   def render(%{metadata: %{image_opts: _opts}} = source_file) do
     adapter().render(source_file)

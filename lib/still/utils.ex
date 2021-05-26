@@ -11,6 +11,11 @@ defmodule Still.Utils do
     |> Node.compile(opts)
   end
 
+  def compile_file_metadata(file, opts \\ []) do
+    Registry.get_or_create_file_process(file)
+    |> Node.compile_metadata(opts)
+  end
+
   @doc """
   Returns true if the given file exists in the input path. Returns false otherwise.
   """

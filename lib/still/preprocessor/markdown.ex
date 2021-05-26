@@ -9,7 +9,7 @@ defmodule Still.Preprocessor.Markdown do
   use Preprocessor
 
   @impl true
-  def render(%{run_type: :metadata} = source_file),
+  def render(%{run_type: :compile_metadata} = source_file),
     do: %{source_file | extension: ".html"}
 
   def render(%{content: content} = source_file) do

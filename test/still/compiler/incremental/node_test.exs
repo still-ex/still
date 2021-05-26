@@ -3,10 +3,13 @@ defmodule Still.Compiler.Incremental.NodeTest do
 
   alias Still.SourceFile
   alias Still.Preprocessor
-  alias Still.Compiler.Incremental.{Registry, Node}
+  alias Still.Compiler.Incremental
+  alias Still.Compiler.Incremental.Node
   alias Still.Preprocessor.{Frontmatter, Slime, AddLayout, AddContent, Save, OutputPath}
+  alias Still.Compiler.Incremental.OutputToInputFileRegistry
 
   import Mock
+  import Still.Utils
 
   @preprocessors [
     AddContent,
@@ -27,7 +30,7 @@ defmodule Still.Compiler.Incremental.NodeTest do
 
   describe "compile" do
     test "compiles a file" do
-      pid = Registry.get_or_create_file_process("about.slime")
+      pid = Incremental.Registry.get_or_create_file_process("about.slime")
 
       Node.compile(pid)
 
@@ -36,7 +39,7 @@ defmodule Still.Compiler.Incremental.NodeTest do
 
     test "doesn't recompile file when [use_cache: true] is passed in the opts" do
       input_file = "about.slime"
-      pid = Registry.get_or_create_file_process(input_file)
+      pid = Incremental.Registry.get_or_create_file_process(input_file)
 
       source_file = %SourceFile{
         input_file: input_file,
@@ -52,11 +55,20 @@ defmodule Still.Compiler.Incremental.NodeTest do
         refute called(Preprocessor.run(source_file))
       end
     end
+
+    test "registers the file in OutputToInputFileRegistry" do
+      pid = Incremental.Registry.get_or_create_file_process("about.slime")
+
+      Node.compile(pid)
+
+      response = OutputToInputFileRegistry.lookup(get_output_path("about.html"))
+      assert [{_, "about.slime"}] = response
+    end
   end
 
   describe "render" do
     test "renders a file" do
-      pid = Registry.get_or_create_file_process("_includes/header.slime")
+      pid = Incremental.Registry.get_or_create_file_process("_includes/header.slime")
 
       content = Node.render(pid, %{dependency_chain: ["about.slime"]})
 

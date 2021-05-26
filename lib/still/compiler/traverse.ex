@@ -8,12 +8,12 @@ defmodule Still.Compiler.Traverse do
   @doc """
   Compiles every file in the input folder.
   """
-  def run do
+  def run(callback \\ &compile_file/1) do
     with true <- File.dir?(get_input_path()),
          _ <- File.rmdir(get_output_path()),
          :ok <- File.mkdir_p(get_output_path()) do
       compilable_files()
-      |> compile_files()
+      |> compile_files(callback)
     end
   end
 
@@ -37,11 +37,11 @@ defmodule Still.Compiler.Traverse do
     |> List.flatten()
   end
 
-  defp compile_files(files) do
+  defp compile_files(files, callback) do
     files
     |> Enum.map(fn file ->
       Task.async(fn ->
-        compile_file(file)
+        callback.(file)
       end)
     end)
     |> Enum.each(fn task ->

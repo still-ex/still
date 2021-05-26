@@ -28,4 +28,8 @@ defmodule Still.Compiler.Incremental.OutputToInputFileRegistry do
           do: compile_file(input_file)
     end)
   end
+
+  def lookup(output_file) do
+    Registry.lookup(__MODULE__, output_file)
+  end
 end

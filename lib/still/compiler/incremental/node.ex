@@ -63,8 +63,8 @@ defmodule Still.Compiler.Incremental.Node do
     Still.Utils.config(:compilation_timeout, @default_compilation_timeout)
   end
 
-  def metadata(pid) do
-    GenServer.call(pid, :metadata, compilation_timeout())
+  def compile_metadata(pid, opts \\ []) do
+    GenServer.call(pid, {:compile_metadata, opts}, compilation_timeout())
   end
 
   def changed(pid) do
@@ -117,8 +117,8 @@ defmodule Still.Compiler.Incremental.Node do
   end
 
   @impl true
-  def handle_call(:metadata, _from, state) do
-    source_file = __MODULE__.Compile.run(state.file, :metadata)
+  def handle_call({:compile_metadata, _opts}, _from, state) do
+    source_file = __MODULE__.Compile.run(state.file, :compile_metadata)
 
     {:reply, source_file, %{state | cached_source_file: source_file}}
   catch

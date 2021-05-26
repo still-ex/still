@@ -6,7 +6,7 @@ defmodule Still.Preprocessor.Profiler do
   use Preprocessor
 
   @impl true
-  def render(%{run_type: :metadata} = source_file),
+  def render(%{run_type: :compile_metadata} = source_file),
     do: source_file
 
   def render(%{metadata: metadata} = file) do
