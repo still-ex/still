@@ -7,9 +7,9 @@ defmodule Still.Compiler.Incremental.Node.Render do
   #never ignore a file or run it through a pass-through copy.
   """
 
-  alias Still.SourceFile
-  alias Still.Preprocessor
   alias Still.Compiler.{ErrorCache, PreprocessorError}
+  alias Still.Preprocessor
+  alias Still.SourceFile
 
   def run(input_file, %{dependency_chain: dependency_chain} = data) do
     source_file =

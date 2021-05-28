@@ -7,7 +7,14 @@ defmodule Still.Watcher do
 
   use GenServer
 
-  alias Still.Compiler.{Traverse, Incremental, Collections, ErrorCache, ContentCache}
+  alias Still.Compiler.{
+    Collections,
+    ContentCache,
+    ErrorCache,
+    Incremental,
+    Traverse
+  }
+
   alias Still.Web.BrowserSubscriptions
 
   import Still.Utils

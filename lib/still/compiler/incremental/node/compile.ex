@@ -10,15 +10,15 @@ defmodule Still.Compiler.Incremental.Node.Compile do
   Each preprocessor will then adapt accordingly.
   """
 
-  alias Still.SourceFile
-  alias Still.Preprocessor
-
   alias Still.Compiler.{
-    PassThroughCopy,
     ErrorCache,
     Incremental.OutputToInputFileRegistry,
+    PassThroughCopy,
     PreprocessorError
   }
+
+  alias Still.Preprocessor
+  alias Still.SourceFile
 
   require Logger
 
