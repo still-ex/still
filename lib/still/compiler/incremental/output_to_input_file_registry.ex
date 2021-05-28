@@ -19,7 +19,7 @@ defmodule Still.Compiler.Incremental.OutputToInputFileRegistry do
   end
 
   @doc """
-  Compiles the input file for the given output.
+  Compiles the input files for the given output.
   """
   @spec recompile(binary()) :: any()
   def recompile(output_file) do
@@ -29,6 +29,10 @@ defmodule Still.Compiler.Incremental.OutputToInputFileRegistry do
     end)
   end
 
+  @doc """
+  Returns a list of the registered input files for the given output.
+  """
+  @spec lookup(binary()) :: list({pid(), binary()})
   def lookup(output_file) do
     Registry.lookup(__MODULE__, output_file)
   end

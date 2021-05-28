@@ -2,17 +2,9 @@ defmodule Still.Compiler.Incremental.Node do
   @moduledoc """
   An incremental node represents a file that is processed individually.
 
-  A file can be compiled or rendered:
-
-  * Compile - compiling a file means, most times, running it thorugh a
-  preprocessor and writing to to the destination folder.
-
-  * Render - rendering a file means that the current file is being included by
-  another file. Template files may return HTML and images could return a path.
-
-  Incremental nodes attempt to compile/render files synchronously. This process
-  can take a long time, which is usually fine, but it can be changed by setting
-  the `:compilation_timeout` key in your `config/config.exs`. Default is
+  Incremental nodes attempt to compile/render a file synchronously. This process
+  can take a long time, which is usually fine, but the default timeout can be changed
+  in the`:compilation_timeout` key in your `config/config.exs`. Default is
   `:infinity`.
   """
 
@@ -32,9 +24,6 @@ defmodule Still.Compiler.Incremental.Node do
   Compiles the file mapped by the `Node` with the given PID.
 
   This PID can be obtained from `Still.Compiler.Incremental.Registry`.
-
-  For difference between compilation and renderisation see
-  `Still.Compiler.File`.
   """
   def compile(pid, opts \\ []) do
     GenServer.call(pid, {:compile, opts}, compilation_timeout())
@@ -44,12 +33,18 @@ defmodule Still.Compiler.Incremental.Node do
   Renders the file mapped by the `Node` with the given PID.
 
   This PID can be obtained from `Still.Compiler.Incremental.Registry`.
-
-  For difference between compilation and renderisation see
-  `Still.Compiler.File`.
   """
   def render(pid, data) do
     GenServer.call(pid, {:render, data}, compilation_timeout())
+  end
+
+  @doc """
+  Compiles the metadata of the file mapped by the `Node` with the given PID.
+
+  This PID can be obtained from `Still.Compiler.Incremental.Registry`.
+  """
+  def compile_metadata(pid, opts \\ []) do
+    GenServer.call(pid, {:compile_metadata, opts}, compilation_timeout())
   end
 
   @doc """
@@ -61,14 +56,6 @@ defmodule Still.Compiler.Incremental.Node do
   """
   def compilation_timeout do
     Still.Utils.config(:compilation_timeout, @default_compilation_timeout)
-  end
-
-  def compile_metadata(pid, opts \\ []) do
-    GenServer.call(pid, {:compile_metadata, opts}, compilation_timeout())
-  end
-
-  def changed(pid) do
-    GenServer.cast(pid, :changed)
   end
 
   @impl true

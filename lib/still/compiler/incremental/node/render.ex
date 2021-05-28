@@ -1,4 +1,12 @@
 defmodule Still.Compiler.Incremental.Node.Render do
+  @moduledoc """
+  Renders a file.
+
+  The difference between this module and
+  #{Still.Compiler.Incremental.Node.Compile} is that during a render process we
+  #never ignore a file or run it through a pass-through copy.
+  """
+
   alias Still.SourceFile
   alias Still.Preprocessor
   alias Still.Compiler.{ErrorCache, PreprocessorError}

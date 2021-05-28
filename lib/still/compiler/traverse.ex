@@ -1,12 +1,12 @@
 defmodule Still.Compiler.Traverse do
   @moduledoc """
-  Traverses the input directory, compiling every file.
+  Traverses the input directory.
   """
 
   import Still.Utils
 
   @doc """
-  Compiles every file in the input folder.
+  Runs through every file in the input directory, calling the callback function.
   """
   def run(callback \\ &compile_file/1) do
     with true <- File.dir?(get_input_path()),

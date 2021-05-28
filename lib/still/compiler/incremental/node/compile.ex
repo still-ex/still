@@ -1,10 +1,13 @@
 defmodule Still.Compiler.Incremental.Node.Compile do
   @moduledoc """
-  Compiles the contents of a `Still.Compiler.Incremental.Node`.
+  Compiles a file.
 
-  First attempts a pass through copy of the file, in case it should be ignored.
-  When this isn't successful, attempts a compilation via `Still.Compiler.File`,
-  notifying any relevant subscribers of changes.
+  At first, attempts a pass-through copy. If it doesn't apply, and the file
+  should not be ignored, it is run through its preprocessor chain.
+
+  This module is used both to compile and to compile the metadata. The
+  difference between the two is the `:run_type` set in the #{Still.SourceFile}.
+  Each preprocessor will then adapt accordingly.
   """
 
   alias Still.SourceFile

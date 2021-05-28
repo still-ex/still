@@ -1,8 +1,11 @@
 defmodule Still.Compiler.Compile do
   @moduledoc """
-  Compiles the site by running the #{Still.Compiler.Traverse} twice.
-  The second run is to ensure that each file is compiled using the correct set of files in the collection.
+  Compiles the site.
   """
+
+  alias Still.Compiler.Traverse
+
+  import Still.Utils
 
   use GenServer
 
@@ -18,7 +21,7 @@ defmodule Still.Compiler.Compile do
   end
 
   @doc """
-  Registers a callback to be called when the compilation process finishes.
+  Registers a callback to be called synchronously after the compilation.
   """
   def on_compile(fun) do
     GenServer.cast(__MODULE__, {:on_compile, fun})
@@ -33,8 +36,8 @@ defmodule Still.Compiler.Compile do
     # available to each file are correct on the first run. Therefore the first run
     # is to collect the relevant metadata, and the second run is to compile the
     # final version of each file.
-    Still.Compiler.Traverse.run(&Still.Utils.compile_file_metadata/1)
-    Still.Compiler.Traverse.run(&Still.Utils.compile_file/1)
+    Traverse.run(&compile_file_metadata/1)
+    Traverse.run(&compile_file/1)
 
     all_waiting(state.hooks)
     |> Enum.uniq()

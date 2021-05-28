@@ -2,6 +2,5 @@ import Config
 
 config :still,
   dev_layout: true,
+  base_url: "",
   profiler: true
-
-config :logger, level: :warn
