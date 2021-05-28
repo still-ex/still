@@ -6,11 +6,19 @@ defmodule Still.Utils do
   alias Still.SourceFile
   alias Still.Compiler.Incremental.{Node, Registry}
 
+  @doc """
+  Compiles a file.
+  """
+  @spec compile_file(binary(), any()) :: SourceFile.t()
   def compile_file(file, opts \\ []) do
     Registry.get_or_create_file_process(file)
     |> Node.compile(opts)
   end
 
+  @doc """
+  Compiles a file's metadata.
+  """
+  @spec compile_file_metadata(binary(), any()) :: SourceFile.t()
   def compile_file_metadata(file, opts \\ []) do
     Registry.get_or_create_file_process(file)
     |> Node.compile_metadata(opts)
