@@ -6,6 +6,10 @@ defmodule Still.Utils do
   alias Still.SourceFile
   alias Still.Compiler.Incremental.{Node, Registry}
 
+  def module_exists?(module) do
+    :module == elem(Code.ensure_compiled(module), 0)
+  end
+
   @doc """
   Compiles a file.
   """

@@ -170,7 +170,7 @@ defmodule Still.Preprocessor do
 
       defp run_next_preprocessors(source_file, [next_preprocessor | remaining_preprocesors]) do
         cond do
-          :module != elem(Code.ensure_compiled(next_preprocessor), 0) ->
+          not Still.Utils.module_exists?(next_preprocessor) ->
             raise "Module #{next_preprocessor} does not exist"
 
           not function_exported?(next_preprocessor, :run, 2) ->
