@@ -44,9 +44,7 @@ defmodule Still.Compiler.Traverse do
         callback.(file)
       end)
     end)
-    |> Enum.each(fn task ->
-      Task.await(task, :infinity)
-    end)
+    |> Task.await_many(:infinity)
   end
 
   defp partial?(path), do: String.starts_with?(path, "_")
