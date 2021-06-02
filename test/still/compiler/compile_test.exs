@@ -46,8 +46,8 @@ defmodule Still.Compiler.CompileTest do
       assert File.exists?(file_path)
     end
 
-    test_with_mock "calls the on_compile callbacks", TestCaller, hook: fn -> :ok end do
-      Compile.on_compile(&TestCaller.hook/0)
+    test_with_mock "calls the after_compile callbacks", TestCaller, hook: fn -> :ok end do
+      Compile.after_compile(&TestCaller.hook/0)
       Compile.run()
 
       assert_called(TestCaller.hook())

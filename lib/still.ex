@@ -4,7 +4,7 @@ defmodule Still do
   @doc """
   Registers a callback to be called synchronously after the compilation.
   """
-  defdelegate on_compile(fun), to: Still.Compiler.Compile
+  defdelegate after_compile(fun), to: Still.Compiler.Compile
 
   @doc """
   Compiles the site.

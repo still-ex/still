@@ -23,8 +23,8 @@ defmodule Still.Compiler.Compile do
   @doc """
   Registers a callback to be called synchronously after the compilation.
   """
-  def on_compile(fun) do
-    GenServer.cast(__MODULE__, {:on_compile, fun})
+  def after_compile(fun) do
+    GenServer.cast(__MODULE__, {:after_compile, fun})
   end
 
   def init(_opts) do
@@ -50,7 +50,7 @@ defmodule Still.Compiler.Compile do
     {:reply, :ok, state}
   end
 
-  def handle_cast({:on_compile, fun}, state) do
+  def handle_cast({:after_compile, fun}, state) do
     hooks = [fun | state.hooks]
 
     {:noreply, %{state | hooks: hooks}}
@@ -58,7 +58,7 @@ defmodule Still.Compiler.Compile do
 
   defp all_waiting(acc) do
     receive do
-      {:"$gen_cast", {:on_compile, fun}} -> all_waiting([fun | acc])
+      {:"$gen_cast", {:after_compile, fun}} -> all_waiting([fun | acc])
     after
       0 -> acc
     end
