@@ -2,9 +2,9 @@ name: build
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   test:
@@ -15,47 +15,46 @@ jobs:
         otp:
           - 23
         elixir:
-          - 1.10.4
           - 1.11.3
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Set up Elixir
-      uses: erlef/setup-elixir@v1
-      with:
-        elixir-version: ${{ matrix.elixir }}
-        otp-version: ${{ matrix.otp }}
+      - name: Set up Elixir
+        uses: erlef/setup-elixir@v1
+        with:
+          elixir-version: ${{ matrix.elixir }}
+          otp-version: ${{ matrix.otp }}
 
-    - name: Restore dependencies cache
-      uses: actions/cache@v2
-      with:
-        path: deps
-        key: ${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-mix-${{ hashFiles('**/mix.lock') }}
-        restore-keys: ${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-mix-
+      - name: Restore dependencies cache
+        uses: actions/cache@v2
+        with:
+          path: deps
+          key: ${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-mix-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-mix-
 
-    - name: Cache build
-      uses: actions/cache@v1
-      with:
-        path: _build
-        key: ${{ runner.OS }}-${{ matrix.elixir }}-${{ matrix.otp }}-build-
-        restore-keys: |
-          ${{ runner.OS }}-${{ matrix.elixir }}-${{ matrix.otp }}-build-
+      - name: Cache build
+        uses: actions/cache@v1
+        with:
+          path: _build
+          key: ${{ runner.OS }}-${{ matrix.elixir }}-${{ matrix.otp }}-build-
+          restore-keys: |
+            ${{ runner.OS }}-${{ matrix.elixir }}-${{ matrix.otp }}-build-
 
-    - name: Install dependencies
-      run: |
-        mix deps.get
+      - name: Install dependencies
+        run: |
+          mix deps.get
 
-    - name: Compile
-      run: |
-        MIX_ENV=dev mix compile
-        MIX_ENV=test mix compile
+      - name: Compile
+        run: |
+          MIX_ENV=dev mix compile
+          MIX_ENV=test mix compile
 
-    - name: Run formatter
-      run: mix format --check-formatted
+      - name: Run formatter
+        run: mix format --check-formatted
 
-    - name: Run credo
-      run: mix credo
+      - name: Run credo
+        run: mix credo
 
-    - name: Run tests
-      run: mix test --timeout 120000
+      - name: Run tests
+        run: mix test --timeout 120000
