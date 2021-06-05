@@ -8,7 +8,7 @@ defmodule Still.MixProject do
       app: :still,
       description: "A modern static site generator for the Elixir community",
       version: @version,
-      elixir: "~> 1.10",
+      elixir: "~> 1.11",
       elixirc_paths: ["lib"] ++ elixirc_paths(Mix.env()),
       package: package(),
       aliases: aliases(),

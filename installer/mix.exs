@@ -7,7 +7,7 @@ defmodule Still.New.MixProject do
     [
       app: :still_new,
       version: @version,
-      elixir: "~> 1.10",
+      elixir: "~> 1.11",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       package: [
