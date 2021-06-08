@@ -3,6 +3,8 @@ defmodule Still.Compiler.Compile do
   Compiles the site.
   """
 
+  require Logger
+
   alias Still.Compiler.Traverse
 
   import Still.Utils
@@ -42,9 +44,15 @@ defmodule Still.Compiler.Compile do
     all_waiting(state.hooks)
     |> Enum.uniq()
     |> Enum.each(fn
-      {mod, fun, args} -> apply(mod, fun, args)
-      fun when is_function(fun, 0) -> fun.()
-      _ -> :ok
+      {mod, fun, args} ->
+        apply(mod, fun, args)
+
+      fun when is_function(fun, 0) ->
+        fun.()
+
+      _ ->
+        Logger.error("Failed to call hook. Callback is not a function.")
+        :ok
     end)
 
     {:reply, :ok, state}
