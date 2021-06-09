@@ -16,9 +16,11 @@ defmodule Still.Compiler.TemplateHelpers.UrlFor do
   end
 
   defp add_base_url("/" <> path), do: add_base_url(path)
-  defp add_base_url(path), do: get_base_url() <> "/" <> path
+  defp add_base_url(path), do: "/#{get_base_url()}/#{path}"
 
   defp clean_url(path) do
-    path |> String.replace_suffix("index.html", "")
+    path
+    |> String.replace_prefix("//", "/")
+    |> String.replace_suffix("index.html", "")
   end
 end

@@ -6,6 +6,9 @@ defmodule Still.Preprocessor.Profiler do
   use Preprocessor
 
   @impl true
+  def render(%{run_type: :compile_metadata} = source_file),
+    do: source_file
+
   def render(%{metadata: metadata} = file) do
     if should_profile?(file) do
       start_time = Profiler.timestamp()

@@ -16,9 +16,8 @@ defmodule Still.Case do
 
       setup do
         Application.put_env(:still, :pass_through_copy, [])
-
+        Still.Compiler.Collections.reset()
         Still.Utils.clean_output_dir()
-
         Still.Case.ensure_clean_error_cache()
 
         :ok

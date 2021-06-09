@@ -33,29 +33,20 @@ defmodule Still.Compiler.TemplateHelpers do
   defdelegate link_to_js(path, opts \\ []), to: LinkToJS, as: :render
 
   @doc """
-  Renders a file and includes it in the page, using the variables defined in `metadata`.
-
-  By default, it creates a subscription to recompile the file in which
-  `include/3` is invoked, when the target `file` changes. This behaviour
-  can be disabled by passing the `:subscribe` option as `false`.
+  Renders a file in the page using the variables defined in `metadata`.
   """
-  def include(env, file, metadata \\ %{}, opts \\ [])
+  def include(env, file, metadata \\ %{})
 
-  def include(env, file, metadata, opts) when is_list(metadata) do
-    include(env, file, metadata |> Enum.into(%{}), opts)
+  def include(env, file, metadata) when is_list(metadata) do
+    include(env, file, metadata |> Enum.into(%{}))
   end
 
-  def include(env, file, metadata, opts) do
+  def include(env, file, metadata) do
     ensure_file_exists!(file)
 
     with pid when not is_nil(pid) <- Incremental.Registry.get_or_create_file_process(file),
-         subscriber <- include_subscriber(env, opts),
          metadata <- Map.put(metadata, :dependency_chain, env[:dependency_chain] || []),
-         %SourceFile{content: content} <- Incremental.Node.render(pid, metadata, subscriber) do
-      if subscriber do
-        Incremental.Node.add_subscription(self(), file)
-      end
-
+         %SourceFile{content: content} <- Incremental.Node.render(pid, metadata) do
       content
     else
       %PreprocessorError{} = e ->
@@ -90,8 +81,8 @@ defmodule Still.Compiler.TemplateHelpers do
   @doc """
   Returns the collections for the current file.
   """
-  def get_collections(env, collection) do
-    Still.Compiler.Collections.get(collection, env[:input_file])
+  def get_collections(_env, collection) do
+    Still.Compiler.Collections.get(collection)
   end
 
   @doc """
@@ -124,14 +115,6 @@ defmodule Still.Compiler.TemplateHelpers do
       safe_html(truncated)
     else
       truncated
-    end
-  end
-
-  defp include_subscriber(env, opts) do
-    if Keyword.get(opts, :subscribe, true) do
-      env[:input_file]
-    else
-      nil
     end
   end
 

@@ -1,57 +1,92 @@
 defmodule Still.Compiler.Incremental.Node.Compile do
   @moduledoc """
-  Compiles the contents of a `Still.Compiler.Incremental.Node`.
+  Compiles a file.
 
-  First attempts a pass through copy of the file, in case it should be ignored.
-  When this isn't successful, attempts a compilation via `Still.Compiler.File`,
-  notifying any relevant subscribers of changes.
+  At first, attempts a pass-through copy. If it doesn't apply, and the file
+  should not be ignored, it is run through its preprocessor chain.
+
+  This module is used both to compile and to compile the metadata. The
+  difference between the two is the `:run_type` set in the #{Still.SourceFile}.
+  Each preprocessor will then adapt accordingly.
   """
 
-  alias Still.Compiler
-
   alias Still.Compiler.{
-    CompilationStage,
-    Incremental,
-    PassThroughCopy
+    ErrorCache,
+    Incremental.OutputToInputFileRegistry,
+    PassThroughCopy,
+    PreprocessorError
   }
 
-  def run(state) do
-    case try_pass_through_copy(state) do
-      :ok -> :ok
-      _ -> do_compile(state)
+  alias Still.Preprocessor
+  alias Still.SourceFile
+
+  require Logger
+
+  def run(input_file, run_type \\ :compile) do
+    source_file =
+      %SourceFile{
+        input_file: input_file,
+        dependency_chain: [input_file],
+        run_type: run_type
+      }
+      |> do_run()
+
+    ErrorCache.set({:ok, source_file})
+
+    if source_file.output_file do
+      OutputToInputFileRegistry.register(input_file, source_file.output_file)
+    end
+
+    source_file
+  catch
+    _, %PreprocessorError{} = error ->
+      handle_error(error)
+      raise error
+
+    kind, payload ->
+      error = %PreprocessorError{
+        payload: payload,
+        kind: kind,
+        stacktrace: __STACKTRACE__,
+        source_file: %SourceFile{input_file: input_file, run_type: :compile}
+      }
+
+      handle_error(error)
+      raise error
+  end
+
+  def do_run(source_file) do
+    case try_pass_through_copy(source_file) do
+      :ok -> %{source_file | output_file: source_file.input_file}
+      _ -> do_compile(source_file)
     end
   end
 
-  defp try_pass_through_copy(state) do
-    PassThroughCopy.try(state.file)
+  defp try_pass_through_copy(source_file) do
+    PassThroughCopy.try(source_file.input_file)
   end
 
-  defp do_compile(state) do
+  defp do_compile(source_file) do
     cond do
-      should_be_ignored?(state.file) ->
-        notify_subscribers(state)
-        :error
+      should_be_ignored?(source_file.input_file) ->
+        source_file
 
       true ->
-        remove_all_subscriptions(state)
-        response = Compiler.File.compile(state.file)
-        notify_subscribers(state)
-        response
+        Preprocessor.run(source_file)
     end
-  end
-
-  defp remove_all_subscriptions(state) do
-    state.subscriptions
-    |> Enum.map(&Incremental.Registry.get_or_create_file_process/1)
-    |> Enum.map(&Incremental.Node.remove_subscriber(&1, state.file))
-  end
-
-  defp notify_subscribers(state) do
-    state.subscribers
-    |> CompilationStage.compile()
   end
 
   defp should_be_ignored?(file) do
     Path.split(file) |> Enum.any?(&String.starts_with?(&1, "_"))
+  end
+
+  defp handle_error(error) do
+    Logger.error(error)
+
+    if Still.Utils.compilation_task?() do
+      System.stop(1)
+    else
+      ErrorCache.set({:error, error})
+    end
   end
 end

@@ -17,7 +17,6 @@ defmodule Still.Profiler do
   use GenServer
 
   alias Still.Compiler.{
-    CompilationStage,
     ErrorCache,
     PreprocessorError
   }
@@ -51,29 +50,36 @@ defmodule Still.Profiler do
   Recompiles the HTML page. Should only be used for internal maintenance.
   """
   def recompile do
-    GenServer.call(__MODULE__, :recompile)
+    Process.send(__MODULE__, :recompile, [])
   end
 
   @impl true
   def init(:ok) do
-    CompilationStage.subscribe()
-
     layout =
       Application.app_dir(:still, @profiler_layout)
       |> File.read!()
 
-    {:ok, %{layout: layout, stats: %{}}}
+    {:ok, %{layout: layout, stats: %{}, timer: nil}}
   end
 
   @impl true
   def handle_cast({:register, file, delta}, state) do
+    if state.timer do
+      Process.cancel_timer(state.timer)
+    end
+
     new_stats = add_file_render_info(state.stats, file, delta)
 
-    {:noreply, %{state | stats: new_stats}}
+    {:noreply, %{state | stats: new_stats, timer: Process.send_after(self(), :recompile, 100)}}
   end
 
   @impl true
-  def handle_info(:bus_empty, state) do
+  def handle_info(:recompile, state) do
+    compile(state)
+    {:noreply, %{state | timer: nil}}
+  end
+
+  defp compile(state) do
     stats =
       state.stats
       |> Map.values()
@@ -88,15 +94,6 @@ defmodule Still.Profiler do
       profilable: false
     }
     |> run_preprocessor()
-
-    {:noreply, state}
-  end
-
-  @impl true
-  def handle_call(:recompile, _from, state) do
-    {:noreply, new_state} = handle_info(:bus_empty, state)
-
-    {:reply, :ok, new_state}
   end
 
   defp run_preprocessor(source_file) do

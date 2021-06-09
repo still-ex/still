@@ -2,6 +2,7 @@ defmodule Still.Compiler.Incremental.Registry do
   @moduledoc """
   Supervisor that maps files (based on their name) to PIDs of `Still.Compiler.Incremental.Node`.
   """
+
   use DynamicSupervisor
 
   alias Still.Compiler.Incremental

@@ -76,19 +76,22 @@ defmodule Still.Preprocessor.Image.Mogrify do
   end
 
   defp process_input_file(input_file, opts, output_files) do
-    tmp_file =
-      input_file
-      |> get_input_path()
-      |> open()
-      |> apply_transformations(Map.get(opts, :transformations))
+    input_file_path = get_input_path(input_file)
 
     output_files
     |> Enum.map(fn {size, output_file} ->
       Task.async(fn ->
-        tmp_file
+        output_file_path = get_output_path(output_file)
+
+        output_file_path |> Path.dirname() |> File.mkdir_p!()
+        File.cp!(input_file_path, output_file_path)
+
+        output_file_path
+        |> open()
+        |> apply_transformations(Map.get(opts, :transformations))
         |> resize(size)
         |> quality(config(:image_quality, 90))
-        |> save(path: get_output_path(output_file))
+        |> save(in_place: true)
       end)
     end)
     |> Enum.map(&Task.await(&1, :infinity))

@@ -9,13 +9,16 @@ defmodule Still.Preprocessor.CSSMinify do
   use Preprocessor
 
   @impl true
-  def render(%{content: content} = file) do
+  def render(%{run_type: :compile_metadata} = source_file),
+    do: %{source_file | extension: ".css"}
+
+  def render(%{content: content} = source_file) do
     content =
       content
       |> String.split("\n")
       |> Enum.map(&Regex.replace(~r/^ */, &1, ""))
       |> Enum.join("")
 
-    %{file | content: content, extension: ".css"}
+    %{source_file | content: content, extension: ".css"}
   end
 end

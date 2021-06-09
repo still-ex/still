@@ -12,10 +12,11 @@ defmodule Still.Compiler.Supervisor do
   @impl true
   def init(_) do
     children = [
+      {Registry, keys: :unique, name: Compiler.Incremental.OutputToInputFileRegistry},
       Compiler.Collections,
       Compiler.Incremental.Registry,
       Compiler.ErrorCache,
-      Compiler.CompilationStage
+      Compiler.Compile
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

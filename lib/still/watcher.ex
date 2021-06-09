@@ -7,8 +7,15 @@ defmodule Still.Watcher do
 
   use GenServer
 
-  alias Still.Compiler
-  alias Still.Compiler.{CompilationStage, Incremental}
+  alias Still.Compiler.{
+    Collections,
+    ContentCache,
+    ErrorCache,
+    Incremental,
+    Traverse
+  }
+
+  alias Still.Web.BrowserSubscriptions
 
   import Still.Utils
 
@@ -30,7 +37,7 @@ defmodule Still.Watcher do
     {:ok, watcher_pid} = FileSystem.start_link(dirs: [get_input_path()])
     FileSystem.subscribe(watcher_pid)
 
-    Compiler.Traverse.run()
+    Traverse.run(&compile_file_metadata/1)
 
     {:noreply, state}
   end
@@ -41,20 +48,14 @@ defmodule Still.Watcher do
   """
   def handle_info({:file_event, _watcher_pid, {file, events}}, state) do
     cond do
+      Enum.member?(events, :removed) or Enum.member?(events, :renamed) ->
+        remove_file(file)
+
       Enum.member?(events, :modified) ->
         process_file(file)
 
       Enum.member?(events, :created) ->
         process_file(file)
-
-      Enum.member?(events, :removed) ->
-        file
-        |> get_relative_input_path()
-        |> Still.Compiler.ErrorCache.clear()
-
-        file
-        |> get_relative_input_path()
-        |> Incremental.Registry.terminate_file_process()
 
       true ->
         nil
@@ -68,12 +69,24 @@ defmodule Still.Watcher do
     {:noreply, state}
   end
 
-  defp process_file(file) do
-    file =
-      file
-      |> get_relative_input_path()
+  defp remove_file(file) do
+    file = get_relative_input_path(file)
 
-    Still.Compiler.ContentCache.clear(file)
-    CompilationStage.compile(file)
+    Collections.reset()
+    Traverse.run(&compile_file_metadata/1)
+
+    ErrorCache.clear(file)
+    Incremental.Registry.terminate_file_process(file)
+
+    BrowserSubscriptions.notify()
+  end
+
+  defp process_file(file) do
+    file = get_relative_input_path(file)
+
+    compile_file_metadata(file)
+
+    ContentCache.clear(file)
+    BrowserSubscriptions.notify()
   end
 end

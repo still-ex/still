@@ -38,7 +38,12 @@ defmodule Still.Preprocessor.Save do
     file
   end
 
-  def render(file), do: file
+  @impl true
+  def render(file) do
+    Collections.add(file)
+
+    file
+  end
 
   defp append_development_layout(%{extension: ".html", content: content} = file) do
     if config(:dev_layout, false) do

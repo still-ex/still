@@ -4,6 +4,29 @@ defmodule Still.Utils do
   """
 
   alias Still.SourceFile
+  alias Still.Compiler.Incremental.{Node, Registry}
+
+  def module_exists?(module) do
+    :module == elem(Code.ensure_compiled(module), 0)
+  end
+
+  @doc """
+  Compiles a file.
+  """
+  @spec compile_file(binary(), any()) :: SourceFile.t()
+  def compile_file(file, opts \\ []) do
+    Registry.get_or_create_file_process(file)
+    |> Node.compile(opts)
+  end
+
+  @doc """
+  Compiles a file's metadata.
+  """
+  @spec compile_file_metadata(binary(), any()) :: SourceFile.t()
+  def compile_file_metadata(file, opts \\ []) do
+    Registry.get_or_create_file_process(file)
+    |> Node.compile_metadata(opts)
+  end
 
   @doc """
   Returns true if the given file exists in the input path. Returns false otherwise.
@@ -105,7 +128,7 @@ defmodule Still.Utils do
   Returns the site's base URL.
   """
   def get_base_url do
-    config!(:base_url)
+    config(:base_url, "")
   end
 
   @doc """
@@ -136,7 +159,8 @@ defmodule Still.Utils do
   Recursively removes all files from the site's output directory.
   """
   def clean_output_dir do
-    File.rm_rf(Path.join(get_output_path(), "*"))
+    File.rm_rf(get_output_path())
+    File.mkdir!(get_output_path())
   end
 
   @doc """
@@ -144,7 +168,8 @@ defmodule Still.Utils do
   directory.
   """
   def clean_output_dir(path) do
-    File.rm_rf(Path.join(path, "*"))
+    File.rm_rf(get_output_path(path))
+    File.mkdir!(get_output_path(path))
   end
 
   @doc """

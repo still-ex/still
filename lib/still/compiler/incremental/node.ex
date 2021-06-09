@@ -1,32 +1,16 @@
 defmodule Still.Compiler.Incremental.Node do
   @moduledoc """
-  An incremental node represents a file, or folder, that is processed
-  individually.
+  An incremental node represents a file that is processed individually.
 
-  Each file has a list of subscriptions and subcribers. The subscriptions are
-  the files included by the current file. The subscribers are the files that the
-  current file includes. When the current file changes, it notifies the
-  subscribers and updates the subscriptions.
-
-  A file can be compiled or rendered:
-
-  * Compile - compiling a file means, most times, running it thorugh a
-  preprocessor and writing to to the destination folder.
-
-  * Render - rendering a file means that the current file is being included by
-  another file. Template files may return HTML and images could return a path.
-
-  Incremental nodes attempt to compile/render files synchronously. This process
-  can take a long time, which is usually fine, but it can be changed by setting
-  the `:compilation_timeout` key in your `config/config.exs`. Default is
+  Incremental nodes attempt to compile/render a file synchronously. This process
+  can take a long time, which is usually fine, but the default timeout can be changed
+  in the`:compilation_timeout` key in your `config/config.exs`. Default is
   `:infinity`.
   """
 
   use GenServer
 
-  alias __MODULE__.Compile
-  alias Still.{Compiler, SourceFile}
-  alias Still.Compiler.{ErrorCache, PreprocessorError}
+  alias Still.Compiler.PreprocessorError
 
   require Logger
 
@@ -40,38 +24,27 @@ defmodule Still.Compiler.Incremental.Node do
   Compiles the file mapped by the `Node` with the given PID.
 
   This PID can be obtained from `Still.Compiler.Incremental.Registry`.
-
-  For difference between compilation and renderisation see
-  `Still.Compiler.File`.
   """
-  def compile(pid) do
-    GenServer.call(pid, :compile, compilation_timeout())
+  def compile(pid, opts \\ []) do
+    GenServer.call(pid, {:compile, opts}, compilation_timeout())
   end
 
   @doc """
   Renders the file mapped by the `Node` with the given PID.
 
   This PID can be obtained from `Still.Compiler.Incremental.Registry`.
-
-  For difference between compilation and renderisation see
-  `Still.Compiler.File`.
   """
-  def render(pid, data, subscriber \\ nil) do
-    GenServer.call(pid, {:render, data, subscriber}, compilation_timeout())
+  def render(pid, data) do
+    GenServer.call(pid, {:render, data}, compilation_timeout())
   end
 
   @doc """
-  Adds a file to the list of files this process is subscribed to.
-  """
-  def add_subscription(pid, file) do
-    GenServer.cast(pid, {:add_subscription, file})
-  end
+  Compiles the metadata of the file mapped by the `Node` with the given PID.
 
-  @doc """
-  Removes a file from the list of files subscribing to this process.
+  This PID can be obtained from `Still.Compiler.Incremental.Registry`.
   """
-  def remove_subscriber(pid, file) do
-    GenServer.cast(pid, {:remove_subscriber, file})
+  def compile_metadata(pid, opts \\ []) do
+    GenServer.call(pid, {:compile_metadata, opts}, compilation_timeout())
   end
 
   @doc """
@@ -83,10 +56,6 @@ defmodule Still.Compiler.Incremental.Node do
   """
   def compilation_timeout do
     Still.Utils.config(:compilation_timeout, @default_compilation_timeout)
-  end
-
-  def changed(pid) do
-    GenServer.cast(pid, :changed)
   end
 
   @impl true
@@ -102,52 +71,46 @@ defmodule Still.Compiler.Incremental.Node do
   end
 
   @impl true
-  def handle_call(:compile, _from, %{cached_source_file: source_file} = state)
+  def handle_call({_, use_cache: true}, _from, %{cached_source_file: source_file} = state)
       when not is_nil(source_file) do
     {:reply, source_file, state}
   end
 
-  def handle_call(:compile, _from, state) do
-    case Compile.run(state) do
-      {:ok, source_file} ->
-        ErrorCache.set({:ok, source_file})
-        {:reply, source_file, %{state | cached_source_file: source_file}}
+  def handle_call({:compile, _}, from, state) do
+    froms = all_waiting_compile([from])
 
-      other ->
-        {:reply, other, state}
+    try do
+      source_file = __MODULE__.Compile.run(state.file)
+
+      Enum.each(froms, &GenServer.reply(&1, source_file))
+
+      {:noreply, %{state | cached_source_file: source_file}}
+    catch
+      _, %PreprocessorError{} ->
+        Enum.each(froms, &GenServer.reply(&1, :ok))
+
+        {:noreply, state}
     end
+  end
+
+  @impl true
+  def handle_call({:render, data}, _from, state) do
+    source_file = __MODULE__.Render.run(state.file, data)
+
+    {:reply, source_file, state}
   catch
     _, %PreprocessorError{} = error ->
-      handle_compile_error(error)
-
-      {:reply, :ok, state}
-
-    kind, payload ->
-      error = %PreprocessorError{
-        payload: payload,
-        kind: kind,
-        stacktrace: __STACKTRACE__,
-        source_file: %Still.SourceFile{input_file: state.file, run_type: :compile}
-      }
-
-      handle_compile_error(error)
-
-      {:reply, :ok, state}
+      {:reply, error, state}
   end
 
   @impl true
-  def handle_call({:render, data, nil}, _from, state) do
-    do_render(data, state)
-  end
+  def handle_call({:compile_metadata, _opts}, _from, state) do
+    source_file = __MODULE__.Compile.run(state.file, :compile_metadata)
 
-  @impl true
-  def handle_call({:render, data, subscriber}, _from, state) do
-    subscribers =
-      [subscriber | state.subscribers]
-      |> Enum.uniq()
-      |> Enum.reject(&is_nil/1)
-
-    do_render(data, %{state | subscribers: subscribers})
+    {:reply, source_file, %{state | cached_source_file: source_file}}
+  catch
+    _, %PreprocessorError{} ->
+      {:reply, :ok, state}
   end
 
   @impl true
@@ -155,56 +118,11 @@ defmodule Still.Compiler.Incremental.Node do
     {:noreply, %{state | cached_source_file: nil}}
   end
 
-  def handle_cast({:remove_subscriber, file}, state) do
-    subscribers = Enum.reject(state.subscribers, &(&1 == file))
-
-    {:noreply, %{state | subscribers: subscribers}}
-  end
-
-  def handle_cast({:add_subscription, file}, state) do
-    subscriptions = [file | state.subscriptions] |> Enum.uniq()
-
-    {:noreply, %{state | subscriptions: subscriptions}}
-  end
-
-  defp do_render(%{dependency_chain: dependency_chain} = data, state) do
-    source_file =
-      %SourceFile{
-        input_file: state.file,
-        dependency_chain: [state.file | dependency_chain],
-        metadata: Map.drop(data, [:dependency_chain])
-      }
-      |> Compiler.File.render()
-
-    ErrorCache.set({:ok, source_file})
-
-    {:reply, source_file, state}
-  catch
-    _, %PreprocessorError{} = error ->
-      {:reply, error, state}
-
-    kind, payload ->
-      error = %PreprocessorError{
-        payload: payload,
-        kind: kind,
-        stacktrace: __STACKTRACE__,
-        source_file: %Still.SourceFile{
-          input_file: state.file,
-          run_type: :render,
-          dependency_chain: [state.file | dependency_chain]
-        }
-      }
-
-      {:reply, error, state}
-  end
-
-  defp handle_compile_error(error) do
-    Logger.error(error)
-
-    if Still.Utils.compilation_task?() do
-      System.stop(1)
-    else
-      ErrorCache.set({:error, error})
+  defp all_waiting_compile(acc) do
+    receive do
+      {:"$gen_call", from, {:compile, _}} -> all_waiting_compile([from | acc])
+    after
+      0 -> acc
     end
   end
 end

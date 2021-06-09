@@ -6,8 +6,9 @@ defmodule Still.Compiler.TemplateHelpers.LinkToCSS do
   `Still.Compiler.CompilationStage`.
   """
 
-  alias Still.Compiler.Incremental
   alias Still.Compiler.TemplateHelpers.UrlFor
+
+  import Still.Utils
 
   require Logger
 
@@ -15,9 +16,6 @@ defmodule Still.Compiler.TemplateHelpers.LinkToCSS do
   Generates a `link` HTML tag to the target CSS file.
 
   All options are converted to the `attr=value` format.
-
-  This file must exist and to ensure that, it **will be compiled** outside
-  `Still.Compiler.CompilationStage`.
   """
   @spec render(String.t(), list(any())) :: String.t()
   def render(file, opts) do
@@ -28,12 +26,12 @@ defmodule Still.Compiler.TemplateHelpers.LinkToCSS do
       end)
       |> Enum.join(" ")
 
-    with pid when not is_nil(pid) <- Incremental.Registry.get_or_create_file_process(file),
-         %{output_file: output_file} <- Incremental.Node.compile(pid) do
-      """
-      <link rel="stylesheet" #{link_opts} href=#{UrlFor.render(output_file)} />
-      """
-    else
+    case compile_file(file, use_cache: true) do
+      %{output_file: output_file} ->
+        """
+        <link rel="stylesheet" #{link_opts} href=#{UrlFor.render(output_file)} />
+        """
+
       _ ->
         Logger.error("File process not found for #{file}")
         ""

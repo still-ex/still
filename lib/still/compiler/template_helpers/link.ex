@@ -2,9 +2,9 @@ defmodule Still.Compiler.TemplateHelpers.Link do
   @moduledoc """
   Renders an anchor HTML tag.
   """
-  import Still.Utils
 
   alias Still.Compiler.TemplateHelpers.ContentTag
+  alias Still.Compiler.TemplateHelpers.UrlFor
   alias Still.SourceFile
 
   @doc """
@@ -43,8 +43,7 @@ defmodule Still.Compiler.TemplateHelpers.Link do
 
     case URI.parse(to) do
       %URI{host: nil, scheme: nil, path: path} when not is_nil(path) ->
-        to = to |> add_base_url() |> modernize()
-        {to, opts}
+        {UrlFor.render(to), opts}
 
       %URI{scheme: scheme} when scheme in ["http", "https"] ->
         opts = add_absolute_path_opts(opts)
@@ -55,16 +54,9 @@ defmodule Still.Compiler.TemplateHelpers.Link do
     end
   end
 
-  defp add_base_url("/" <> path), do: add_base_url(path)
-  defp add_base_url(path), do: get_base_url() <> "/" <> path
-
   defp add_absolute_path_opts(opts) do
     opts
     |> Keyword.put_new(:target, "_blank")
     |> Keyword.put_new(:rel, "noopener noreferrer")
-  end
-
-  defp modernize(path) do
-    path |> String.replace_suffix("index.html", "")
   end
 end
