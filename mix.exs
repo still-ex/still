@@ -1,7 +1,7 @@
 defmodule Still.MixProject do
   use Mix.Project
 
-  @version "0.5.0"
+  @version "0.6.0"
 
   def project do
     [
@@ -29,7 +29,8 @@ defmodule Still.MixProject do
         "guides/introduction/templates.md",
         "guides/introduction/configuration.md",
         "guides/introduction/plugins.md",
-        "guides/advanced/preprocessors.md"
+        "guides/advanced/preprocessors.md",
+        "guides/advanced/hooks.md"
       ],
       nest_modules_by_prefix: [
         Still.Preprocessor,

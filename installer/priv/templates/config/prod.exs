@@ -1,4 +1,4 @@
 import Config
 
 config :still,
-  url_fingerprinting: true,
+  url_fingerprinting: true

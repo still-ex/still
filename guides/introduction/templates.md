@@ -18,7 +18,7 @@ instance, the following template includes the file `_includes/head.slime`:
 ```slim
 html
   head
-    = include "_includes/head.slime"
+    = include @env, "_includes/head.slime"
   body
     = children
 ```
@@ -28,7 +28,7 @@ function call with its contents.
 
 ### Linking to other files
 
-The `link/2` function creates HTML hyperlinks. It takes care of specifying
+The `link/3` function creates HTML hyperlinks. It takes care of specifying
 the `rel` and `target` when necessary, and it supports both full URLs or
 paths relative to the input folder. **You should always use the link
 function to create hyperlinks between files, otherwise deploys to
