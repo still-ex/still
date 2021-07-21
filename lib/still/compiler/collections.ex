@@ -55,7 +55,7 @@ defmodule Still.Compiler.Collections do
 
   defp find_files(collection, files) do
     files
-    |> Enum.filter(&Enum.member?(Map.get(&1[:metadata], :tag, []), collection))
+    |> Enum.filter(&Enum.member?(Map.get(&1[:metadata], :tags, []), collection))
   end
 
   defp insert_file(file, files) do
