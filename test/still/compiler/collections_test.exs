@@ -8,7 +8,7 @@ defmodule Still.Compiler.CollectionsTest do
 
   describe "get/2" do
     test "retruns the files associated with a given collection" do
-      file = %SourceFile{input_file: "file", metadata: %{tag: ["post"]}}
+      file = %SourceFile{input_file: "file", metadata: %{tags: ["post"]}}
 
       Collections.add(file)
 
