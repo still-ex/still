@@ -79,10 +79,10 @@ defmodule Still.Compiler.TemplateHelpers do
   end
 
   @doc """
-  Returns the collections for the current file.
+  Returns file metadata based off the provided collection string. 
   """
   def get_collections(_env, collection) do
-    Still.Compiler.Collections.get(collection)
+    Still.Compiler.Collections.get(collection) |> Enum.map(fn x -> Map.get(x, :metadata) end)
   end
 
   @doc """
