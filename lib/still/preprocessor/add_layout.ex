@@ -28,7 +28,7 @@ defmodule Still.Preprocessor.AddLayout do
       when not is_nil(layout_file) do
     layout_metadata =
       metadata
-      |> Map.drop([:tag, :layout, :permalink, :input_file])
+      |> Map.drop([:tags, :layout, :permalink, :input_file])
       |> Map.put(:children, children)
       |> Map.put(:dependency_chain, dependency_chain)
 
