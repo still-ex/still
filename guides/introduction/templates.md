@@ -148,7 +148,7 @@ layout: _console_layout.js
 And in `_console_layout.js` we have to render the `children`:
 
 ```js
-console.log("<%= @chidlren %>");
+console.log("<%= @children %>");
 ```
 
 #### Layout Chaining
@@ -188,11 +188,11 @@ This allows you to cascade down and combine any templating language.
 
 ### Collections
 
-Collections allow you to group file using a `tags` property:
+Collections allow you to group file using a `tag` property:
 
 ```
 ---
-tags:
+tag:
   - post
 title: A blog post
 ---
@@ -204,7 +204,7 @@ then iterate over this list using the `get_collections/2` function:
 
 ```slime
 ul
-  = Enum.map get_collections(@env, "post"), fn x ->
+  = Enum.map(get_collections(@env, "post"), fn x -> Map.get(x, :metadata) end) |> Enum.map fn x ->
     li
       = link x[:title], to: x[:permalink]
 ```
