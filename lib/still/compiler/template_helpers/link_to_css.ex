@@ -29,7 +29,7 @@ defmodule Still.Compiler.TemplateHelpers.LinkToCSS do
     case compile_file(file, use_cache: true) do
       %{output_file: output_file} ->
         """
-        <link rel="stylesheet" #{link_opts} href=#{UrlFor.render(output_file)} />
+        <link rel="stylesheet" #{link_opts} href=\"#{UrlFor.render(output_file)}\" />
         """
 
       _ ->
