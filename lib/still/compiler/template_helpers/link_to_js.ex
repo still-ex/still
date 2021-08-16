@@ -30,7 +30,7 @@ defmodule Still.Compiler.TemplateHelpers.LinkToJS do
     case compile_file(file, use_cache: true) do
       %{output_file: output_file} ->
         """
-        <script #{link_opts} src=#{UrlFor.render(output_file)}></script>
+        <script #{link_opts} src=\"#{UrlFor.render(output_file)}\"></script>
         """
 
       _ ->
