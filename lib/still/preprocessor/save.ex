@@ -39,10 +39,10 @@ defmodule Still.Preprocessor.Save do
   end
 
   @impl true
-  def render(file) do
-    Collections.add(file)
+  def render(source_file) do
+    Collections.add(source_file)
 
-    file
+    source_file
   end
 
   defp append_development_layout(%{extension: ".html", content: content} = file) do

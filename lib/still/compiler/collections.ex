@@ -3,6 +3,8 @@ defmodule Still.Compiler.Collections do
   Keeps track of collections.
   """
 
+  alias Still.SourceFile
+
   use GenServer
 
   def start_link(_) do
@@ -27,9 +29,12 @@ defmodule Still.Compiler.Collections do
   @doc """
   Adds a file to its collections.
   """
-  def add(file) do
-    GenServer.call(__MODULE__, {:add, file |> Map.from_struct()}, :infinity)
+  @spec add(SourceFile.t()) :: any()
+  def add(file = %{metadata: %{tag: tag}}) when not is_nil(tag) do
+    GenServer.call(__MODULE__, {:add, file}, :infinity)
   end
+
+  def add(_file), do: :ok
 
   @impl true
   def init(_) do
@@ -59,6 +64,11 @@ defmodule Still.Compiler.Collections do
   end
 
   defp insert_file(file, files) do
+    file =
+      file
+      |> Map.delete(:content)
+      |> Map.from_struct()
+
     files
     |> Enum.filter(&(&1[:input_file] != file[:input_file]))
     |> Enum.concat([file])

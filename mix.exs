@@ -57,7 +57,6 @@ defmodule Still.MixProject do
 
   defp deps do
     [
-      {:cachex, "~> 3.3"},
       {:cowboy, "~> 2.8"},
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
