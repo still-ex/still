@@ -52,10 +52,12 @@ defmodule Still.Web.Router do
         conn
         |> put_resp_header("content-type", MIME.from_path(file))
         |> send_resp(200, source_file.content)
+
       File.exists?(file) and not File.dir?(file) ->
         conn
         |> put_resp_header("content-type", MIME.from_path(file))
         |> send_file(200, file)
+
       true ->
         :error
     end

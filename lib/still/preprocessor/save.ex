@@ -39,7 +39,7 @@ defmodule Still.Preprocessor.Save do
   end
 
   @impl true
-  def render(%{input_file: input_file, run_type: :dev_compile} = file) do
+  def render(%{run_type: :compile_dev} = file) do
     file
     |> append_development_layout()
   end

@@ -25,10 +25,11 @@ defmodule Still.Compiler.Incremental.OutputToInputFileRegistry do
   """
   @spec recompile(binary()) :: any()
   def recompile(output_file) do
-    source_files = Registry.lookup(__MODULE__, output_file)
-    |> Enum.map(fn {_pid, input_file} ->
-      compile_file(input_file, run_type: :dev_compile)
-    end)
+    source_files =
+      Registry.lookup(__MODULE__, output_file)
+      |> Enum.map(fn {_pid, input_file} ->
+        compile_file(input_file, run_type: :compile_dev)
+      end)
 
     if Enum.empty?(source_files) do
       %SourceFile{input_file: ""}
