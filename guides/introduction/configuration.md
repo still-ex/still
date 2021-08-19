@@ -11,7 +11,7 @@ config :still,
 
 This will generate an HTML file that can be accessed at `http://localhost:3000/profiler`.
 
-**Enabling the profiler will make the dev server slower and increase the memory usage**. If you're experiencing an issues, please disable the profiler.
+**Enabling the profiler will make the dev server slower and increase the memory usage**. If you're experiencing any performance issues, please disable the profiler.
 
 ## Passthrough copy
 
