@@ -1,5 +1,18 @@
 # Configuration
 
+## Profiler
+
+There's a rudimentary profiler that you can enable with:
+
+```elixir
+config :still,
+  profiler: true
+```
+
+This will generate an HTML file that can be accessed at `http://localhost:3000/profiler`.
+
+**Enabling the profiler will make the dev server slower and increase the memory usage**. If you're experiencing an issues, please disable the profiler.
+
 ## Passthrough copy
 
 Some files you don't need to transform, only to copy from the input to the output. That's what pass through copy is for.

@@ -1,7 +1,7 @@
 defmodule Still.Watcher do
   @moduledoc """
   File system watcher that triggers compilation for new files, recompilation for
-  changed files and kills `Still.Compiler.Incremental.Node` for removed
+  changed files and kills ane `Still.Compiler.Incremental.Node` for removed
   files. Should only be used in the `dev` environment.
   """
 
@@ -9,6 +9,7 @@ defmodule Still.Watcher do
 
   alias Still.Compiler.{
     Collections,
+    ContentCache,
     ErrorCache,
     Incremental,
     Traverse
@@ -81,10 +82,11 @@ defmodule Still.Watcher do
   end
 
   defp process_file(file) do
-    file
-    |> get_relative_input_path()
-    |> compile_file_metadata()
+    file = get_relative_input_path(file)
 
+    compile_file_metadata(file)
+
+    ContentCache.clear(file)
     BrowserSubscriptions.notify()
   end
 end

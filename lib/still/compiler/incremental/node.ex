@@ -85,7 +85,7 @@ defmodule Still.Compiler.Incremental.Node do
 
       Enum.each(froms, &GenServer.reply(&1, source_file))
 
-      {:noreply, %{state | cached_source_file: Map.delete(source_file, :content)}}
+      {:noreply, %{state | cached_source_file: %{source_file | content: nil}}}
     catch
       _, %PreprocessorError{} ->
         Enum.each(froms, &GenServer.reply(&1, :ok))
@@ -108,7 +108,7 @@ defmodule Still.Compiler.Incremental.Node do
   def handle_call({:compile_metadata, _opts}, _from, state) do
     source_file = __MODULE__.Compile.run(state.file, :compile_metadata)
 
-    {:reply, source_file, %{state | cached_source_file: source_file}}
+    {:reply, source_file, %{state | cached_source_file: %{source_file | content: nil}}}
   catch
     _, %PreprocessorError{} ->
       {:reply, :ok, state}
