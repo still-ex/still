@@ -6,6 +6,8 @@ defmodule Still.Compiler.Incremental.OutputToInputFileRegistry do
 
   import Still.Utils
 
+  alias Still.SourceFile
+
   @doc """
   Registers an input and output pair.
   """
@@ -23,10 +25,16 @@ defmodule Still.Compiler.Incremental.OutputToInputFileRegistry do
   """
   @spec recompile(binary()) :: any()
   def recompile(output_file) do
-    Registry.dispatch(__MODULE__, output_file, fn entries ->
-      for {_pid, input_file} <- entries,
-          do: compile_file(input_file)
+    source_files = Registry.lookup(__MODULE__, output_file)
+    |> Enum.map(fn {_pid, input_file} ->
+      compile_file(input_file, run_type: :dev_compile)
     end)
+
+    if Enum.empty?(source_files) do
+      %SourceFile{input_file: ""}
+    else
+      hd(source_files)
+    end
   end
 
   @doc """

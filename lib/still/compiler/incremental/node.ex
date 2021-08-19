@@ -76,11 +76,12 @@ defmodule Still.Compiler.Incremental.Node do
     {:reply, source_file, state}
   end
 
-  def handle_call({:compile, _}, from, state) do
+  def handle_call({:compile, opts}, from, state) do
     froms = all_waiting_compile([from])
+    run_type = Keyword.get(opts, :run_type, :compile)
 
     try do
-      source_file = __MODULE__.Compile.run(state.file)
+      source_file = __MODULE__.Compile.run(state.file, run_type)
 
       Enum.each(froms, &GenServer.reply(&1, source_file))
 
