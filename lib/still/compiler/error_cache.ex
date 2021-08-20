@@ -59,7 +59,7 @@ defmodule Still.Compiler.ErrorCache do
   def handle_call({:set, {:ok, source_file}}, _, state) do
     errors =
       state.errors
-      |> Map.put(source_file_id(source_file), nil)
+      |> Map.delete(source_file_id(source_file))
 
     state = %{state | errors: errors}
 

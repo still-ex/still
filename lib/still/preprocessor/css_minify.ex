@@ -9,10 +9,7 @@ defmodule Still.Preprocessor.CSSMinify do
   use Preprocessor
 
   @impl true
-  def render(%{run_type: :compile_metadata} = source_file),
-    do: %{source_file | extension: ".css"}
-
-  def render(%{content: content} = source_file) do
+  def render(%{content: content, run_type: :compile} = source_file) do
     content =
       content
       |> String.split("\n")
@@ -21,4 +18,7 @@ defmodule Still.Preprocessor.CSSMinify do
 
     %{source_file | content: content, extension: ".css"}
   end
+
+  def render(source_file),
+    do: %{source_file | extension: ".css"}
 end

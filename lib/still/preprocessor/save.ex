@@ -39,10 +39,16 @@ defmodule Still.Preprocessor.Save do
   end
 
   @impl true
-  def render(file) do
-    Collections.add(file)
-
+  def render(%{run_type: :compile_dev} = file) do
     file
+    |> append_development_layout()
+  end
+
+  @impl true
+  def render(source_file) do
+    Collections.add(source_file)
+
+    source_file
   end
 
   defp append_development_layout(%{extension: ".html", content: content} = file) do

@@ -76,15 +76,16 @@ defmodule Still.Compiler.Incremental.Node do
     {:reply, source_file, state}
   end
 
-  def handle_call({:compile, _}, from, state) do
+  def handle_call({:compile, opts}, from, state) do
     froms = all_waiting_compile([from])
+    run_type = Keyword.get(opts, :run_type, :compile)
 
     try do
-      source_file = __MODULE__.Compile.run(state.file)
+      source_file = __MODULE__.Compile.run(state.file, run_type)
 
       Enum.each(froms, &GenServer.reply(&1, source_file))
 
-      {:noreply, %{state | cached_source_file: source_file}}
+      {:noreply, %{state | cached_source_file: %{source_file | content: nil}}}
     catch
       _, %PreprocessorError{} ->
         Enum.each(froms, &GenServer.reply(&1, :ok))
@@ -107,15 +108,10 @@ defmodule Still.Compiler.Incremental.Node do
   def handle_call({:compile_metadata, _opts}, _from, state) do
     source_file = __MODULE__.Compile.run(state.file, :compile_metadata)
 
-    {:reply, source_file, %{state | cached_source_file: source_file}}
+    {:reply, source_file, %{state | cached_source_file: %{source_file | content: nil}}}
   catch
     _, %PreprocessorError{} ->
       {:reply, :ok, state}
-  end
-
-  @impl true
-  def handle_cast(:changed, state) do
-    {:noreply, %{state | cached_source_file: nil}}
   end
 
   defp all_waiting_compile(acc) do
