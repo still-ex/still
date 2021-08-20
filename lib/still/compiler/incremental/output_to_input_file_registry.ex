@@ -8,6 +8,8 @@ defmodule Still.Compiler.Incremental.OutputToInputFileRegistry do
 
   alias Still.SourceFile
 
+  require Logger
+
   @doc """
   Registers an input and output pair.
   """
@@ -25,16 +27,16 @@ defmodule Still.Compiler.Incremental.OutputToInputFileRegistry do
   """
   @spec recompile(binary()) :: any()
   def recompile(output_file) do
-    source_files =
-      Registry.lookup(__MODULE__, output_file)
-      |> Enum.map(fn {_pid, input_file} ->
-        compile_file(input_file, run_type: :compile_dev)
-      end)
-
-    if Enum.empty?(source_files) do
-      %SourceFile{input_file: ""}
-    else
-      hd(source_files)
+    Registry.lookup(__MODULE__, output_file)
+    |> Enum.map(fn {_pid, input_file} ->
+      compile_file(input_file, run_type: :compile_dev)
+    end)
+    |> case do
+      [source_file] -> source_file
+      [_source_file | _other] ->
+        Logger.error("There is more than one file registered under the same name")
+        System.stop(1)
+      [] -> %SourceFile{input_file: ""}
     end
   end
 
