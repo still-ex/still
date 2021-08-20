@@ -32,11 +32,15 @@ defmodule Still.Compiler.Incremental.OutputToInputFileRegistry do
       compile_file(input_file, run_type: :compile_dev)
     end)
     |> case do
-      [source_file] -> source_file
+      [source_file] ->
+        source_file
+
       [_source_file | _other] ->
         Logger.error("There is more than one file registered under the same name")
         System.stop(1)
-      [] -> %SourceFile{input_file: ""}
+
+      [] ->
+        %SourceFile{input_file: ""}
     end
   end
 
