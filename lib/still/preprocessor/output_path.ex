@@ -21,7 +21,9 @@ defmodule Still.Preprocessor.OutputPath do
       when not is_nil(extension) do
     output_file =
       input_file
-      |> String.replace(Path.extname(input_file), extension)
+      |> String.split(".")
+      |> hd()
+      |> Kernel.<>(extension)
 
     %{file | output_file: output_file}
   end
