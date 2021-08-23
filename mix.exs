@@ -98,10 +98,7 @@ defmodule Still.MixProject do
         "LICENSE",
         "mix*",
         "lib/*",
-        "priv/still/*",
-        "installer/lib/*",
-        "installer/mix*",
-        "installer/priv"
+        "priv/still/*"
       ]
     ]
   end
