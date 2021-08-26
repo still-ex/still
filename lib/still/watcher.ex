@@ -48,6 +48,9 @@ defmodule Still.Watcher do
   """
   def handle_info({:file_event, _watcher_pid, {file, events}}, state) do
     cond do
+      ignored_file?(get_relative_input_path(file)) ->
+        nil
+
       Enum.member?(events, :removed) or Enum.member?(events, :renamed) ->
         remove_file(file)
 

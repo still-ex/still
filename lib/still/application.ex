@@ -12,7 +12,12 @@ defmodule Still.Application do
     # file is rendered.
     Code.compiler_options(ignore_module_conflict: true)
 
-    children = base_children() ++ server_children() ++ profiler_children()
+    children =
+      base_children() ++
+      server_children() ++
+        profiler_children() ++
+          process_watchers_children()
+
     opts = [strategy: :one_for_one, name: Still.Supervisor]
 
     if server?() do
@@ -45,6 +50,14 @@ defmodule Still.Application do
   defp profiler_children do
     if profiler?() do
       [Still.Profiler]
+    else
+      []
+    end
+  end
+
+  defp process_watchers_children do
+    if server?() do
+      Enum.map(config(:watchers, []), &{Still.ProcessWatcher, &1})
     else
       []
     end

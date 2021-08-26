@@ -21,6 +21,9 @@ defmodule Still.Compiler.Traverse do
     path = Path.join(get_input_path(), rel_path)
 
     cond do
+      ignored_file?(rel_path) ->
+        []
+
       partial?(rel_path) ->
         []
 
