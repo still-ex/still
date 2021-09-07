@@ -1,4 +1,5 @@
 # Copied from [Phoenix](https://github.com/phoenixframework/phoenix/blob/master/lib/phoenix/endpoint/watcher.ex).
+# credo:disable-for-this-file
 
 defmodule Still.ProcessWatcher do
   @moduledoc false
