@@ -10,16 +10,14 @@ defmodule Still.Utils do
     :module == elem(Code.ensure_compiled(module), 0)
   end
 
+  @doc """
+  Checks whether a file should be ignored by Still or not.
+  """
+  @spec ignored_file?(binary()) :: boolean()
   def ignored_file?(file) do
     config(:ignore_files, [])
     |> Enum.any?(&ignored_file_match(file, &1))
   end
-
-  defp ignored_file_match(file, {match, _output}) when is_binary(match),
-    do: ignored_file_match(file, match)
-
-  defp ignored_file_match(file, {match, _output}) when is_atom(match),
-    do: ignored_file_match(file, match |> Atom.to_string())
 
   defp ignored_file_match(file, match) when is_binary(match),
     do: String.starts_with?(file, match)

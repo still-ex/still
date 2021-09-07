@@ -1,4 +1,4 @@
-# https://github.com/phoenixframework/phoenix/blob/master/lib/phoenix/endpoint/watcher.ex
+# Copied from [Phoenix](https://github.com/phoenixframework/phoenix/blob/master/lib/phoenix/endpoint/watcher.ex).
 
 defmodule Still.ProcessWatcher do
   @moduledoc false
