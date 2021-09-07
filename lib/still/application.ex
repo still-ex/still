@@ -14,9 +14,9 @@ defmodule Still.Application do
 
     children =
       base_children() ++
-      server_children() ++
+        server_children() ++
         profiler_children() ++
-          process_watchers_children()
+        process_watchers_children()
 
     opts = [strategy: :one_for_one, name: Still.Supervisor]
 
