@@ -6,7 +6,7 @@ Still is a simple static site generator for pragmatic developers. It's a modern 
 
 ## Quick start
 
-Still is in early active development. It requires at least Elixir 1.11.3 and Erlang 23.0.3. It may work with previous versions, but these are the versions we are using at the moment.
+Still is in early active development. It requires at least Elixir 1.11.3 and Erlang 23.0.3. It may work with previous versions, but these are the versions we are building on.
 
 To bootstrap a new site, run the following commands:
 
@@ -52,6 +52,20 @@ Run `mix still.dev` to start the development server. Then your website will be a
 Still is watching your file system for changes and it refreshes the browser when necessary. If there are any errors building the website, they will show up on the browser, along with the stack trace and the context where the error happen.
 
 If you run `iex -S mix still.dev` you'll get an interactive shell where you can test things quickly, such as API calls.
+
+## Building a website
+
+Still takes the files in your input folder, which is `priv/site/` by default, and turns them into a website. The input folder is where you'll spend most of time, writing Slime templates and CSS. Add a new file `about.slime` to your input folder with the contents:
+
+```
+---
+layout: _layout.slime
+---
+
+h1 About
+```
+
+And a new page will be available in [http://localhost:3000/about](http://localhost:3000/about).
 
 ## Production
 

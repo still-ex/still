@@ -28,7 +28,6 @@ defmodule Still.MixProject do
         "guides/introduction/getting_started.md",
         "guides/introduction/templates.md",
         "guides/introduction/configuration.md",
-        "guides/introduction/plugins.md",
         "guides/advanced/preprocessors.md",
         "guides/advanced/hooks.md"
       ],
