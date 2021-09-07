@@ -17,17 +17,15 @@ defmodule Still.ProcessWatcher do
   end
 
   def watch(_cmd, {mod, fun, args}) do
-    try do
-      apply(mod, fun, args)
-    catch
-      kind, reason ->
-        # The function returned a non-zero exit code.
-        # Sleep for a couple seconds before exiting to
-        # ensure this doesn't hit the supervisor's
-        # max_restarts/max_seconds limit.
-        Process.sleep(2000)
-        :erlang.raise(kind, reason, __STACKTRACE__)
-    end
+    apply(mod, fun, args)
+  catch
+    kind, reason ->
+      # The function returned a non-zero exit code.
+      # Sleep for a couple seconds before exiting to
+      # ensure this doesn't hit the supervisor's
+      # max_restarts/max_seconds limit.
+      Process.sleep(2000)
+      :erlang.raise(kind, reason, __STACKTRACE__)
   end
 
   def watch(cmd, args) when is_list(args) do
