@@ -54,3 +54,29 @@ config :still,
 ```
 
 In the example above, the `css` folder from the input folder but will be renamed to `styles` in the output folder.
+
+## Ignored files
+
+If you want to ignore some files in your input folder, such as files in the `node_modules` folder, or any file containing the word `tailwind`, you can use the setting:
+
+```elixir
+config :still,
+  ignore_files: ["node_modules", ~r/tailwind/]
+```
+
+This setting is similar to [Passthrough copy](#passthrough-copy).
+
+## Watchers
+
+Watchers are external processes managed by Still. You can use watchers to run something like tailwind or webpack. For instance, if the `assets` folder contains your `tailwind.config.js`, the following settings will remove `assets` from the compilation pipeline, and start tailwind on that folder:
+
+
+```elixir
+config :still,
+  ignore_files: ["assets"],
+  watchers: [
+    npx: ["tailwindcss", "-o", "../global.css", "--watch", cd: "priv/site/assets"]
+  ]
+```
+
+ Tailwind will generate a `global.css` in the root of your website, which will be picked up by Still and turned into a file on your website.

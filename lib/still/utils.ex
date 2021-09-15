@@ -11,6 +11,25 @@ defmodule Still.Utils do
   end
 
   @doc """
+  Checks whether a file should be ignored by Still or not.
+  """
+  @spec ignored_file?(binary()) :: boolean()
+  def ignored_file?(file) do
+    config(:ignore_files, [])
+    |> Enum.any?(&ignored_file_match(file, &1))
+  end
+
+  defp ignored_file_match(file, match) when is_binary(match),
+    do: String.starts_with?(file, match)
+
+  defp ignored_file_match(file, match) do
+    cond do
+      Regex.regex?(match) -> String.match?(file, match)
+      true -> false
+    end
+  end
+
+  @doc """
   Compiles a file.
   """
   @spec compile_file(binary(), any()) :: SourceFile.t()
