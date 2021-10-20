@@ -83,7 +83,7 @@ defmodule Still.Compiler.ErrorCache do
 
   @impl true
   def handle_cast(:clear, _state) do
-    {:noreply, %{}}
+    {:noreply, %{errors: %{}}}
   end
 
   def handle_cast(_, state) do

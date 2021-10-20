@@ -84,7 +84,8 @@ defmodule Still.Compiler.Incremental.Node.Compile do
     Logger.error(error)
 
     if Still.Utils.compilation_task?() do
-      System.stop(1)
+      Logger.flush()
+      System.halt(1)
     else
       ErrorCache.set({:error, error})
     end

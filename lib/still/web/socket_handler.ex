@@ -34,6 +34,8 @@ defmodule Still.Web.SocketHandler do
         [error | _] ->
           send(self(), Jason.encode!(%{type: "error", data: ErrorFormatter.format(error)}))
       end
+
+      ErrorCache.clear()
     end
 
     {:ok, state}

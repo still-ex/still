@@ -39,8 +39,11 @@ defmodule Still.Web.Router do
     with :error <- try_send_file(conn, full_path),
          :error <- try_send_file(conn, "#{full_path}/index.html"),
          :error <- try_send_file(conn, "#{full_path}.html") do
+      %{content: content} = Still.Compiler.File.DevLayout.wrap("")
+
       conn
-      |> send_resp(404, "File not found")
+      |> put_resp_header("content-type", "text/html")
+      |> send_resp(200, content)
     end
   end
 
