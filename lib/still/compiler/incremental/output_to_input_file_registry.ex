@@ -31,15 +31,17 @@ defmodule Still.Compiler.Incremental.OutputToInputFileRegistry do
     |> Enum.map(fn {_pid, input_file} ->
       compile_file(input_file, run_type: :compile_dev)
     end)
+    |> Enum.filter(fn v -> v != :ok end)
     |> case do
       [source_file] ->
         source_file
 
       [_source_file | _other] ->
         Logger.error("There is more than one file registered under the same name")
-        System.stop(1)
+        Logger.flush()
+        System.halt(1)
 
-      [] ->
+      _ ->
         %SourceFile{input_file: ""}
     end
   end
