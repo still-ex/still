@@ -32,7 +32,7 @@ defmodule Still.Preprocessor.Markdown do
   end
 
   defp use_responsive_images? do
-    config!(__MODULE__)
+    config(__MODULE__, [])
     |> Keyword.get(:use_responsive_images, false)
   end
 end
