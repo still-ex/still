@@ -5,7 +5,7 @@ defmodule Still.Preprocessor.MarkdownTest do
   alias Still.Preprocessor.Markdown
 
   describe "render/1" do
-    test "doesn't replace images with responsive images" do
+    test "doesn't replace images with responsive images when :use_responsive_images is false" do
       Application.put_env(:still, Markdown, use_responsive_images: false)
 
       source_file = %SourceFile{
@@ -24,7 +24,7 @@ defmodule Still.Preprocessor.MarkdownTest do
                "<h1>Hello!</h1>\n\n<p><img src=\"../../logo.jpg\" alt=\"some alt\"></p>\n"
     end
 
-    test "replaces images with responsive images" do
+    test "replaces images with responsive images when :use_responsive_images is true" do
       Application.put_env(:still, Markdown, use_responsive_images: true)
 
       source_file = %SourceFile{

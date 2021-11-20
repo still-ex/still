@@ -1,7 +1,12 @@
 defmodule Still.Preprocessor.Markdown do
   @moduledoc """
-  Renders markdown files using
-  [`Markdown`](https://github.com/still-ex/markdown).
+  Transforms markdown into HTML using [`Markdown`](https://github.com/still-ex/markdown).
+
+  Set the property `:use_responsive_images` in your config to render responsive images:
+
+  ```
+  config :still, Still.Preprocessor.Markdown, use_responsive_images: true
+  ```
   """
 
   alias Still.Preprocessor
@@ -20,7 +25,7 @@ defmodule Still.Preprocessor.Markdown do
     source_file = %{source_file | content: html_doc, extension: ".html"}
 
     if use_responsive_images?() do
-      Still.Preprocessor.HtmlResponsiveImage.render(source_file)
+      HtmlResponsiveImage.render(source_file)
     else
       source_file
     end
