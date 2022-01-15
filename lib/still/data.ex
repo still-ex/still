@@ -32,6 +32,8 @@ defmodule Still.Data do
 
   **Notice**: The data folder name should start with an underscore, otherwise
   Still will consider the pages inside as web pages or assets to build.
+
+  It supports JSON (.json), YAML (.yml) and Elixir (.exs, .ex).
   """
 
   def start_link(_) do
