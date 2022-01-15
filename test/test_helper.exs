@@ -1,5 +1,6 @@
 alias Still.Compiler
 alias Still.Compiler.{Incremental, Collections}
+alias Still.Data
 
 {:ok, _} = Application.ensure_all_started(:timex)
 {:ok, _} = Application.ensure_all_started(:cachex)
@@ -9,6 +10,7 @@ alias Still.Compiler.{Incremental, Collections}
 
 {:ok, _pid} = Incremental.Registry.start_link(%{})
 {:ok, _pid} = Collections.start_link(%{})
+{:ok, _pid} = Data.start_link([])
 {:ok, _pid} = Cachex.start_link(name: Still.Compiler.ContentCache.cache_name())
 
 ExUnit.start()

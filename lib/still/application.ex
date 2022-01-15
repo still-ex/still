@@ -28,7 +28,11 @@ defmodule Still.Application do
   end
 
   defp base_children do
-    [Still.Compiler.Supervisor, {Cachex, name: Still.Compiler.ContentCache.cache_name()}]
+    [
+      Still.Compiler.Supervisor,
+      Still.Data,
+      {Cachex, name: Still.Compiler.ContentCache.cache_name()}
+    ]
   end
 
   defp server_children do

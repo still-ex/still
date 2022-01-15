@@ -17,7 +17,7 @@ defmodule Still.Compiler.Incremental.Node.Render do
         input_file: input_file,
         dependency_chain: [input_file | dependency_chain],
         run_type: :render,
-        metadata: Map.drop(data, [:dependency_chain])
+        metadata: data |> Map.drop([:dependency_chain]) |> Map.put(:global, Still.Data.global())
       }
       |> Preprocessor.run()
 

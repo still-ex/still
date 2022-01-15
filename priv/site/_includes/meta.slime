@@ -1,20 +1,18 @@
 ---
 seo_title: Still
-description: Still is a composable static site generator for Elixir.
-keywords: elixir, static, site, generator, open-source, opensource, static-site
 url: https://stillstatic.io
 banner_url: <%= url_for("../images/banner.png") %>
 ---
 
-meta name="description" content=@description
+meta name="description" content=@global.site.description
 meta name="title" content=@seo_title
-meta name="keywords" content=@keywords
+meta name="keywords" content=@global.site.keywords
 meta name="twitter:card" content="summary_large_image"
-meta name="twitter:description" content=@description
+meta name="twitter:description" content=@global.site.description
 meta name="twitter:title" content=@seo_title
 meta property="twitter:image" content=@banner_url
 meta property="twitter:url" content=@url
-meta property="og:description" content=@description
+meta property="og:description" content=@global.site.description
 meta property="og:image" content=@banner_url
 meta property="og:image:secure_url" content=@banner_url
 meta property="og:title" content=@seo_title
