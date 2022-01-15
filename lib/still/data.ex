@@ -7,6 +7,33 @@ defmodule Still.Data do
 
   @initial_state %{global: %{}}
 
+  @default_folder "_data"
+
+  @moduledoc """
+  Loads data files and makes data available in templates.
+  Any file in the _#{@default_folder}_ folder will be loaded
+  using the file's name as a key. For instance, a file in
+  _#{@default_folder}/site.json_ with the contents:
+
+      {
+        "title": "Still"
+      }
+
+  Will be available in the templates as `@global.site.title`.
+
+  You can also use folders to organise files; the same file in
+  `_#{@default_folder}/default/site.json_ would be available
+  in the templates as `@global.default.site.title`.
+
+  The data folder can be changed in the config:
+
+      config :still, Still.Data,
+        folder: "#{@default_folder}"
+
+  **Notice**: The data folder name should start with an underscore, otherwise
+  Still will consider the pages inside as web pages or assets to build.
+  """
+
   def start_link(_) do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
   end
@@ -24,7 +51,7 @@ defmodule Still.Data do
   end
 
   def member?(input_file) do
-    String.starts_with?(input_file, "_data")
+    String.starts_with?(input_file, data_folder())
   end
 
   @impl true
@@ -33,7 +60,7 @@ defmodule Still.Data do
   end
 
   @impl true
-  def handle_call(:reset, _, state) do
+  def handle_call(:reset, _, _state) do
     {:reply, :ok, @initial_state}
   end
 
@@ -54,7 +81,7 @@ defmodule Still.Data do
 
   defp data_files(rel_path \\ "") do
     path =
-      "_data"
+      data_folder()
       |> get_input_path()
       |> Path.join(rel_path)
 
@@ -82,7 +109,7 @@ defmodule Still.Data do
   end
 
   defp load_file(input_file, data) do
-    "_data"
+    data_folder()
     |> Path.join(input_file)
     |> get_input_path()
     |> read_file()
@@ -125,5 +152,9 @@ defmodule Still.Data do
     end)
     |> Path.split()
     |> Enum.map(&String.to_atom/1)
+  end
+
+  defp data_folder do
+    Map.get(config(__MODULE__, %{}), :folder, @default_folder)
   end
 end

@@ -8,6 +8,7 @@ defmodule Still.Compiler.Incremental.Node.Render do
   """
 
   alias Still.Compiler.{ErrorCache, PreprocessorError}
+  alias Still.Data
   alias Still.Preprocessor
   alias Still.SourceFile
 
@@ -17,7 +18,7 @@ defmodule Still.Compiler.Incremental.Node.Render do
         input_file: input_file,
         dependency_chain: [input_file | dependency_chain],
         run_type: :render,
-        metadata: data |> Map.drop([:dependency_chain]) |> Map.put(:global, Still.Data.global())
+        metadata: data |> Map.drop([:dependency_chain]) |> Map.put(:global, Data.global())
       }
       |> Preprocessor.run()
 
