@@ -30,7 +30,7 @@ defmodule Still.Compiler.Incremental.Node.Compile do
         input_file: input_file,
         dependency_chain: [input_file],
         run_type: run_type,
-        metadata: %{global: Data.global()}
+        metadata: Data.global()
       }
       |> do_run()
 

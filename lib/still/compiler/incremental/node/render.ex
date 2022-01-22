@@ -13,12 +13,14 @@ defmodule Still.Compiler.Incremental.Node.Render do
   alias Still.SourceFile
 
   def run(input_file, %{dependency_chain: dependency_chain} = data) do
+    metadata = Map.merge(Data.global(), Map.drop(data, [:dependency_chain]))
+
     source_file =
       %SourceFile{
         input_file: input_file,
         dependency_chain: [input_file | dependency_chain],
         run_type: :render,
-        metadata: data |> Map.drop([:dependency_chain]) |> Map.put(:global, Data.global())
+        metadata: metadata
       }
       |> Preprocessor.run()
 

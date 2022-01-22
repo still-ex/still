@@ -19,11 +19,11 @@ defmodule Still.Data do
         "title": "Still"
       }
 
-  Will be available in the templates as `@global.site.title`.
+  Will be available in the templates as `@site.title`.
 
   You can also use folders to organise files; the same file in
   `_#{@default_folder}/default/site.json_ would be available
-  in the templates as `@global.default.site.title`.
+  in the templates as `@default.site.title`.
 
   The data folder can be changed in the config:
 
