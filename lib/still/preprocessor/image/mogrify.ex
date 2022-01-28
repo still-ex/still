@@ -25,7 +25,7 @@ defmodule Still.Preprocessor.Image.Mogrify do
       |> Map.get(:sizes, [])
       |> get_output_files_with_sizes(output_file, opts)
 
-    if input_file_changed?(input_file, output_files) do
+    if file_changed?(input_file, output_files) do
       process_input_file(input_file, opts, output_files)
     end
 
@@ -46,22 +46,8 @@ defmodule Still.Preprocessor.Image.Mogrify do
     end
   end
 
-  defp input_file_changed?(input_file, [{_, output_file} | _]) do
-    input_mtime =
-      input_file
-      |> get_input_path()
-      |> get_modified_time!()
-
-    output_file
-    |> get_output_path()
-    |> get_modified_time()
-    |> case do
-      {:ok, output_mtime} ->
-        Timex.compare(input_mtime, output_mtime) != -1
-
-      _ ->
-        true
-    end
+  defp file_changed?(input_file, [{_, output_file} | _]) do
+    input_file_changed?(input_file, output_file)
   end
 
   defp get_output_files_with_sizes(sizes, output_file_path, opts) do

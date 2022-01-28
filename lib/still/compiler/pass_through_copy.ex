@@ -69,7 +69,6 @@ defmodule Still.Compiler.PassThroughCopy do
   defp run(file, output_file) do
     case do_run(file, output_file) do
       :ok ->
-        Logger.info("Pass through copy #{file}")
         :ok
 
       _ ->
@@ -78,12 +77,17 @@ defmodule Still.Compiler.PassThroughCopy do
     end
   end
 
-  defp do_run(file, output_file) do
-    get_output_path(output_file)
-    |> Path.dirname()
-    |> File.mkdir_p!()
+  defp do_run(input_file, output_file) do
+    if input_file_changed?(input_file, output_file) do
+      get_output_path(output_file)
+      |> Path.dirname()
+      |> File.mkdir_p!()
 
-    File.cp(get_input_path(file), get_output_path(output_file))
+      Logger.info("Pass through copy #{input_file}")
+      File.cp(get_input_path(input_file), get_output_path(output_file))
+    else
+      :ok
+    end
   end
 
   defp get_pass_through_copy_match(file) do

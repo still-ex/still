@@ -57,6 +57,25 @@ defmodule Still.Utils do
   end
 
   @doc """
+  Returns true if the modified time of the imput file is different than the output file.
+  """
+  def input_file_changed?(input_file, output_file) do
+    with {:ok, input_mtime} <-
+           input_file
+           |> get_input_path()
+           |> get_modified_time(),
+         {:ok, output_mtime} <-
+           output_file
+           |> get_output_path()
+           |> get_modified_time() do
+      Timex.compare(input_mtime, output_mtime) != -1
+    else
+      _ ->
+        true
+    end
+  end
+
+  @doc """
   Returns the modified time of a given file. Errors if the file does not exist.
   """
   def get_modified_time!(path) do
