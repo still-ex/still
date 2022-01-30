@@ -111,7 +111,7 @@ defmodule Still.Data do
   end
 
   defp load_file(input_file, data) do
-    {:ok, result} =
+    new_data =
       data_folder()
       |> Path.join(input_file)
       |> get_input_path()
@@ -120,22 +120,23 @@ defmodule Still.Data do
     put_in(
       data,
       Enum.map(path_components(input_file), &Access.key(&1, %{})),
-      result
+      new_data
     )
   end
 
   defp read_file(file) do
     case Path.extname(file) do
       ".yml" ->
-        YamlElixir.read_from_file(file, atoms: true)
+        {:ok, result} = YamlElixir.read_from_file(file, atoms: true)
+        result
 
       ".exs" ->
         {result, _} = Code.eval_file(file)
-        {:ok, result}
+        result
 
       ".ex" ->
         {result, _} = Code.eval_file(file)
-        {:ok, result}
+        result
 
       ".json" ->
         File.read!(file)
