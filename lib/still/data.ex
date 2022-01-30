@@ -22,7 +22,7 @@ defmodule Still.Data do
   Will be available in the templates as `@site.title`.
 
   You can also use folders to organise files; the same file in
-  `_#{@default_folder}/default/site.json_ would be available
+  `_#{@default_folder}/default/site.json_` would be available
   in the templates as `@default.site.title`.
 
   The data folder can be changed in the config:
@@ -88,7 +88,7 @@ defmodule Still.Data do
       |> Path.join(rel_path)
 
     cond do
-      File.regular?(path) && Enum.member?(@supported_extensions, Path.extname(path)) ->
+      supported_file?(path) ->
         [rel_path]
 
       File.dir?(path) ->
@@ -111,21 +111,17 @@ defmodule Still.Data do
   end
 
   defp load_file(input_file, data) do
-    data_folder()
-    |> Path.join(input_file)
-    |> get_input_path()
-    |> read_file()
-    |> case do
-      {:ok, result} ->
-        put_in(
-          data,
-          Enum.map(path_components(input_file), &Access.key(&1, %{})),
-          result
-        )
+    {:ok, result} =
+      data_folder()
+      |> Path.join(input_file)
+      |> get_input_path()
+      |> read_file()
 
-      {:error, err} ->
-        raise err
-    end
+    put_in(
+      data,
+      Enum.map(path_components(input_file), &Access.key(&1, %{})),
+      result
+    )
   end
 
   defp read_file(file) do
@@ -142,9 +138,8 @@ defmodule Still.Data do
         {:ok, result}
 
       ".json" ->
-        {:ok, content} = File.read(file)
-
-        Jason.decode(content, keys: :atoms)
+        File.read!(file)
+        |> Jason.decode!(keys: :atoms)
     end
   end
 
@@ -158,5 +153,9 @@ defmodule Still.Data do
 
   defp data_folder do
     Map.get(config(__MODULE__, %{}), :folder, @default_folder)
+  end
+
+  defp supported_file?(path) do
+    File.regular?(path) && Enum.member?(@supported_extensions, Path.extname(path))
   end
 end
