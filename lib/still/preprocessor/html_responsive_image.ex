@@ -25,15 +25,11 @@ defmodule Still.Preprocessor.HtmlResponsiveImage do
     new_content =
       document
       |> Floki.find_and_update("img", fn
-        {"img", img_attrs} ->
-          src = find_node_attr(img_attrs, "src")
-          srcset = find_node_attr(img_attrs, "srcset")
-          no_responsive_image = find_node_attr(img_attrs, @no_responsive_image)
-
-          if is_image?(src) && is_nil(srcset) && is_nil(no_responsive_image) do
-            add_srcset(input_file, img_attrs)
+        {"img", attrs} ->
+          if has_image?(attrs) && no_srcset?(attrs) && ignored?(attrs) do
+            add_srcset(input_file, attrs)
           else
-            {"img", remove_node_attr(img_attrs, @no_responsive_image)}
+            {"img", remove_node_attr(attrs, @no_responsive_image)}
           end
 
         other ->
@@ -86,7 +82,19 @@ defmodule Still.Preprocessor.HtmlResponsiveImage do
     end
   end
 
-  defp is_image?(src) do
+  defp ignored?(img_attrs) do
+    find_node_attr(img_attrs, @no_responsive_image)
+    |> is_nil()
+  end
+
+  defp no_srcset?(img_attrs) do
+    find_node_attr(img_attrs, "srcset")
+    |> is_nil()
+  end
+
+  defp has_image?(img_attrs) do
+    src = find_node_attr(img_attrs, "src")
+
     String.ends_with?(src, "png") || String.ends_with?(src, "jpeg") ||
       String.ends_with?(src, "jpg")
   end
