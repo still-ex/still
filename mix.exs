@@ -65,7 +65,7 @@ defmodule Still.MixProject do
       {:mime, "~> 1.0"},
       {:ex_image_info, "~> 0.2.4"},
       {:file_system, "~> 0.2.10"},
-      {:floki, "~> 0.29.0"},
+      {:floki, "~> 0.32.0"},
       {:jason, "~> 1.2"},
       {:markdown, "~> 0.1.1", hex: :still_markdown},
       {:mock, "~> 0.3.0", only: :test},
