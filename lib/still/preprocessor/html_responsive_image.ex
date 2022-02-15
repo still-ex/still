@@ -6,8 +6,8 @@ defmodule Still.Preprocessor.HtmlResponsiveImage do
   Images that have the attributes "srcset" or "#{@no_responsive_image}" are ignored.
   """
 
-  alias Still.{SourceFile, Preprocessor}
   alias Still.Compiler.TemplateHelpers.ResponsiveImage
+  alias Still.{SourceFile, Preprocessor}
 
   use Preprocessor
 
