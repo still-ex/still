@@ -7,7 +7,7 @@ defmodule Still.Preprocessor.HtmlResponsiveImage do
   """
 
   alias Still.Compiler.TemplateHelpers.ResponsiveImage
-  alias Still.{SourceFile, Preprocessor}
+  alias Still.{Preprocessor, SourceFile}
 
   use Preprocessor
 
