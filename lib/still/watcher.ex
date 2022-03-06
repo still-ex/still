@@ -15,6 +15,8 @@ defmodule Still.Watcher do
     Traverse
   }
 
+  alias Still.Data
+
   alias Still.Web.BrowserSubscriptions
 
   import Still.Utils
@@ -37,6 +39,7 @@ defmodule Still.Watcher do
     {:ok, watcher_pid} = FileSystem.start_link(dirs: [get_input_path()])
     FileSystem.subscribe(watcher_pid)
 
+    Data.load()
     Traverse.run(&compile_file_metadata/1)
 
     {:noreply, state}
@@ -75,11 +78,15 @@ defmodule Still.Watcher do
   defp remove_file(file) do
     file = get_relative_input_path(file)
 
-    Collections.reset()
-    Traverse.run(&compile_file_metadata/1)
+    if Data.member?(file) do
+      Data.load()
+    else
+      Collections.reset()
+      Traverse.run(&compile_file_metadata/1)
 
-    ErrorCache.clear(file)
-    Incremental.Registry.terminate_file_process(file)
+      ErrorCache.clear(file)
+      Incremental.Registry.terminate_file_process(file)
+    end
 
     BrowserSubscriptions.notify()
   end
@@ -87,9 +94,14 @@ defmodule Still.Watcher do
   defp process_file(file) do
     file = get_relative_input_path(file)
 
-    compile_file_metadata(file)
+    if Data.member?(file) do
+      Data.load()
+    else
+      compile_file_metadata(file)
 
-    ContentCache.clear(file)
+      ContentCache.clear(file)
+    end
+
     BrowserSubscriptions.notify()
   end
 end
