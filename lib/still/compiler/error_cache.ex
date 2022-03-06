@@ -21,7 +21,7 @@ defmodule Still.Compiler.ErrorCache do
   cleared. Otherwise it is updated.
   """
   def set(result) do
-    GenServer.call(__MODULE__, {:set, result})
+    GenServer.cast(__MODULE__, {:set, result})
   end
 
   @doc """
@@ -56,24 +56,24 @@ defmodule Still.Compiler.ErrorCache do
     {:reply, state.errors, state}
   end
 
-  def handle_call({:set, {:ok, source_file}}, _, state) do
+  def handle_cast({:set, {:ok, source_file}}, state) do
     errors =
       state.errors
       |> Map.delete(source_file_id(source_file))
 
     state = %{state | errors: errors}
 
-    {:reply, :ok, state}
+    {:noreply, state}
   end
 
-  def handle_call({:set, {:error, error}}, _, state) do
+  def handle_cast({:set, {:error, error}}, state) do
     errors =
       state.errors
       |> Map.put(source_file_id(error.source_file), error)
 
     state = %{state | errors: errors}
 
-    {:reply, :ok, state}
+    {:noreply, state}
   end
 
   @impl true
