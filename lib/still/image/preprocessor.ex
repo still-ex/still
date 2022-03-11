@@ -1,4 +1,4 @@
-defmodule Still.Preprocessor.Image do
+defmodule Still.Image.Preprocessor do
   @moduledoc """
   Handles image transformation.
 
@@ -14,12 +14,12 @@ defmodule Still.Preprocessor.Image do
   `:sizes` defines the widths of the output files to create.
 
   `:transformations` defines the function name and arguments to call on the
-  adapter. By default, the adapter is `Still.Preprocessor.Image.Mogrify`.
+  adapter. By default, the adapter is `Still.Image.Preprocessor.Mogrify`.
   However you can also include your own or make use of
-  `Still.Preprocessor.Image.Imageflow` by adding `:still_imageflow` as a
+  `Still.Image.Preprocessor.Imageflow` by adding `:still_imageflow` as a
   dependency and setting in your config:
 
-    config :still, :image_adapter, Still.Preprocessor.Image.Imageflow
+    config :still, :image_adapter, Still.Image.Preprocessor.Imageflow
 
   The default quality value is 90. To change it, set the `:image_quality` key
   in the config:

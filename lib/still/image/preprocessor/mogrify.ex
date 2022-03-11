@@ -1,11 +1,13 @@
-defmodule Still.Preprocessor.Image.Mogrify do
+defmodule Still.Image.Preprocessor.Mogrify do
   @moduledoc """
-  Implements `Still.Preprocessor.Image.Adapter` for
+  Implements `Still.Image.Preprocessor.Adapter` for
   [Mogrify](https://github.com/route/mogrify).
 
   Default module used when no other adapter is provided.
   """
-  use Still.Preprocessor.Image.Adapter
+  use Still.Image.Preprocessor.Adapter
+
+  alias Still.Image.Preprocessor.OutputFile
 
   import Still.Utils
   import Mogrify
@@ -23,7 +25,7 @@ defmodule Still.Preprocessor.Image.Mogrify do
     output_files =
       opts
       |> Map.get(:sizes, [])
-      |> get_output_files_with_sizes(output_file, opts)
+      |> get_output_files(output_file, opts)
 
     if file_changed?(input_file, output_files) do
       process_input_file(input_file, opts, output_files)
@@ -31,7 +33,7 @@ defmodule Still.Preprocessor.Image.Mogrify do
 
     %{
       source_file
-      | metadata: Map.put(metadata, :image_output_files, output_files)
+      | metadata: Map.put(metadata, :output_files, output_files)
     }
   end
 
@@ -46,18 +48,20 @@ defmodule Still.Preprocessor.Image.Mogrify do
     end
   end
 
-  defp file_changed?(input_file, [{_, output_file} | _]) do
+  defp file_changed?(input_file, [%{file: output_file} | _]) do
     input_file_changed?(input_file, output_file)
   end
 
-  defp get_output_files_with_sizes(sizes, output_file_path, opts) do
+  defp get_output_files(sizes, output_file_path, opts) do
     extname = Path.extname(output_file_path)
     base_name = String.replace(output_file_path, extname, "")
     hash = :erlang.phash2(opts)
 
-    sizes
-    |> Enum.map(fn size ->
-      {size, "#{base_name}-#{hash}-#{size}w#{extname}"}
+    Enum.map(sizes, fn size ->
+      %OutputFile{
+        width: size,
+        file: "#{base_name}-#{hash}-#{size}w#{extname}"
+      }
     end)
   end
 
@@ -65,7 +69,7 @@ defmodule Still.Preprocessor.Image.Mogrify do
     input_file_path = get_input_path(input_file)
 
     output_files
-    |> Enum.map(fn {size, output_file} ->
+    |> Enum.map(fn %{width: size, file: output_file} ->
       Task.async(fn ->
         output_file_path = get_output_path(output_file)
 

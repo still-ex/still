@@ -1,8 +1,8 @@
-defmodule Still.Compiler.TemplateHelpers.ResponsiveImageTest do
+defmodule Still.Image.TemplateHelpersTest do
   use Still.Case, async: false
 
-  alias Still.Compiler.TemplateHelpers.ResponsiveImage
   alias Still.Utils
+  alias Still.Image.TemplateHelpers
 
   setup do
     Application.put_env(:still, :base_url, "")
@@ -20,7 +20,7 @@ defmodule Still.Compiler.TemplateHelpers.ResponsiveImageTest do
 
       output =
         file
-        |> ResponsiveImage.render(
+        |> TemplateHelpers.render_html(
           class: "cover",
           sizes: [width, half_width],
           transformations: []
@@ -40,7 +40,7 @@ defmodule Still.Compiler.TemplateHelpers.ResponsiveImageTest do
     test "sets the sizes when not specified by the caller" do
       output =
         "img/bg.jpg"
-        |> ResponsiveImage.render()
+        |> TemplateHelpers.render_html()
 
       assert output ==
                "<img src=\"/img/bg-79356388-4692w.jpg\" srcset=\"/img/bg-79356388-1173w.jpg 1173w, /img/bg-79356388-2346w.jpg 2346w, /img/bg-79356388-3519w.jpg 3519w, /img/bg-79356388-4692w.jpg 4692w\"/>"

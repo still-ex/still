@@ -21,7 +21,7 @@ defmodule Still.Preprocessor.MarkdownTest do
       %{content: content} = Markdown.render(source_file)
 
       assert content ==
-               "<h1>Hello!</h1>\n\n<p><img src=\"../../logo.jpg\" alt=\"some alt\"></p>\n"
+               "<h1>Hello!</h1><p><img src=\"../../logo.jpg\" alt=\"some alt\" /></p>"
     end
 
     test "replaces images with responsive images when :use_responsive_images is true" do
@@ -40,7 +40,7 @@ defmodule Still.Preprocessor.MarkdownTest do
       %{content: content} = Markdown.render(source_file)
 
       assert content ==
-               "<h1>Hello!</h1><p><img src=\"/logo-101780779-3708w.jpg\" alt=\"some alt\" srcset=\"/logo-101780779-927w.jpg 927w, /logo-101780779-1854w.jpg 1854w, /logo-101780779-2781w.jpg 2781w, /logo-101780779-3708w.jpg 3708w\"/></p>"
+               "<h1>Hello!</h1><p><img alt=\"some alt\" src=\"/logo-101780779-3708w.jpg\" srcset=\"/logo-101780779-927w.jpg 927w, /logo-101780779-1854w.jpg 1854w, /logo-101780779-2781w.jpg 2781w, /logo-101780779-3708w.jpg 3708w\" /></p>"
     end
   end
 end

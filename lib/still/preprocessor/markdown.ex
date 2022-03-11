@@ -1,4 +1,6 @@
 defmodule Still.Preprocessor.Markdown do
+  @no_responsive_image "no-responsive-image"
+
   @moduledoc """
   Transforms markdown into HTML using [`Markdown`](https://github.com/still-ex/markdown).
 
@@ -10,7 +12,7 @@ defmodule Still.Preprocessor.Markdown do
   """
 
   alias Still.Preprocessor
-  alias Still.Preprocessor.HtmlResponsiveImage
+  alias Still.Image.TemplateHelpers
 
   use Preprocessor
 
@@ -20,20 +22,72 @@ defmodule Still.Preprocessor.Markdown do
   def render(%{run_type: :compile_metadata} = source_file),
     do: %{source_file | extension: ".html"}
 
-  def render(%{content: content} = source_file) do
-    html_doc = Markdown.to_html(content, fenced_code: true, quote: true)
-    source_file = %{source_file | content: html_doc, extension: ".html"}
+  def render(%{content: content, input_file: input_file} = source_file) do
+    html_doc =
+      Earmark.as_html!(
+        content,
+        compact_output: true,
+        registered_processors:
+          {"img",
+           fn node ->
+             if use_responsive_images?() && has_image?(node) && no_srcset?(node) && ignored?(node) do
+               add_srcset(input_file, node)
+             else
+               node
+             end
+           end}
+      )
 
-    if use_responsive_images?() do
-      HtmlResponsiveImage.render(source_file)
-    else
-      source_file
-    end
+    %{source_file | content: html_doc, extension: ".html"}
   end
 
   @dialyzer {:nowarn_function, use_responsive_images?: 0}
   defp use_responsive_images? do
     config(__MODULE__, [])
     |> Keyword.get(:use_responsive_images, false)
+  end
+
+  defp add_srcset(input_file, node) do
+    output_files =
+      input_file
+      |> Path.dirname()
+      |> Path.join(find_node_attr(node, "src"))
+      |> Path.expand(get_input_path())
+      |> get_relative_input_path()
+      |> TemplateHelpers.get_output_files()
+
+    node
+    |> remove_att_in_node("src")
+    |> Earmark.AstTools.merge_atts_in_node(
+      src: TemplateHelpers.render_src(output_files),
+      srcset: TemplateHelpers.render_srcset(output_files)
+    )
+  end
+
+  defp find_node_attr(node, attr) do
+    Earmark.AstTools.find_att_in_node(node, attr, nil)
+  end
+
+  defp ignored?(node) do
+    find_node_attr(node, @no_responsive_image)
+    |> is_nil()
+  end
+
+  defp no_srcset?(node) do
+    find_node_attr(node, "srcset")
+    |> is_nil()
+  end
+
+  defp has_image?(node) do
+    src = Earmark.AstTools.find_att_in_node(node, "src", "")
+
+    String.ends_with?(src, "png") || String.ends_with?(src, "jpeg") ||
+      String.ends_with?(src, "jpg")
+  end
+
+  defp remove_att_in_node({tag, atts, content, meta}, att) do
+    atts = Enum.filter(atts, fn {tag, _} -> tag != att end)
+
+    {tag, atts, content, meta}
   end
 end

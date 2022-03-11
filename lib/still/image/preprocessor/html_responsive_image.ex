@@ -1,4 +1,4 @@
-defmodule Still.Preprocessor.HtmlResponsiveImage do
+defmodule Still.Image.Preprocessor.Html do
   @no_responsive_image "no-responsive-image"
 
   @moduledoc """
@@ -6,7 +6,7 @@ defmodule Still.Preprocessor.HtmlResponsiveImage do
   Images that have the attributes "srcset" or "#{@no_responsive_image}" are ignored.
   """
 
-  alias Still.Compiler.TemplateHelpers.ResponsiveImage
+  alias Still.Image.TemplateHelpers
   alias Still.{Preprocessor, SourceFile}
 
   use Preprocessor
@@ -49,7 +49,7 @@ defmodule Still.Preprocessor.HtmlResponsiveImage do
       |> Path.join(find_node_attr(img_node_attrs, "src"))
       |> Path.expand(get_input_path())
       |> get_relative_input_path()
-      |> ResponsiveImage.render()
+      |> TemplateHelpers.render_html()
 
     [src] =
       img_html

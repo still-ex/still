@@ -12,7 +12,6 @@ defmodule Still.Compiler.TemplateHelpers do
     TemplateHelpers.Link,
     TemplateHelpers.LinkToCSS,
     TemplateHelpers.LinkToJS,
-    TemplateHelpers.ResponsiveImage,
     TemplateHelpers.SafeHTML,
     TemplateHelpers.Truncate,
     TemplateHelpers.UrlFor
@@ -23,8 +22,8 @@ defmodule Still.Compiler.TemplateHelpers do
   require Logger
 
   defdelegate responsive_image(file, opts \\ []),
-    to: ResponsiveImage,
-    as: :render
+    to: Still.Image.TemplateHelpers,
+    as: :render_html
 
   defdelegate url_for(relative_path), to: UrlFor, as: :render
 

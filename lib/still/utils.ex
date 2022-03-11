@@ -105,10 +105,10 @@ defmodule Still.Utils do
   end
 
   @doc """
-  Delegates the call to the current `Still.Preprocessor.Image.Adapter`.
+  Delegates the call to the current `Still.Image.Preprocessor.Adapter`.
   """
   def get_image_info(file) do
-    Still.Preprocessor.Image.adapter().get_image_info(file)
+    Still.Image.Preprocessor.adapter().get_image_info(file)
   end
 
   @doc """
