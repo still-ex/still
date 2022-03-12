@@ -26,7 +26,7 @@ defmodule Still.Compiler.TemplateHelpers.LinkToCSS do
       end)
       |> Enum.join(" ")
 
-    %{output_file: output_file} = compile_file(file, use_cache: true)
+    %{output_file: output_file} = compile_file(file, use_cache: true) |> hd()
 
     """
     <link rel="stylesheet" #{link_opts} href=\"#{UrlFor.render(output_file)}\" />

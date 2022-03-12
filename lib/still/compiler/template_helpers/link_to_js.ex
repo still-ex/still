@@ -27,7 +27,7 @@ defmodule Still.Compiler.TemplateHelpers.LinkToJS do
       end)
       |> Enum.join(" ")
 
-    %{output_file: output_file} = compile_file(file, use_cache: true)
+    %{output_file: output_file} = compile_file(file, use_cache: true) |> hd()
 
     """
     <script #{link_opts} src=\"#{UrlFor.render(output_file)}\"></script>

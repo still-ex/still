@@ -26,5 +26,6 @@ defmodule Still.Compiler.File.DevLayout do
       content: content,
       metadata: %{children: children, file_path: @dev_layout}
     })
+    |> hd()
   end
 end
