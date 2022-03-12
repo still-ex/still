@@ -15,7 +15,7 @@ defmodule Still.Compiler.Incremental.Node.Render do
   def run(input_file, %{dependency_chain: dependency_chain} = data) do
     metadata = Map.merge(Data.global(), Map.drop(data, [:dependency_chain]))
 
-    source_file =
+    source_files =
       %SourceFile{
         input_file: input_file,
         dependency_chain: [input_file | dependency_chain],
@@ -23,10 +23,13 @@ defmodule Still.Compiler.Incremental.Node.Render do
         metadata: metadata
       }
       |> Preprocessor.run()
+      |> Still.Utils.to_list()
 
-    ErrorCache.set({:ok, source_file})
+    Enum.map(source_files, fn source_file ->
+      ErrorCache.set({:ok, source_file})
+    end)
 
-    source_file
+    source_files
   catch
     _, %PreprocessorError{} = error ->
       raise error

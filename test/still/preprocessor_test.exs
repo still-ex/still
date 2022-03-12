@@ -105,6 +105,7 @@ defmodule Still.PreprocessorTest do
 
       assert %{content: "<p>Hello</p>", input_file: ^file} =
                Preprocessor.run(%SourceFile{input_file: file, content: content})
+               |> hd()
     end
 
     test "returns the metadata" do
@@ -122,6 +123,7 @@ defmodule Still.PreprocessorTest do
 
       assert %{content: "<p>Hello</p>", metadata: %{hello: "world", tags: ["post", "article"]}} =
                Preprocessor.run(%SourceFile{input_file: file, content: content})
+               |> hd()
     end
 
     test "supports layout" do
@@ -134,7 +136,9 @@ defmodule Still.PreprocessorTest do
       p Hello
       """
 
-      %{content: content} = Preprocessor.run(%SourceFile{input_file: file, content: content})
+      %{content: content} =
+        Preprocessor.run(%SourceFile{input_file: file, content: content})
+        |> hd()
 
       assert String.starts_with?(content, "<!DOCTYPE html><html><head><title>Still</title>")
       assert String.ends_with?(content, "<body><p>Hello</p></body></html>")
@@ -155,6 +159,7 @@ defmodule Still.PreprocessorTest do
                    fn ->
                      %SourceFile{input_file: file, content: content}
                      |> Preprocessor.run()
+                     |> hd()
                    end
     end
 
@@ -170,6 +175,7 @@ defmodule Still.PreprocessorTest do
                    fn ->
                      %SourceFile{input_file: "index.slime", content: ""}
                      |> Preprocessor.run()
+                     |> hd()
                    end
     end
 
@@ -185,6 +191,7 @@ defmodule Still.PreprocessorTest do
                    fn ->
                      %SourceFile{input_file: "index.slime", content: ""}
                      |> Preprocessor.run()
+                     |> hd()
                    end
     end
   end
@@ -193,6 +200,7 @@ defmodule Still.PreprocessorTest do
     test "sets the extension" do
       %{extension: extension} =
         TestPreprocessorWithExt.run(%SourceFile{content: "", input_file: "test/file.html"})
+        |> hd()
 
       assert extension == ".css"
     end
@@ -203,7 +211,9 @@ defmodule Still.PreprocessorTest do
         content: "p Hello"
       }
 
-      assert %{content: "<p>Hello</p>"} = TestPreprocessorWithCont.run(source_file, [Slime])
+      assert %{content: "<p>Hello</p>"} =
+               TestPreprocessorWithCont.run(source_file, [Slime])
+               |> hd()
     end
 
     test "doesn't run the next preprocessors" do
@@ -212,12 +222,13 @@ defmodule Still.PreprocessorTest do
         content: "p Hello"
       }
 
-      assert %{content: "p Hello"} = TestPreprocessorWithHalt.run(source_file, [Slime])
+      assert %{content: "p Hello"} = TestPreprocessorWithHalt.run(source_file, [Slime]) |> hd()
     end
 
     test "doesn't set the extension" do
       %{extension: extension} =
         TestPreprocessorWithoutExt.run(%SourceFile{content: "", input_file: "test/file.html"})
+        |> hd()
 
       assert is_nil(extension)
     end

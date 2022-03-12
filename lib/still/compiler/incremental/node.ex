@@ -81,7 +81,7 @@ defmodule Still.Compiler.Incremental.Node do
     run_type = Keyword.get(opts, :run_type, :compile)
 
     try do
-      source_files = __MODULE__.Compile.run(state.file, run_type) |> Still.Utils.to_list()
+      source_files = __MODULE__.Compile.run(state.file, run_type)
 
       Enum.each(froms, &GenServer.reply(&1, source_files))
 
@@ -108,9 +108,7 @@ defmodule Still.Compiler.Incremental.Node do
 
   @impl true
   def handle_call({:compile_metadata, _opts}, _from, state) do
-    source_files =
-      __MODULE__.Compile.run(state.file, :compile_metadata)
-      |> Still.Utils.to_list()
+    source_files = __MODULE__.Compile.run(state.file, :compile_metadata)
 
     cached_source_files =
       source_files
