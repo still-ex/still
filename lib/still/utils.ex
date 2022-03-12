@@ -6,6 +6,9 @@ defmodule Still.Utils do
   alias Still.SourceFile
   alias Still.Compiler.Incremental.{Node, Registry}
 
+  def to_list(arg) when is_list(arg), do: arg
+  def to_list(arg), do: [arg]
+
   def module_exists?(module) do
     :module == elem(Code.ensure_compiled(module), 0)
   end

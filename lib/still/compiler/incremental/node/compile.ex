@@ -24,6 +24,7 @@ defmodule Still.Compiler.Incremental.Node.Compile do
 
   require Logger
 
+  @spec run(any, any) :: atom | %{:input_file => any, :output_file => any, optional(any) => any}
   def run(input_file, run_type \\ :compile) do
     source_file =
       %SourceFile{

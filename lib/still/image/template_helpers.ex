@@ -93,6 +93,7 @@ defmodule Still.Image.TemplateHelpers do
 
     Incremental.Registry.get_or_create_file_process(file)
     |> Incremental.Node.render(get_render_data(file, opts))
+    |> hd()
   end
 
   defp get_render_data(file, %{sizes: _} = image_opts) do

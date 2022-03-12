@@ -38,6 +38,7 @@ defmodule Still.Preprocessor.AddLayout do
     layout_file
     |> Incremental.Registry.get_or_create_file_process()
     |> Incremental.Node.render(layout_metadata)
+    |> hd()
     |> case do
       %{content: content} ->
         %{file | content: content}

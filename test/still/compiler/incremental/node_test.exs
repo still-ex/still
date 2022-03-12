@@ -49,7 +49,7 @@ defmodule Still.Compiler.Incremental.NodeTest do
 
       Node.compile(pid)
 
-      with_mock(Preprocessor, run: fn _ -> %{source_file | output_file: "about.html"} end) do
+      with_mock(Preprocessor, run: fn _ -> [%{source_file | output_file: "about.html"}] end) do
         Node.compile(pid, use_cache: true)
 
         refute called(Preprocessor.run(source_file))
@@ -70,7 +70,7 @@ defmodule Still.Compiler.Incremental.NodeTest do
     test "renders a file" do
       pid = Incremental.Registry.get_or_create_file_process("_includes/header.slime")
 
-      content = Node.render(pid, %{dependency_chain: ["about.slime"]})
+      content = Node.render(pid, %{dependency_chain: ["about.slime"]}) |> hd()
 
       assert %{content: "<header><p>This is a header</p></header>"} = content
     end
