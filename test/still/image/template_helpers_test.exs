@@ -1,7 +1,8 @@
 defmodule Still.Image.TemplateHelpersTest do
   use Still.Case, async: false
 
-  alias Still.Utils
+  import Still.Utils
+
   alias Still.Image.TemplateHelpers
 
   setup do
@@ -10,17 +11,38 @@ defmodule Still.Image.TemplateHelpersTest do
     :ok
   end
 
+  describe "render_src/1" do
+    test "returns the src for the biggest output file" do
+      src =
+        TemplateHelpers.get_output_files("img/bg.jpg")
+        |> TemplateHelpers.render_src()
+
+      assert src == "/img/bg-79356388-4692w.jpg"
+    end
+  end
+
+  describe "render_srcset/1" do
+    test "returns the src for the biggest output file" do
+      src =
+        TemplateHelpers.get_output_files("img/bg.jpg")
+        |> TemplateHelpers.render_srcset()
+
+      assert src ==
+               "/img/bg-79356388-1173w.jpg 1173w, /img/bg-79356388-2346w.jpg 2346w, /img/bg-79356388-3519w.jpg 3519w, /img/bg-79356388-4692w.jpg 4692w"
+    end
+  end
+
   describe "render/3" do
     test "returns the HTML for a responsive image" do
       file = "img/bg.jpg"
 
-      {:ok, %{width: width}} = file |> Utils.get_input_path() |> Utils.get_image_info()
+      {:ok, %{width: width}} = file |> get_input_path() |> get_image_info()
 
       half_width = Integer.floor_div(width, 2)
 
       output =
-        file
-        |> TemplateHelpers.render_html(
+        TemplateHelpers.render_html(
+          file,
           class: "cover",
           sizes: [width, half_width],
           transformations: []
@@ -37,10 +59,8 @@ defmodule Still.Image.TemplateHelpersTest do
                "<img src=\"#{src}\" srcset=\"#{srcset}\" class=\"cover\"/>"
     end
 
-    test "sets the sizes when not specified by the caller" do
-      output =
-        "img/bg.jpg"
-        |> TemplateHelpers.render_html()
+    test "uses the default configuration" do
+      output = TemplateHelpers.render_html("img/bg.jpg")
 
       assert output ==
                "<img src=\"/img/bg-79356388-4692w.jpg\" srcset=\"/img/bg-79356388-1173w.jpg 1173w, /img/bg-79356388-2346w.jpg 2346w, /img/bg-79356388-3519w.jpg 3519w, /img/bg-79356388-4692w.jpg 4692w\"/>"

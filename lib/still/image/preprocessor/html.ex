@@ -1,13 +1,11 @@
 defmodule Still.Image.Preprocessor.Html do
-  @no_responsive_image "no-responsive-image"
+  alias Still.Image.TemplateHelpers
+  alias Still.{Preprocessor, SourceFile}
 
   @moduledoc """
   Parses an HTML `Still.SourceFile` and replaces HTML img with responsive images.
-  Images that have the attributes "srcset" or "#{@no_responsive_image}" are ignored.
+  Images that have the attributes "srcset" or "#{TemplateHelpers.no_responsive_image()}" are ignored.
   """
-
-  alias Still.Image.TemplateHelpers
-  alias Still.{Preprocessor, SourceFile}
 
   use Preprocessor
 
@@ -23,13 +21,12 @@ defmodule Still.Image.Preprocessor.Html do
     {:ok, document} = Floki.parse_document(content)
 
     new_content =
-      document
-      |> Floki.find_and_update("img", fn
+      Floki.find_and_update(document, "img", fn
         {"img", attrs} ->
           if has_image?(attrs) && no_srcset?(attrs) && ignored?(attrs) do
             add_srcset(input_file, attrs)
           else
-            {"img", remove_node_attr(attrs, @no_responsive_image)}
+            {"img", remove_node_attr(attrs, TemplateHelpers.no_responsive_image())}
           end
 
         other ->
@@ -43,29 +40,21 @@ defmodule Still.Image.Preprocessor.Html do
   def render(source_file), do: source_file
 
   defp add_srcset(input_file, img_node_attrs) do
-    img_html =
+    output_files =
       input_file
       |> Path.dirname()
       |> Path.join(find_node_attr(img_node_attrs, "src"))
       |> Path.expand(get_input_path())
       |> get_relative_input_path()
-      |> TemplateHelpers.render_html()
-
-    [src] =
-      img_html
-      |> Floki.attribute("img", "src")
-
-    [srcset] =
-      img_html
-      |> Floki.attribute("img", "srcset")
+      |> TemplateHelpers.get_output_files()
 
     {"img",
      img_node_attrs
-     |> Enum.map(fn
-       {"src", _} -> {"src", src}
-       other -> other
-     end)
-     |> Enum.concat([{"srcset", srcset}])}
+     |> Enum.filter(fn {tag, _} -> tag != "src" end)
+     |> Enum.concat([
+       {"src", TemplateHelpers.render_src(output_files)},
+       {"srcset", TemplateHelpers.render_srcset(output_files)}
+     ])}
   end
 
   defp remove_node_attr(all_attrs, attr) do
@@ -83,7 +72,7 @@ defmodule Still.Image.Preprocessor.Html do
   end
 
   defp ignored?(img_attrs) do
-    find_node_attr(img_attrs, @no_responsive_image)
+    find_node_attr(img_attrs, TemplateHelpers.no_responsive_image())
     |> is_nil()
   end
 
@@ -93,9 +82,7 @@ defmodule Still.Image.Preprocessor.Html do
   end
 
   defp has_image?(img_attrs) do
-    src = find_node_attr(img_attrs, "src")
-
-    String.ends_with?(src, "png") || String.ends_with?(src, "jpeg") ||
-      String.ends_with?(src, "jpg")
+    find_node_attr(img_attrs, "src")
+    |> TemplateHelpers.is_img?()
   end
 end

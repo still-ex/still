@@ -7,12 +7,14 @@ defmodule Still.Image.TemplateHelpers do
 
   alias Still.Compiler.Incremental
   alias Still.Compiler.TemplateHelpers.{ContentTag, UrlFor}
+  alias Still.Image.Preprocessor.OutputFile
 
   import Still.Utils
 
   require Logger
 
   @default_nr_of_sizes 4
+  @no_responsive_image "no-responsive-image"
 
   @doc """
   Returns an image tag with the `src` and `srcset`.
@@ -35,6 +37,16 @@ defmodule Still.Image.TemplateHelpers do
     ])
   end
 
+  @doc """
+  Returns a list of #{Still.Image.Preprocessor.OutputFile} for the given input file.
+
+  If `:sizes` or `:transformations` are present in `opts`, they will be passed
+  to `Still.Image.Preprocessor`.
+
+  If `:sizes` is not set, the default will be 25%, 50%, 75% and 100% of the
+  input file's width.
+  """
+  @spec get_output_files(file :: String.t(), list()) :: list(OutputFile.t())
   def get_output_files(file, opts \\ []) do
     image_opts = Keyword.take(opts, [:sizes, :transformations])
 
@@ -43,12 +55,20 @@ defmodule Still.Image.TemplateHelpers do
     Enum.sort_by(output_files, & &1.width)
   end
 
+  @doc """
+  Returns the file to be usd in a image's `src` attribute.
+  """
+  @spec render_src(list(OutputFile.t())) :: String.t()
   def render_src(output_files) do
     %{file: biggest_output_file} = output_files |> List.last()
 
     UrlFor.render(biggest_output_file)
   end
 
+  @doc """
+  Returns the file to be usd in a image's `srcset` attribute.
+  """
+  @spec render_srcset(list(OutputFile.t())) :: String.t()
   def render_srcset(output_files) do
     output_files
     |> Enum.map(fn %{width: size, file: file} ->
@@ -56,6 +76,17 @@ defmodule Still.Image.TemplateHelpers do
     end)
     |> Enum.join(", ")
   end
+
+  @doc """
+  Checks if a file is a supported image.
+  """
+  @spec is_img?(String.t()) :: boolean()
+  def is_img?(src) do
+    String.ends_with?(src, "png") || String.ends_with?(src, "jpeg") ||
+      String.ends_with?(src, "jpg")
+  end
+
+  def no_responsive_image, do: @no_responsive_image
 
   defp do_render(file, image_opts) do
     opts = Map.new(image_opts)

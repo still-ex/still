@@ -1,20 +1,19 @@
 defmodule Still.Preprocessor.Markdown do
-  @no_responsive_image "no-responsive-image"
+  alias Still.Image.TemplateHelpers
 
   @moduledoc """
-  Transforms markdown into HTML using [`Markdown`](https://github.com/still-ex/markdown).
+  Transforms markdown into HTML using [`Earmark`](https://github.com/pragdave/earmark).
 
   Set the property `:use_responsive_images` in your config to render responsive images:
 
   ```
   config :still, Still.Preprocessor.Markdown, use_responsive_images: true
   ```
+
+  Images that have the attribute "#{TemplateHelpers.no_responsive_image()}" are ignored.
   """
 
-  alias Still.Preprocessor
-  alias Still.Image.TemplateHelpers
-
-  use Preprocessor
+  use Still.Preprocessor
 
   import Still.Utils
 
@@ -69,7 +68,7 @@ defmodule Still.Preprocessor.Markdown do
   end
 
   defp ignored?(node) do
-    find_node_attr(node, @no_responsive_image)
+    find_node_attr(node, TemplateHelpers.no_responsive_image())
     |> is_nil()
   end
 
@@ -79,10 +78,8 @@ defmodule Still.Preprocessor.Markdown do
   end
 
   defp has_image?(node) do
-    src = Earmark.AstTools.find_att_in_node(node, "src", "")
-
-    String.ends_with?(src, "png") || String.ends_with?(src, "jpeg") ||
-      String.ends_with?(src, "jpg")
+    Earmark.AstTools.find_att_in_node(node, "src", "")
+    |> TemplateHelpers.is_img?()
   end
 
   defp remove_att_in_node({tag, atts, content, meta}, att) do
