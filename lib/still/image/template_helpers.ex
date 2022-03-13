@@ -7,7 +7,6 @@ defmodule Still.Image.TemplateHelpers do
 
   alias Still.SourceFile
   alias Still.Compiler.TemplateHelpers.{ContentTag, UrlFor}
-  alias Still.Image.Preprocessor.OutputFile
 
   import Still.Utils
 
@@ -38,7 +37,7 @@ defmodule Still.Image.TemplateHelpers do
   end
 
   @doc """
-  Returns a list of #{Still.Image.Preprocessor.OutputFile} for the given input file.
+  Returns a list of #{Still.Image.Preprocessor.SourceFile} for the given input file.
 
   If `:sizes` or `:transformations` are present in `opts`, they will be passed
   to `Still.Image.Preprocessor`.
@@ -46,21 +45,21 @@ defmodule Still.Image.TemplateHelpers do
   If `:sizes` is not set, the default will be 25%, 50%, 75% and 100% of the
   input file's width.
   """
-  @spec get_output_files(file :: String.t(), list()) :: list(OutputFile.t())
+  @spec get_output_files(file :: String.t(), list()) :: list(SourceFile.t())
   def get_output_files(file, opts \\ []) do
     image_opts = Keyword.take(opts, [:sizes, :transformations])
 
-    %{metadata: %{output_files: output_files}} = do_render(file, image_opts)
+    output_files = do_render(file, image_opts)
 
-    Enum.sort_by(output_files, & &1.width)
+    Enum.sort_by(output_files, & &1.metadata.width)
   end
 
   @doc """
   Returns the file to be usd in a image's `src` attribute.
   """
-  @spec render_src(list(OutputFile.t())) :: String.t()
+  @spec render_src(list(SourceFile.t())) :: String.t()
   def render_src(output_files) do
-    %{file: biggest_output_file} = output_files |> List.last()
+    %{output_file: biggest_output_file} = output_files |> List.last()
 
     UrlFor.render(biggest_output_file)
   end
@@ -68,10 +67,10 @@ defmodule Still.Image.TemplateHelpers do
   @doc """
   Returns the file to be usd in a image's `srcset` attribute.
   """
-  @spec render_srcset(list(OutputFile.t())) :: String.t()
+  @spec render_srcset(list(SourceFile.t())) :: String.t()
   def render_srcset(output_files) do
     output_files
-    |> Enum.map(fn %{width: size, file: file} ->
+    |> Enum.map(fn %{metadata: %{width: size}, output_file: file} ->
       "#{UrlFor.render(file)} #{size}w"
     end)
     |> Enum.join(", ")
@@ -93,7 +92,6 @@ defmodule Still.Image.TemplateHelpers do
 
     file
     |> render_file(get_render_data(file, opts))
-    |> SourceFile.first()
   end
 
   defp get_render_data(file, %{sizes: _} = image_opts) do

@@ -7,7 +7,7 @@ defmodule Still.Image.Preprocessor.Mogrify do
   """
   use Still.Image.Preprocessor.Adapter
 
-  alias Still.Image.Preprocessor.OutputFile
+  alias Still.SourceFile
 
   import Still.Utils
   import Mogrify
@@ -15,26 +15,14 @@ defmodule Still.Image.Preprocessor.Mogrify do
   require ExImageInfo
 
   @impl true
-  def render(
-        %{
-          metadata: %{image_opts: opts} = metadata,
-          input_file: input_file,
-          output_file: output_file
-        } = source_file
-      ) do
-    output_files =
-      opts
-      |> Map.get(:sizes, [])
-      |> get_output_files(output_file, opts)
+  def render(source_file) do
+    output_source_files = get_output_source_files(source_file)
 
-    if file_changed?(input_file, output_files) do
-      process_input_file(input_file, opts, output_files)
+    if file_changed?(source_file, output_source_files) do
+      process_input_file(source_file, output_source_files)
     end
 
-    %{
-      source_file
-      | metadata: Map.put(metadata, :output_files, output_files)
-    }
+    output_source_files
   end
 
   @impl true
@@ -48,28 +36,37 @@ defmodule Still.Image.Preprocessor.Mogrify do
     end
   end
 
-  defp file_changed?(input_file, [%{file: output_file} | _]) do
+  defp file_changed?(%{input_file: input_file}, [%{output_file: output_file} | _]) do
     input_file_changed?(input_file, output_file)
   end
 
-  defp get_output_files(sizes, output_file_path, opts) do
-    extname = Path.extname(output_file_path)
-    base_name = String.replace(output_file_path, extname, "")
+  defp get_output_source_files(%{
+         metadata: %{image_opts: opts} = metadata,
+         input_file: input_file,
+         output_file: output_file
+       }) do
+    extname = Path.extname(output_file)
+    base_name = String.replace(output_file, extname, "")
     hash = :erlang.phash2(opts)
 
-    Enum.map(sizes, fn size ->
-      %OutputFile{
-        width: size,
-        file: "#{base_name}-#{hash}-#{size}w#{extname}"
+    Map.get(opts, :sizes, [])
+    |> Enum.map(fn size ->
+      %SourceFile{
+        input_file: input_file,
+        output_file: "#{base_name}-#{hash}-#{size}w#{extname}",
+        metadata: Map.put(metadata, :width, size)
       }
     end)
   end
 
-  defp process_input_file(input_file, opts, output_files) do
+  defp process_input_file(
+         %{input_file: input_file, metadata: %{image_opts: opts}},
+         output_source_files
+       ) do
     input_file_path = get_input_path(input_file)
 
-    output_files
-    |> Enum.map(fn %{width: size, file: output_file} ->
+    output_source_files
+    |> Enum.map(fn %{metadata: %{width: size}, output_file: output_file} ->
       Task.async(fn ->
         output_file_path = get_output_path(output_file)
 
