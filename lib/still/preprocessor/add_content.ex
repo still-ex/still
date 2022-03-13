@@ -25,9 +25,7 @@ defmodule Still.Preprocessor.AddContent do
 
   defp get_extension(%{extension: extension}) when not is_nil(extension), do: extension
 
-  defp get_extension(%{input_file: file}) do
-    Path.extname(file)
-  end
+  defp get_extension(%{input_file: file}), do: Path.extname(file)
 
   defp get_content(file) do
     case get_from_cache(file) do

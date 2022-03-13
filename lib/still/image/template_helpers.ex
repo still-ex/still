@@ -5,7 +5,7 @@ defmodule Still.Image.TemplateHelpers do
   See `Still.Image.Preprocessor` for details on these transformations.
   """
 
-  alias Still.Compiler.Incremental
+  alias Still.SourceFile
   alias Still.Compiler.TemplateHelpers.{ContentTag, UrlFor}
   alias Still.Image.Preprocessor.OutputFile
 
@@ -91,9 +91,9 @@ defmodule Still.Image.TemplateHelpers do
   defp do_render(file, image_opts) do
     opts = Map.new(image_opts)
 
-    Incremental.Registry.get_or_create_file_process(file)
-    |> Incremental.Node.render(get_render_data(file, opts))
-    |> hd()
+    file
+    |> render_file(get_render_data(file, opts))
+    |> SourceFile.first()
   end
 
   defp get_render_data(file, %{sizes: _} = image_opts) do

@@ -69,13 +69,13 @@ defmodule Still.Preprocessor do
   @doc """
   Runs the preprocessor pipeline for the given file.
   """
-  @spec run(SourceFile.t()) :: SourceFile.t() | {:error, any()}
+  @spec run(SourceFile.t()) :: list(SourceFile.t()) | {:error, any()}
   def run(file) do
     file
     |> run(__MODULE__.for(file))
   end
 
-  @spec run(SourceFile.t(), list(module())) :: SourceFile.t() | {:error, any()}
+  @spec run(SourceFile.t(), list(module())) :: list(SourceFile.t()) | {:error, any()}
   def run(file, []) do
     file
   end

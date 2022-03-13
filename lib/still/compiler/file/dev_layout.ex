@@ -27,6 +27,6 @@ defmodule Still.Compiler.File.DevLayout do
       extension: ".slime",
       metadata: %{children: children, file_path: @dev_layout}
     })
-    |> hd()
+    |> SourceFile.for_extension(".html")
   end
 end
