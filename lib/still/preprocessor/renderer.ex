@@ -41,8 +41,21 @@ defmodule Still.Preprocessor.Renderer do
       @preprocessor Keyword.fetch!(unquote(opts), :preprocessor)
       @extensions Keyword.fetch!(unquote(opts), :extensions)
 
-      def create(%SourceFile{input_file: input_file, content: content, metadata: metadata} = file) do
-        metadata = Map.put(metadata, :preprocessor, @preprocessor)
+      def create(
+            %SourceFile{
+              input_file: input_file,
+              dependency_chain: dependency_chain,
+              content: content,
+              metadata: metadata,
+              extension: extension
+            } = file
+          ) do
+        metadata =
+          metadata
+          |> Map.put(:dependency_chain, dependency_chain)
+          |> Map.put(:extension, extension)
+          |> Map.put(:input_file, input_file)
+          |> Map.put(:preprocessor, @preprocessor)
 
         metadata[:input_file]
         |> file_path_to_module_name()

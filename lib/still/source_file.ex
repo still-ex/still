@@ -30,4 +30,21 @@ defmodule Still.SourceFile do
           profilable: boolean(),
           run_type: :render | :compile | :compile_metadata | :compile_dev
         }
+
+  def first(%__MODULE__{} = source_file) when not is_list(source_file), do: first([source_file])
+  def first(source_files), do: hd(source_files)
+
+  def for_extension(%__MODULE__{} = source_file, _extension),
+    do: source_file
+
+  def for_extension([source_file], _extension),
+    do: source_file
+
+  def for_extension([source_file | source_files], extension) do
+    if source_file.extension == extension do
+      source_file
+    else
+      for_extension(source_files, extension)
+    end
+  end
 end

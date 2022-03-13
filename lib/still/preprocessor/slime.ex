@@ -11,27 +11,17 @@ defmodule Still.Preprocessor.Slime do
 
   use Preprocessor
 
+  @extension ".html"
+
   @impl true
   def render(%{run_type: :compile_metadata} = source_file),
-    do: %{source_file | extension: ".html"}
+    do: %{source_file | extension: @extension}
 
-  def render(source_file) do
-    %{source_file | content: do_render(source_file), extension: ".html"}
-  end
+  def render(source_file),
+    do: %{source_file | content: do_render(source_file), extension: @extension}
 
-  defp do_render(
-         %{
-           metadata: metadata,
-           input_file: input_file,
-           dependency_chain: dependency_chain
-         } = file
-       ) do
-    metadata =
-      metadata
-      |> Map.put(:input_file, input_file)
-      |> Map.put(:dependency_chain, dependency_chain)
-
-    Renderer.create(%{file | metadata: metadata})
+  defp do_render(source_file) do
+    Renderer.create(source_file)
     |> apply(:render, [])
   end
 end

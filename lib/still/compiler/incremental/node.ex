@@ -64,14 +64,14 @@ defmodule Still.Compiler.Incremental.Node do
       file: file,
       subscribers: [],
       subscriptions: [],
-      cached_source_files: nil
+      source_files: nil
     }
 
     {:ok, state}
   end
 
   @impl true
-  def handle_call({_, use_cache: true}, _from, %{cached_source_files: source_files} = state)
+  def handle_call({_, use_cache: true}, _from, %{source_files: source_files} = state)
       when not is_nil(source_files) do
     {:reply, source_files, state}
   end
@@ -85,9 +85,9 @@ defmodule Still.Compiler.Incremental.Node do
 
       Enum.each(froms, &GenServer.reply(&1, source_files))
 
-      source_files = source_files |> Enum.map(&%{&1 | content: nil})
+      source_files = Enum.map(source_files, &%{&1 | content: nil})
 
-      {:noreply, %{state | cached_source_files: source_files}}
+      {:noreply, %{state | source_files: source_files}}
     catch
       _, %PreprocessorError{} ->
         Enum.each(froms, &GenServer.reply(&1, :ok))
@@ -98,7 +98,7 @@ defmodule Still.Compiler.Incremental.Node do
 
   @impl true
   def handle_call({:render, data}, _from, state) do
-    source_files = __MODULE__.Render.run(state.file, data) |> Still.Utils.to_list()
+    source_files = __MODULE__.Render.run(state.file, data)
 
     {:reply, source_files, state}
   catch
@@ -108,13 +108,11 @@ defmodule Still.Compiler.Incremental.Node do
 
   @impl true
   def handle_call({:compile_metadata, _opts}, _from, state) do
-    source_files = __MODULE__.Compile.run(state.file, :compile_metadata)
-
-    cached_source_files =
-      source_files
+    source_files =
+      __MODULE__.Compile.run(state.file, :compile_metadata)
       |> Enum.map(&%{&1 | content: nil})
 
-    {:reply, source_files, %{state | cached_source_files: cached_source_files}}
+    {:reply, source_files, %{state | source_files: source_files}}
   catch
     _, %PreprocessorError{} ->
       {:reply, :ok, state}

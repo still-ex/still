@@ -6,6 +6,7 @@ defmodule Still.Compiler.TemplateHelpers.LinkToCSS do
   `Still.Compiler.CompilationStage`.
   """
 
+  alias Still.SourceFile
   alias Still.Compiler.TemplateHelpers.UrlFor
 
   import Still.Utils
@@ -17,8 +18,8 @@ defmodule Still.Compiler.TemplateHelpers.LinkToCSS do
 
   All options are converted to the `attr=value` format.
   """
-  @spec render(String.t(), list(any())) :: String.t()
-  def render(file, opts) do
+  @spec render(map(), String.t(), list(any())) :: String.t()
+  def render(env, input_file, opts) do
     link_opts =
       opts
       |> Enum.map(fn {k, v} ->
@@ -26,7 +27,10 @@ defmodule Still.Compiler.TemplateHelpers.LinkToCSS do
       end)
       |> Enum.join(" ")
 
-    %{output_file: output_file} = compile_file(file, use_cache: true) |> hd()
+    %{output_file: output_file} =
+      input_file
+      |> compile_file(use_cache: true)
+      |> SourceFile.for_extension(env.extension)
 
     """
     <link rel="stylesheet" #{link_opts} href=\"#{UrlFor.render(output_file)}\" />

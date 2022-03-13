@@ -27,9 +27,9 @@ defmodule Still.Compiler.TemplateHelpers do
 
   defdelegate url_for(relative_path), to: UrlFor, as: :render
 
-  defdelegate link_to_css(path, opts \\ []), to: LinkToCSS, as: :render
+  defdelegate link_to_css(env, path, opts \\ []), to: LinkToCSS, as: :render
 
-  defdelegate link_to_js(path, opts \\ []), to: LinkToJS, as: :render
+  defdelegate link_to_js(env, path, opts \\ []), to: LinkToJS, as: :render
 
   @doc """
   Renders a file in the page using the variables defined in `metadata`.

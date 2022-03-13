@@ -22,18 +22,18 @@ defmodule Still.Preprocessor.AddLayout do
   def render(
         %SourceFile{
           content: children,
-          output_file: output_file,
           dependency_chain: dependency_chain,
-          metadata: %{layout: layout_file} = metadata
+          metadata: %{layout: layout_file} = metadata,
+          output_file: output_file
         } = file
       )
       when not is_nil(layout_file) do
     layout_metadata =
       metadata
       |> Map.drop([:tag, :layout, :permalink])
-      |> Map.put(:output_file, output_file)
       |> Map.put(:children, children)
       |> Map.put(:dependency_chain, dependency_chain)
+      |> Map.put(:output_file, output_file)
 
     layout_file
     |> Incremental.Registry.get_or_create_file_process()

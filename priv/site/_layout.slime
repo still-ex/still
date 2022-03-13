@@ -8,7 +8,7 @@ html
     meta charset="UTF-8"
     meta name="viewport" content="width=device-width, initial-scale=1.0"
     = include(@env, "_includes/meta.slime")
-    = link_to_js "/console.js"
-    = link_to_css "/css/theme.css", media: "all"
+    = link_to_js @env, "/console.js"
+    = link_to_css @env, "/css/theme.css", media: "all"
   body
     = @children

@@ -12,11 +12,22 @@ defmodule Still.Preprocessor.AddContent do
   require Logger
 
   @impl true
-  def render(%{content: content, input_file: input_file} = file) when is_nil(content) do
-    %SourceFile{file | content: get_content(input_file)}
+  def render(%{content: content, input_file: input_file} = source_file)
+      when is_nil(content) do
+    %SourceFile{
+      source_file
+      | content: get_content(input_file),
+        extension: get_extension(source_file)
+    }
   end
 
   def render(file), do: file
+
+  defp get_extension(%{extension: extension}) when not is_nil(extension), do: extension
+
+  defp get_extension(%{input_file: file}) do
+    Path.extname(file)
+  end
 
   defp get_content(file) do
     case get_from_cache(file) do
