@@ -3,7 +3,7 @@ defmodule Still.Compiler.TemplateHelpersTest do
 
   alias Still.Compiler.TemplateHelpers
 
-  @env [input_file: "about.slime", dependency_chain: []]
+  @env %{input_file: "about.slime", dependency_chain: [], extension: ".html"}
 
   describe "include/2" do
     test "renders a file" do

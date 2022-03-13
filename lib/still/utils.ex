@@ -33,6 +33,15 @@ defmodule Still.Utils do
   end
 
   @doc """
+  Renders a file.
+  """
+  @spec render_file(binary(), any()) :: list(SourceFile.t())
+  def render_file(input_file, opts \\ []) do
+    Registry.get_or_create_file_process(input_file)
+    |> Node.render(opts)
+  end
+
+  @doc """
   Compiles a file.
   """
   @spec compile_file(binary(), any()) :: list(SourceFile.t())

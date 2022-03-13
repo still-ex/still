@@ -70,7 +70,9 @@ defmodule Still.Compiler.Incremental.NodeTest do
     test "renders a file" do
       pid = Incremental.Registry.get_or_create_file_process("_includes/header.slime")
 
-      content = Node.render(pid, %{dependency_chain: ["about.slime"]}) |> hd()
+      content =
+        Node.render(pid, %{dependency_chain: ["about.slime"]})
+        |> SourceFile.for_extension(".html")
 
       assert %{content: "<header><p>This is a header</p></header>"} = content
     end

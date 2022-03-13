@@ -43,9 +43,11 @@ defmodule Still.Compiler.TemplateHelpers do
   def include(env, file, metadata) do
     ensure_file_exists!(file)
 
+    metadata = Map.put(metadata, :dependency_chain, env[:dependency_chain])
+
     with pid when not is_nil(pid) <- Incremental.Registry.get_or_create_file_process(file),
-         metadata <- Map.put(metadata, :dependency_chain, env[:dependency_chain] || []),
-         %SourceFile{content: content} <- Incremental.Node.render(pid, metadata) |> hd() do
+         source_files <- Incremental.Node.render(pid, metadata),
+         %SourceFile{content: content} <- SourceFile.for_extension(source_files, env.extension) do
       content
     else
       %PreprocessorError{} = e ->
