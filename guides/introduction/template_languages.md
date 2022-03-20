@@ -16,7 +16,7 @@ Files with the extension `.md` will be treated as Markdown and generate `.html` 
 
 ```md
 ---
-tags:
+tag:
   - post
 ---
 
@@ -32,11 +32,9 @@ More information can be found in [Template][templates].
 CSS files are regular [templates][templates] where you can embed Elixir:
 
 ```css
-<%= include(@env, "_global.scss") %>
-
-@font-face {
+<%= include(@env, "_global.scss") % > @font-face {
   font-family: IBMPlexMono;
-  src: url(<%= url_for("/fonts/IBMPlexMono-Regular.ttf") %>);
+  src: url(<%=url_for("/fonts/IBMPlexMono-Regular.ttf")%>);
 }
 ```
 
@@ -45,7 +43,7 @@ CSS files are regular [templates][templates] where you can embed Elixir:
 JavaScript files are regular [templates][templates] where you can embed Elixir:
 
 ```js
-console.log('<%= link_to("img/bg.jpg") %>')
+console.log('<%= link_to("img/bg.jpg") %>');
 ```
 
 ## Custom
