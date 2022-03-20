@@ -204,9 +204,8 @@ then iterate over this list using the `get_collections/2` function:
 
 ```slime
 ul
-  = Enum.map(get_collections(@env, "post"), fn x -> Map.get(x, :metadata) end) |> Enum.map fn x ->
-    li
-      = link x[:title], to: x[:permalink]
+  = Enum.map get_collections(@env, "post"), fn x ->
+    = link @env, x[:metadata][:title], to: x[:output_file]
 ```
 
 Collections are automatically updated when the files change. Files that
