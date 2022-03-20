@@ -113,14 +113,14 @@ defmodule Still.PreprocessorTest do
       content = """
       ---
       hello: world
-      tags:
+      tag:
         - post
         - article
       ---
       p Hello
       """
 
-      assert %{content: "<p>Hello</p>", metadata: %{hello: "world", tags: ["post", "article"]}} =
+      assert %{content: "<p>Hello</p>", metadata: %{hello: "world", tag: ["post", "article"]}} =
                Preprocessor.run(%SourceFile{input_file: file, content: content})
     end
 
