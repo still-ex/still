@@ -35,7 +35,7 @@ defmodule Still.Compiler.Incremental.Node.Compile do
       |> do_run()
       |> Still.Utils.to_list()
 
-    Enum.map(source_files, fn source_file ->
+    Enum.each(source_files, fn source_file ->
       ErrorCache.set({:ok, source_file})
 
       if source_file.output_file do

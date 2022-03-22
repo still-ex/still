@@ -15,12 +15,12 @@ defmodule Still.Preprocessor.Frontmatter do
   def render(%{content: content, metadata: metadata} = file) do
     [frontmatter, content] = parse_frontmatter(content)
 
-    settings =
+    metadata =
       frontmatter
       |> parse_yaml()
       |> Map.merge(metadata)
 
-    %{file | content: content, metadata: settings}
+    %{file | content: content, metadata: metadata}
   end
 
   defp parse_frontmatter(content) do
