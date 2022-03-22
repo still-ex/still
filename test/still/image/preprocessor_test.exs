@@ -1,8 +1,9 @@
-defmodule Still.Preprocessor.ImageTest do
+defmodule Still.Image.PreprocessorTest do
   use Still.Case, async: false
 
-  alias Still.Preprocessor.Image
   alias Still.SourceFile
+  alias Still.Image.Preprocessor
+  alias Still.Image.Preprocessor.OutputFile
 
   @input_file "img/bg.jpg"
   @output_file "img/bg.jpg"
@@ -20,15 +21,15 @@ defmodule Still.Preprocessor.ImageTest do
       assert %SourceFile{
                source_file
                | metadata: %{
-                   image_output_files: [
-                     {100, @output_file_100},
-                     {200, @output_file_200}
+                   output_files: [
+                     %OutputFile{width: 100, file: @output_file_100},
+                     %OutputFile{width: 200, file: @output_file_200}
                    ],
                    image_opts: %{sizes: [100, 200]}
                  }
              } ==
                source_file
-               |> Image.render()
+               |> Preprocessor.render()
 
       assert File.exists?(get_output_path(@output_file_100))
       assert File.exists?(get_output_path(@output_file_200))
@@ -42,14 +43,14 @@ defmodule Still.Preprocessor.ImageTest do
       }
 
       source_file
-      |> Image.render()
+      |> Preprocessor.render()
 
       mtime =
         get_output_path(@output_file_100)
         |> get_modified_time!()
 
       source_file
-      |> Image.render()
+      |> Preprocessor.render()
 
       new_mtime =
         get_output_path(@output_file_100)
@@ -66,7 +67,7 @@ defmodule Still.Preprocessor.ImageTest do
       }
 
       source_file
-      |> Image.render()
+      |> Preprocessor.render()
 
       mtime =
         get_output_path(@output_file_100)
@@ -77,7 +78,7 @@ defmodule Still.Preprocessor.ImageTest do
       |> File.touch!()
 
       source_file
-      |> Image.render()
+      |> Preprocessor.render()
 
       new_mtime =
         get_output_path(@output_file_100)
@@ -94,14 +95,14 @@ defmodule Still.Preprocessor.ImageTest do
       }
 
       source_file
-      |> Image.render()
+      |> Preprocessor.render()
 
       mtime =
         get_output_path(@output_file_100)
         |> get_modified_time!()
 
       source_file
-      |> Image.render()
+      |> Preprocessor.render()
 
       new_mtime =
         get_output_path(@output_file_100)
@@ -111,15 +112,15 @@ defmodule Still.Preprocessor.ImageTest do
     end
 
     test "runs if the options changed" do
-      %{metadata: %{image_output_files: outputs1}} =
+      %{metadata: %{output_files: outputs1}} =
         %SourceFile{
           metadata: %{image_opts: %{sizes: [100, 200]}},
           input_file: @input_file,
           output_file: @output_file
         }
-        |> Image.render()
+        |> Preprocessor.render()
 
-      %{metadata: %{image_output_files: outputs2}} =
+      %{metadata: %{output_files: outputs2}} =
         %SourceFile{
           metadata: %{
             image_opts: %{
@@ -130,7 +131,7 @@ defmodule Still.Preprocessor.ImageTest do
           input_file: @input_file,
           output_file: @output_file
         }
-        |> Image.render()
+        |> Preprocessor.render()
 
       assert outputs1 != outputs2
     end

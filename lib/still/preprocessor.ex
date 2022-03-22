@@ -37,6 +37,8 @@ defmodule Still.Preprocessor do
 
   import Still.Utils, only: [config: 2]
 
+  alias Still.Image
+
   alias __MODULE__.{
     CSSMinify,
     EEx,
@@ -50,7 +52,6 @@ defmodule Still.Preprocessor do
     Save,
     AddLayout,
     AddContent,
-    Image,
     Profiler
   }
 
@@ -61,8 +62,8 @@ defmodule Still.Preprocessor do
     ".css" => [AddContent, EEx, CSSMinify, OutputPath, URLFingerprinting, AddLayout, Save],
     ".js" => [AddContent, EEx, JS, OutputPath, URLFingerprinting, AddLayout, Save],
     ".md" => [AddContent, EEx, Frontmatter, Markdown, OutputPath, AddLayout, Save],
-    ".jpg" => [OutputPath, Image],
-    ".png" => [OutputPath, Image]
+    ".jpg" => [OutputPath, Image.Preprocessor],
+    ".png" => [OutputPath, Image.Preprocessor]
   }
 
   @doc """
