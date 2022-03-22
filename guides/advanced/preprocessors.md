@@ -1,8 +1,8 @@
 # Preprocessors
 
-Preprocessors are the cornerstone of Still. A preprocessor chain can take a markdown file, execute its embedded Elixir, extract metadata from its front matter, transform it into HTML and wrap it in a layout.
+Preprocessors are the cornerstone of Still. A preprocessor chain can take a markdown file, execute its embedded Elixir, extract metadata from its frontmatter, transform it into HTML and wrap it in a layout.
 
-The default preprocessors are in the [`Preprocessor` module](https://github.com/subvisual/still/blob/master/lib/still/preprocessor.ex#L57). Each file in the input folder with one of the declared extensions is transformed and placed in the same relative place in the output folder. For instance, the file `about.md` will become `about.html` in the output folder, and a file inside a folder, such as `blog/post_1.md`, will be in the same folder on the output directory: `blog/post_1.html`.
+The default preprocessors are in `Still.Preprocessor`. Each file in the input folder with one of the declared extensions is transformed and placed in the same relative place in the output folder. For instance, the file `about.md` will become `about.html` in the output folder. A file inside a folder, such as `blog/post_1.md`, will be in the same folder on the output directory: `blog/post_1.html`.
 
 Notice that many file types, such as markdown and CSS, run through EEx, which means you can use EEx syntax in those files. Here's an example of a CSS file that uses EEx interpolation:
 
@@ -23,17 +23,19 @@ If the default preprocessors are not enough, you can extend Still with your own.
 defmodule YourSite.JPEG do
   use Still.Preprocessor
 
+  alias Still.SourceFile
+
   @impl true
-  def render(file) do
-    %{file | extension: ".jpeg"}
+  def render(%SourceFile{} = source_file) do
+    %{source_file | extension: ".jpeg"}
   end
 end
 ```
 
-**A custom preprocessor is simply a module that calls `use Still.Preprocessor` and implements the `render/1` function.** In this example, the `render` function is used to transform the metadata of a #{Still.SourceFile}.
+**A custom preprocessor is a module that calls `use Still.Preprocessor` and implements the `render/1` function.** In this example, the `render` function is used to transform the metadata of a `Still.SourceFile`.
 
 **Preprocessors are always part of a transformation chain** and each file will run through the chain, using the output of the one preprocessor as the input of the next.
-If you look at the default preprocessors in the [`Preprocessor` module](https://github.com/subvisual/still/blob/master/lib/still/preprocessor.ex#L57), you can see that some files go through a front matter preprocessor, and CSS, for instance, goes through EEx, which allows for the interpolation mentioned above.
+If you look at the default preprocessors in the `Still.Preprocessor`, you can see that some files go through a frontmatter preprocessor, and CSS, for instance, goes through EEx, which allows for the interpolation mentioned above.
 
 To use the preprocessor defined above, you need to add it to the config:
 

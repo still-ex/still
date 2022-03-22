@@ -1,7 +1,7 @@
 defmodule Still.MixProject do
   use Mix.Project
 
-  @version "0.6.1"
+  @version "0.7.0"
 
   def project do
     [
@@ -28,7 +28,7 @@ defmodule Still.MixProject do
         "guides/introduction/getting_started.md",
         "guides/introduction/templates.md",
         "guides/introduction/configuration.md",
-        "guides/introduction/plugins.md",
+        "guides/introduction/data.md",
         "guides/advanced/preprocessors.md",
         "guides/advanced/hooks.md"
       ],
