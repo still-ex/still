@@ -27,15 +27,10 @@ defmodule Still.Compiler.TemplateHelpers.LinkToJS do
       end)
       |> Enum.join(" ")
 
-    case compile_file(file, use_cache: true) do
-      %{output_file: output_file} ->
-        """
-        <script #{link_opts} src=\"#{UrlFor.render(output_file)}\"></script>
-        """
+    %{output_file: output_file} = compile_file(file, use_cache: true)
 
-      _ ->
-        Logger.error("File process not found for #{file}")
-        ""
-    end
+    """
+    <script #{link_opts} src=\"#{UrlFor.render(output_file)}\"></script>
+    """
   end
 end

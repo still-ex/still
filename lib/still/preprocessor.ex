@@ -124,18 +124,16 @@ defmodule Still.Preprocessor do
   @optional_callbacks render: 1, after_render: 1
 
   defmacro __using__(_opts) do
-    quote do
+    quote generated: true do
       @behaviour Still.Preprocessor
 
       @doc """
       Runs the #{Still.SourceFile} through the current preprocessor and the next.
       """
-      @spec run(SourceFile.t()) :: SourceFile.t()
       def run(source_file) do
         run(source_file, [])
       end
 
-      @spec run(SourceFile.t(), any()) :: SourceFile.t()
       def run(source_file, next_preprocessors) do
         source_file
         |> render()
@@ -186,7 +184,6 @@ defmodule Still.Preprocessor do
 
       Returns the resulting #{Still.SourceFile}.
       """
-      @spec after_render(SourceFile.t()) :: SourceFile.t()
       def after_render(source_file), do: source_file
 
       @doc """
@@ -194,8 +191,6 @@ defmodule Still.Preprocessor do
 
       Returns the resulting #{Still.SourceFile}.
       """
-      @spec render(SourceFile.t()) ::
-              {:cont, SourceFile.t()} | {:halt, SourceFile.t()} | SourceFile.t()
       def render(source_file), do: source_file
 
       defoverridable render: 1, after_render: 1
