@@ -58,7 +58,7 @@ defmodule Still.Preprocessor.Markdown do
       |> TemplateHelpers.get_output_files()
 
     node
-    |> remove_att_in_node("src")
+    |> remove_attr_in_node("src")
     |> Earmark.AstTools.merge_atts_in_node(
       src: TemplateHelpers.render_src(output_files),
       srcset: TemplateHelpers.render_srcset(output_files)
@@ -84,7 +84,7 @@ defmodule Still.Preprocessor.Markdown do
     |> TemplateHelpers.is_img?()
   end
 
-  defp remove_att_in_node({tag, atts, content, meta}, att) do
+  defp remove_attr_in_node({tag, atts, content, meta}, att) do
     atts = Enum.filter(atts, fn {tag, _} -> tag != att end)
 
     {tag, atts, content, meta}
