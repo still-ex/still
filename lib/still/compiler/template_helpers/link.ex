@@ -26,6 +26,7 @@ defmodule Still.Compiler.TemplateHelpers.Link do
       preprocessor.render(%SourceFile{
         content: markup,
         input_file: env[:input_file],
+        extension: env[:extension],
         metadata: env |> Enum.into(%{})
       })
 

@@ -27,9 +27,9 @@ defmodule Still.Compiler.TemplateHelpers do
 
   defdelegate url_for(relative_path), to: UrlFor, as: :render
 
-  defdelegate link_to_css(path, opts \\ []), to: LinkToCSS, as: :render
+  defdelegate link_to_css(env, path, opts \\ []), to: LinkToCSS, as: :render
 
-  defdelegate link_to_js(path, opts \\ []), to: LinkToJS, as: :render
+  defdelegate link_to_js(env, path, opts \\ []), to: LinkToJS, as: :render
 
   @doc """
   Renders a file in the page using the variables defined in `metadata`.
@@ -43,9 +43,11 @@ defmodule Still.Compiler.TemplateHelpers do
   def include(env, file, metadata) do
     ensure_file_exists!(file)
 
+    metadata = Map.put(metadata, :dependency_chain, env[:dependency_chain])
+
     with pid when not is_nil(pid) <- Incremental.Registry.get_or_create_file_process(file),
-         metadata <- Map.put(metadata, :dependency_chain, env[:dependency_chain] || []),
-         %SourceFile{content: content} <- Incremental.Node.render(pid, metadata) do
+         source_files <- Incremental.Node.render(pid, metadata),
+         %SourceFile{content: content} <- SourceFile.for_extension(source_files, env.extension) do
       content
     else
       %PreprocessorError{} = e ->

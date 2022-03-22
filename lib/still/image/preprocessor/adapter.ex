@@ -26,7 +26,15 @@ defmodule Still.Image.Preprocessor.Adapter do
   dependency.
   """
 
-  @callback render(%Still.SourceFile{}) :: %Still.SourceFile{}
+  alias Still.SourceFile
+
+  @callback render(SourceFile.t()) ::
+              Still.SourceFile.t()
+              | list(Still.SourceFile.t())
+              | {:cont, Still.SourceFile.t()}
+              | {:cont, list(Still.SourceFile.t())}
+              | {:halt, Still.SourceFile.t()}
+              | {:halt, list(Still.SourceFile.t())}
 
   @callback get_image_info(file :: String.t()) ::
               {:ok, %{width: integer(), height: integer()}} | {:error, any()}

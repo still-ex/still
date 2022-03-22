@@ -25,7 +25,7 @@ defmodule Still.Compiler.Incremental.Node.Compile do
   require Logger
 
   def run(input_file, run_type \\ :compile) do
-    source_file =
+    source_files =
       %SourceFile{
         input_file: input_file,
         dependency_chain: [input_file],
@@ -33,14 +33,17 @@ defmodule Still.Compiler.Incremental.Node.Compile do
         metadata: Data.global()
       }
       |> do_run()
+      |> Still.Utils.to_list()
 
-    ErrorCache.set({:ok, source_file})
+    Enum.each(source_files, fn source_file ->
+      ErrorCache.set({:ok, source_file})
 
-    if source_file.output_file do
-      OutputToInputFileRegistry.register(input_file, source_file.output_file)
-    end
+      if source_file.output_file do
+        OutputToInputFileRegistry.register(input_file, source_file.output_file)
+      end
+    end)
 
-    source_file
+    source_files
   catch
     _, %PreprocessorError{} = error ->
       handle_error(error)

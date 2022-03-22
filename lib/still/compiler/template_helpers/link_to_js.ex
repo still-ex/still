@@ -7,6 +7,7 @@ defmodule Still.Compiler.TemplateHelpers.LinkToJS do
   """
 
   alias Still.Compiler.TemplateHelpers.UrlFor
+  alias Still.SourceFile
 
   require Logger
 
@@ -18,8 +19,8 @@ defmodule Still.Compiler.TemplateHelpers.LinkToJS do
   All options are converted to the `attr=value` format.
   """
 
-  @spec render(String.t(), list(any())) :: String.t()
-  def render(file, opts) do
+  @spec render(map(), String.t(), list(any())) :: String.t()
+  def render(env, input_file, opts) do
     link_opts =
       opts
       |> Enum.map(fn {k, v} ->
@@ -27,7 +28,10 @@ defmodule Still.Compiler.TemplateHelpers.LinkToJS do
       end)
       |> Enum.join(" ")
 
-    %{output_file: output_file} = compile_file(file, use_cache: true)
+    %{output_file: output_file} =
+      input_file
+      |> compile_file(use_cache: true)
+      |> SourceFile.for_extension(env.extension)
 
     """
     <script #{link_opts} src=\"#{UrlFor.render(output_file)}\"></script>

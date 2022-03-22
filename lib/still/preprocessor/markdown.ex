@@ -17,9 +17,11 @@ defmodule Still.Preprocessor.Markdown do
 
   import Still.Utils
 
+  @extension ".html"
+
   @impl true
   def render(%{run_type: :compile_metadata} = source_file),
-    do: %{source_file | extension: ".html"}
+    do: %{source_file | extension: @extension}
 
   def render(%{content: content, input_file: input_file} = source_file) do
     html_doc =
@@ -37,7 +39,7 @@ defmodule Still.Preprocessor.Markdown do
            end}
       )
 
-    %{source_file | content: html_doc, extension: ".html"}
+    %{source_file | content: html_doc, extension: @extension}
   end
 
   @dialyzer {:nowarn_function, use_responsive_images?: 0}

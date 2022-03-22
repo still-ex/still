@@ -3,7 +3,6 @@ defmodule Still.Image.PreprocessorTest do
 
   alias Still.SourceFile
   alias Still.Image.Preprocessor
-  alias Still.Image.Preprocessor.OutputFile
 
   @input_file "img/bg.jpg"
   @output_file "img/bg.jpg"
@@ -18,18 +17,19 @@ defmodule Still.Image.PreprocessorTest do
         output_file: @output_file
       }
 
-      assert %SourceFile{
-               source_file
-               | metadata: %{
-                   output_files: [
-                     %OutputFile{width: 100, file: @output_file_100},
-                     %OutputFile{width: 200, file: @output_file_200}
-                   ],
-                   image_opts: %{sizes: [100, 200]}
-                 }
-             } ==
-               source_file
-               |> Preprocessor.render()
+      assert [
+               %SourceFile{
+                 input_file: @input_file,
+                 metadata: %{width: 100, image_opts: %{sizes: [100, 200]}},
+                 output_file: @output_file_100
+               },
+               %SourceFile{
+                 input_file: @input_file,
+                 metadata: %{width: 200, image_opts: %{sizes: [100, 200]}},
+                 output_file: @output_file_200
+               }
+             ] ==
+               Preprocessor.render(source_file)
 
       assert File.exists?(get_output_path(@output_file_100))
       assert File.exists?(get_output_path(@output_file_200))
@@ -112,7 +112,7 @@ defmodule Still.Image.PreprocessorTest do
     end
 
     test "runs if the options changed" do
-      %{metadata: %{output_files: outputs1}} =
+      outputs1 =
         %SourceFile{
           metadata: %{image_opts: %{sizes: [100, 200]}},
           input_file: @input_file,
@@ -120,7 +120,7 @@ defmodule Still.Image.PreprocessorTest do
         }
         |> Preprocessor.render()
 
-      %{metadata: %{output_files: outputs2}} =
+      outputs2 =
         %SourceFile{
           metadata: %{
             image_opts: %{

@@ -64,16 +64,16 @@ defmodule Still.Compiler.Incremental.Node do
       file: file,
       subscribers: [],
       subscriptions: [],
-      cached_source_file: nil
+      source_files: nil
     }
 
     {:ok, state}
   end
 
   @impl true
-  def handle_call({_, use_cache: true}, _from, %{cached_source_file: source_file} = state)
-      when not is_nil(source_file) do
-    {:reply, source_file, state}
+  def handle_call({_, use_cache: true}, _from, %{source_files: source_files} = state)
+      when not is_nil(source_files) do
+    {:reply, source_files, state}
   end
 
   def handle_call({:compile, opts}, from, state) do
@@ -81,11 +81,13 @@ defmodule Still.Compiler.Incremental.Node do
     run_type = Keyword.get(opts, :run_type, :compile)
 
     try do
-      source_file = __MODULE__.Compile.run(state.file, run_type)
+      source_files = __MODULE__.Compile.run(state.file, run_type)
 
-      Enum.each(froms, &GenServer.reply(&1, source_file))
+      Enum.each(froms, &GenServer.reply(&1, source_files))
 
-      {:noreply, %{state | cached_source_file: %{source_file | content: nil}}}
+      source_files = Enum.map(source_files, &%{&1 | content: nil})
+
+      {:noreply, %{state | source_files: source_files}}
     catch
       _, %PreprocessorError{} ->
         Enum.each(froms, &GenServer.reply(&1, :ok))
@@ -96,9 +98,9 @@ defmodule Still.Compiler.Incremental.Node do
 
   @impl true
   def handle_call({:render, data}, _from, state) do
-    source_file = __MODULE__.Render.run(state.file, data)
+    source_files = __MODULE__.Render.run(state.file, data)
 
-    {:reply, source_file, state}
+    {:reply, source_files, state}
   catch
     _, %PreprocessorError{} = error ->
       {:reply, error, state}
@@ -106,9 +108,11 @@ defmodule Still.Compiler.Incremental.Node do
 
   @impl true
   def handle_call({:compile_metadata, _opts}, _from, state) do
-    source_file = __MODULE__.Compile.run(state.file, :compile_metadata)
+    source_files =
+      __MODULE__.Compile.run(state.file, :compile_metadata)
+      |> Enum.map(&%{&1 | content: nil})
 
-    {:reply, source_file, %{state | cached_source_file: %{source_file | content: nil}}}
+    {:reply, source_files, %{state | source_files: source_files}}
   catch
     _, %PreprocessorError{} ->
       {:reply, :ok, state}

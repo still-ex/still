@@ -6,6 +6,9 @@ defmodule Still.Utils do
   alias Still.SourceFile
   alias Still.Compiler.Incremental.{Node, Registry}
 
+  def to_list(arg) when is_list(arg), do: arg
+  def to_list(arg), do: [arg]
+
   def module_exists?(module) do
     :module == elem(Code.ensure_compiled(module), 0)
   end
@@ -30,9 +33,18 @@ defmodule Still.Utils do
   end
 
   @doc """
+  Renders a file.
+  """
+  @spec render_file(binary(), any()) :: list(SourceFile.t())
+  def render_file(input_file, opts \\ []) do
+    Registry.get_or_create_file_process(input_file)
+    |> Node.render(opts)
+  end
+
+  @doc """
   Compiles a file.
   """
-  @spec compile_file(binary(), any()) :: SourceFile.t()
+  @spec compile_file(binary(), any()) :: list(SourceFile.t())
   def compile_file(file, opts \\ []) do
     Registry.get_or_create_file_process(file)
     |> Node.compile(opts)
@@ -41,7 +53,7 @@ defmodule Still.Utils do
   @doc """
   Compiles a file's metadata.
   """
-  @spec compile_file_metadata(binary(), any()) :: SourceFile.t()
+  @spec compile_file_metadata(binary(), any()) :: list(SourceFile.t())
   def compile_file_metadata(file, opts \\ []) do
     Registry.get_or_create_file_process(file)
     |> Node.compile_metadata(opts)

@@ -69,13 +69,13 @@ defmodule Still.Preprocessor do
   @doc """
   Runs the preprocessor pipeline for the given file.
   """
-  @spec run(SourceFile.t()) :: SourceFile.t() | {:error, any()}
+  @spec run(SourceFile.t()) :: list(SourceFile.t()) | {:error, any()}
   def run(file) do
     file
     |> run(__MODULE__.for(file))
   end
 
-  @spec run(SourceFile.t(), list(module())) :: SourceFile.t() | {:error, any()}
+  @spec run(SourceFile.t(), list(module())) :: list(SourceFile.t()) | {:error, any()}
   def run(file, []) do
     file
   end
@@ -141,16 +141,19 @@ defmodule Still.Preprocessor do
         |> case do
           {:cont, source_file} ->
             source_file
+            |> Still.Utils.to_list()
             |> run_next_preprocessors(next_preprocessors)
 
           {:halt, source_file} ->
             source_file
+            |> Still.Utils.to_list()
 
-          %SourceFile{} = source_file ->
+          source_file ->
             source_file
+            |> Still.Utils.to_list()
             |> run_next_preprocessors(next_preprocessors)
         end
-        |> after_render()
+        |> Enum.map(&after_render/1)
       catch
         _, %PreprocessorError{} = error ->
           raise error
@@ -165,19 +168,21 @@ defmodule Still.Preprocessor do
             stacktrace: __STACKTRACE__
       end
 
-      defp run_next_preprocessors(source_file, []), do: source_file
+      defp run_next_preprocessors(source_files, []), do: source_files
 
-      defp run_next_preprocessors(source_file, [next_preprocessor | remaining_preprocesors]) do
-        cond do
-          not Still.Utils.module_exists?(next_preprocessor) ->
-            raise "Module #{next_preprocessor} does not exist"
+      defp run_next_preprocessors(source_files, [next_preprocessor | remaining_preprocesors]) do
+        Enum.flat_map(source_files, fn source_file ->
+          cond do
+            not Still.Utils.module_exists?(next_preprocessor) ->
+              raise "Module #{next_preprocessor} does not exist"
 
-          not function_exported?(next_preprocessor, :run, 2) ->
-            raise "Function run/2 in module #{next_preprocessor} does not exist"
+            not function_exported?(next_preprocessor, :run, 2) ->
+              raise "Function run/2 in module #{next_preprocessor} does not exist"
 
-          true ->
-            next_preprocessor.run(source_file, remaining_preprocesors)
-        end
+            true ->
+              next_preprocessor.run(source_file, remaining_preprocesors)
+          end
+        end)
       end
 
       @doc """

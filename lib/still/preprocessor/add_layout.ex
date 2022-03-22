@@ -10,11 +10,12 @@ defmodule Still.Preprocessor.AddLayout do
   `Still.Preprocessor.Frontmatter`.
   """
 
-  alias Still.Compiler.Incremental
   alias Still.Preprocessor
   alias Still.SourceFile
 
   use Preprocessor
+
+  import Still.Utils
 
   require Logger
 
@@ -22,22 +23,23 @@ defmodule Still.Preprocessor.AddLayout do
   def render(
         %SourceFile{
           content: children,
-          output_file: output_file,
+          extension: extension,
           dependency_chain: dependency_chain,
-          metadata: %{layout: layout_file} = metadata
+          metadata: %{layout: layout_file} = metadata,
+          output_file: output_file
         } = file
       )
       when not is_nil(layout_file) do
     layout_metadata =
       metadata
       |> Map.drop([:tag, :layout, :permalink])
-      |> Map.put(:output_file, output_file)
       |> Map.put(:children, children)
       |> Map.put(:dependency_chain, dependency_chain)
+      |> Map.put(:output_file, output_file)
 
     layout_file
-    |> Incremental.Registry.get_or_create_file_process()
-    |> Incremental.Node.render(layout_metadata)
+    |> render_file(layout_metadata)
+    |> SourceFile.for_extension(extension)
     |> case do
       %{content: content} ->
         %{file | content: content}

@@ -12,23 +12,12 @@ defmodule Still.Preprocessor.EEx do
   use Preprocessor
 
   @impl true
-  def render(file) do
-    %{file | content: do_render(file), extension: ".html"}
+  def render(%{extension: extension} = source_file) do
+    %{source_file | content: do_render(source_file), extension: extension || ".html"}
   end
 
-  defp do_render(
-         %{
-           metadata: metadata,
-           input_file: input_file,
-           dependency_chain: dependency_chain
-         } = file
-       ) do
-    metadata =
-      metadata
-      |> Map.put(:input_file, input_file)
-      |> Map.put(:dependency_chain, dependency_chain)
-
-    Renderer.create(%{file | metadata: metadata})
+  defp do_render(source_file) do
+    Renderer.create(source_file)
     |> apply(:render, [])
   end
 end

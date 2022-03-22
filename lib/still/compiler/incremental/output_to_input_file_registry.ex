@@ -28,7 +28,7 @@ defmodule Still.Compiler.Incremental.OutputToInputFileRegistry do
   @spec recompile(binary()) :: any()
   def recompile(output_file) do
     Registry.lookup(__MODULE__, output_file)
-    |> Enum.map(fn {_pid, input_file} ->
+    |> Enum.flat_map(fn {_pid, input_file} ->
       compile_file(input_file, run_type: :compile_dev)
     end)
     |> Enum.filter(fn v -> v != :ok end)

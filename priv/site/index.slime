@@ -8,4 +8,4 @@ layout: _layout.slime
 = include(@env, "_includes/community.slime")
 = include(@env, "_includes/sponsors.slime")
 
-= link_to_js "console.js"
+= link_to_js @env, "console.js"
