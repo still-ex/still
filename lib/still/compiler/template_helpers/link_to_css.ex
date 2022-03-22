@@ -6,8 +6,8 @@ defmodule Still.Compiler.TemplateHelpers.LinkToCSS do
   `Still.Compiler.CompilationStage`.
   """
 
-  alias Still.SourceFile
   alias Still.Compiler.TemplateHelpers.UrlFor
+  alias Still.SourceFile
 
   import Still.Utils
 
