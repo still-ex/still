@@ -3,8 +3,6 @@ defmodule Still.Preprocessor.OutputPath do
   Sets the output path of a file.
   If the key `:permalink` is present in the metadata, it is used as the output path.
   If not, the output path is set using the `:input_file` and `:extension keys.
-  """
-  """
 
   This preprocessor is bypassed when the `:output_path` key is already set.
   """
