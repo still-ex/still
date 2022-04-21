@@ -1,0 +1,7 @@
+---
+layout: _layout.slime
+pagination: site.test
+---
+
+h1 ola
+div = inspect(@env)
