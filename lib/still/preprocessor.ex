@@ -52,7 +52,8 @@ defmodule Still.Preprocessor do
     Save,
     AddLayout,
     AddContent,
-    Profiler
+    Profiler,
+    Pagination
   }
 
   @default_preprocessors %{
@@ -60,10 +61,10 @@ defmodule Still.Preprocessor do
     ".eex" => [AddContent, Frontmatter, EEx, OutputPath, AddLayout, Save],
     ".jpg" => [OutputPath, Image.Preprocessor],
     ".js" => [AddContent, EEx, JS, OutputPath, URLFingerprinting, AddLayout, Save],
-    ".md" => [AddContent, Frontmatter, EEx, Markdown, OutputPath, AddLayout, Save],
+    ".md" => [AddContent, Frontmatter, Pagination, EEx, Markdown, OutputPath, AddLayout, Save],
     ".png" => [OutputPath, Image.Preprocessor],
-    ".slim" => [AddContent, Frontmatter, Slime, OutputPath, AddLayout, Save],
-    ".slime" => [AddContent, Frontmatter, Slime, OutputPath, AddLayout, Save]
+    ".slim" => [AddContent, Frontmatter, Pagination, Slime, OutputPath, AddLayout, Save],
+    ".slime" => [AddContent, Frontmatter, Pagination, Slime, OutputPath, AddLayout, Save]
   }
 
   @doc """
