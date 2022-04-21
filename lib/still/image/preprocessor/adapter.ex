@@ -9,7 +9,7 @@ defmodule Still.Image.Preprocessor.Adapter do
   The `render/1` function should create several versions of the same images,
   given the `:sizes` and `:transformations` options. The purpose of this
   function is to support the `responsive_image/2 template helper`. See
-  `Still.Image.TemplateHelpers.render/2` for details on how this
+  `Still.Image.TemplateHelpers.render_html/2` for details on how this
   template helper works.
 
   `:sizes` defines the widths of the output files to create.

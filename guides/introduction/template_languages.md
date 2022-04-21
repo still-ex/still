@@ -16,7 +16,7 @@ Files with the extension `.md` will be treated as Markdown and generate `.html` 
 
 ```md
 ---
-tags:
+tag:
   - post
 ---
 

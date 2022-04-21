@@ -1,14 +1,12 @@
 # Template
 
-We call template to almost any file in the input folder. Templates
-are transformed, and combined, to create the website.
+We call "template" to almost any file in the input folder. Templates
+are transformed and combined, to create the website.
 
 ## Template Helpers
 
-In templates, you can usually write Elixir, which allows you to extend
-your site with abstractions to generate CSS or make API calls. Still comes
-with some functions out of the box to help you build your website. We call
-these template helpers.
+You can usually write Elixir and extend your site with function calls in templates.
+Still comes with some functions to help you build your website, and we call these template helpers.
 
 ### Including other files or templates
 
@@ -42,10 +40,11 @@ subpaths will not work.** For instance:
 ### Including images
 
 Image support is still (get it?) rudimentary: it can only generate images of
-different sizes. By default, it relies
-on [ImageMagick][imagemagick], but if you install [`still_imageflow`][still_imageflow]
-as a dependency it will use [imageflow][imageflow]. The reason we do not use imageflow by default is that it requires Rust. If you want to use ImageMagick, you
-also need to have it installed in your system.
+different sizes. By default, it relies on [ImageMagick][imagemagick],
+but if you install [`still_imageflow`][still_imageflow]
+as a dependency it will use [imageflow][imageflow].
+The reason we do not use imageflow by default is that it requires Rust.
+If you want to use ImageMagick, you also need to have it installed in your system.
 
 To insert an image use the function `responsive_image/2`. The first
 argument is the image's path and the second a keyword list. To transform
@@ -82,6 +81,8 @@ You can call any module from the templates (`Enum.reverse(list)` or `MyHelpers.f
 config :still,
   template_helpers: [Your.Module]
 ```
+
+**You can find more template helpers in `Still.Compiler.TemplateHelpers`.**
 
 ## Configuration
 
@@ -204,9 +205,8 @@ then iterate over this list using the `get_collections/2` function:
 
 ```slime
 ul
-  = Enum.map(get_collections(@env, "post"), fn x -> Map.get(x, :metadata) end) |> Enum.map fn x ->
-    li
-      = link x[:title], to: x[:permalink]
+  = Enum.map get_collections(@env, "post"), fn x ->
+    = link @env, x[:metadata][:title], to: x[:output_file]
 ```
 
 Collections are automatically updated when the files change. Files that

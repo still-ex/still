@@ -4,7 +4,7 @@ layout: _layout.slime
 
 #id.class
   h1 Home page
-  p Let's try to list some numbers:
+  p Let's try to list some posts:
   ul
     = Enum.map get_collections(@env, "post"), fn x ->
-      li = x["id"]
+      = link @env, x[:metadata][:title], to: x[:output_file]
