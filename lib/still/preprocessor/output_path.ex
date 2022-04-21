@@ -1,7 +1,12 @@
 defmodule Still.Preprocessor.OutputPath do
   @moduledoc """
-  Generates the output path based on the `Still.SourceFile` `:input_path` and
-  `:extension` field, adding it to the `:output_file` field.
+  Sets the output path of a file.
+  If the key `:permalink` is present in the metadata, it is used as the output path.
+  If not, the output path is set using the `:input_file` and `:extension keys.
+  """
+  """
+
+  This preprocessor is bypassed when the `:output_path` key is already set.
   """
 
   alias Still.Preprocessor
