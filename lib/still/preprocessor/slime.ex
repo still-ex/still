@@ -51,20 +51,27 @@ defmodule Still.Preprocessor.Slime do
     Map.get(obj, key, Map.get(obj, Atom.to_string(key), %{}))
   end
 
-  def set_pagination(%{metadata: %{pagination: pagination} = metadata} = source_file) do
-    pagination
-    |> String.split(".")
-    |> Enum.reduce(metadata, fn segment, acc ->
-      fetch_key(acc, segment)
-    end)
-    |> Enum.with_index(1)
-    |> Enum.map(fn {page, page_nr} ->
-      metadata =
-        metadata
-        |> Map.put(:page, page)
-        |> Map.put(:page_nr, page_nr)
+  def set_pagination(
+        %{metadata: %{pagination: %{data: data, size: size}} = metadata} = source_file
+      ) do
+    chunks =
+      data
+      |> String.split(".")
+      |> Enum.reduce(metadata, fn segment, acc ->
+        fetch_key(acc, segment)
+      end)
+      |> Enum.chunk_every(size)
 
-      %{source_file | metadata: metadata}
+    chunks
+    |> Enum.with_index(1)
+    |> Enum.map(fn {page_items, page_nr} ->
+      pagination = %{
+        items: page_items,
+        page_nr: page_nr,
+        pages: chunks
+      }
+
+      %{source_file | metadata: %{pagination: pagination}}
     end)
   end
 end

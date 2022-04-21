@@ -1,6 +1,8 @@
 ---
 layout: _layout.slime
-pagination: site.test
+pagination:
+  data: site.test
+  size: 2
 ---
 
 h1 ola

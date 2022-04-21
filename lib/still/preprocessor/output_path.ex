@@ -18,8 +18,11 @@ defmodule Still.Preprocessor.OutputPath do
   end
 
   def render(
-        %{input_file: input_file, extension: extension, metadata: %{page_nr: page_nr}} =
-          source_file
+        %{
+          input_file: input_file,
+          extension: extension,
+          metadata: %{pagination: %{page_nr: page_nr}}
+        } = source_file
       )
       when not is_nil(extension) do
     output_file =
