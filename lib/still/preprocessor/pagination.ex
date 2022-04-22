@@ -1,17 +1,40 @@
 defmodule Still.Preprocessor.Pagination do
+  @moduledoc """
+  Paginates a `Still.SourceFile` if the key `:pagination` is present.
+  The `:pagination` must be a hash containing the following keys:
+
+  * `:data` - The data to paginate. This should be valid Elixir that returns a
+              list. You can reference any variable in `:metadata` as you would in a
+              template. For instance, you can return a global data file. See `Still.Data`
+              for more information.
+  * `:size` -  The number of items per page.
+
+  Each `Still.SourceFile` will have a new `:pagination` key with the following format:
+
+  ```
+  %{
+    items: [1, 2],
+    page_nr: 1,
+    pages: [[1, 2], [3, 4], [5, 6]]
+  }
+  ```
+
+  Where `:items` is the data of the current page; `:page_nr` is the number of
+  the current page; and `:pages` is the data of all pages.
+  You can reference `:pagination` in your templates.
+  """
+
   alias Still.Preprocessor
 
   use Preprocessor
 
   @impl true
   def render(%{metadata: %{pagination: %{data: data, size: size}} = metadata} = source_file) do
-    chunks =
-      data
-      |> String.split(".")
-      |> Enum.reduce(metadata, fn segment, acc ->
-        fetch_key(acc, segment)
-      end)
-      |> Enum.chunk_every(size)
+    bindings = Enum.map(metadata, fn {key, value} -> {key, value} end)
+
+    {pagination_data, _} = Code.eval_string(data, bindings)
+
+    chunks = Enum.chunk_every(pagination_data, size)
 
     chunks
     |> Enum.with_index(1)
@@ -22,21 +45,9 @@ defmodule Still.Preprocessor.Pagination do
         pages: chunks
       }
 
-      %{source_file | metadata: %{pagination: pagination}}
+      %{source_file | metadata: %{metadata | pagination: pagination}}
     end)
   end
 
-  def render(%{metadata: %{pagination: _}, input_file: input_file}) do
-    raise ":pagination is not properly set in #{input_file}"
-  end
-
   def render(source_file), do: source_file
-
-  defp fetch_key(obj, key) when is_binary(key) do
-    Map.get(obj, key, Map.get(obj, String.to_atom(key), %{}))
-  end
-
-  defp fetch_key(obj, key) when is_atom(key) do
-    Map.get(obj, key, Map.get(obj, Atom.to_string(key), %{}))
-  end
 end

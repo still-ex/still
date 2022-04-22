@@ -15,24 +15,9 @@ defmodule Still.Preprocessor.Slime do
   @extension ".html"
 
   @impl true
-  # def render(%{run_type: :compile_metadata, metadata: %{pagination: _pagination}} = source_file) do
-  #   source_file
-  #   # |> Pagination.for()
-  #   |> Enum.map(&set_extension/1)
-  # end
-
   def render(%{run_type: :compile_metadata} = source_file) do
     set_extension(source_file)
   end
-
-  # def render(%{metadata: %{pagination: _pagination}} = source_file) do
-  #   source_file
-  #   # |> Pagination.for()
-  #   |> Enum.map(fn source_file ->
-  #     %{source_file | content: do_render(source_file)}
-  #     |> set_extension()
-  #   end)
-  # end
 
   def render(source_file) do
     %{source_file | content: do_render(source_file)}

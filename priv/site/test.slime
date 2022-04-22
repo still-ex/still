@@ -1,7 +1,8 @@
 ---
 layout: _layout.slime
+permalink: "test/<%= pagination.page_nr + 1 %>.html"
 pagination:
-  data: site.test
+  data: site.test |> Enum.take(3)
   size: 2
 ---
 
