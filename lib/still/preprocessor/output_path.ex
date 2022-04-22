@@ -13,6 +13,8 @@ defmodule Still.Preprocessor.OutputPath do
     data: some.global.data
     size: 3
   ---
+
+  # Page <%= pagination.page_nr + 1 %>
   ```
 
   So the first page is `data/2.html` instead of the default `data/1.html`.

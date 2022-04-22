@@ -10,12 +10,11 @@ defmodule Still.Preprocessor.AddLayout do
   `Still.Preprocessor.Frontmatter`.
   """
 
+  alias Still.Compiler.Incremental
   alias Still.Preprocessor
   alias Still.SourceFile
 
   use Preprocessor
-
-  import Still.Utils
 
   require Logger
 
@@ -38,7 +37,7 @@ defmodule Still.Preprocessor.AddLayout do
       |> Map.put(:output_file, output_file)
 
     layout_file
-    |> render_file(layout_metadata)
+    |> Incremental.Node.Render.run(layout_metadata)
     |> SourceFile.for_extension(extension)
     |> case do
       %{content: content} ->

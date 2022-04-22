@@ -15,7 +15,6 @@ defmodule Still.Preprocessor.Frontmatter do
   def render(%{content: content, metadata: metadata} = file) do
     [frontmatter, content] = parse_frontmatter(content)
 
-
     metadata =
       frontmatter
       |> parse_yaml()
