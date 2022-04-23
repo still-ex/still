@@ -7,7 +7,6 @@ defmodule Still.Preprocessor.Slime do
   require Slime
 
   alias Still.Preprocessor
-  # alias Still.Preprocessor.Pagination
   alias Still.Preprocessor.Slime.Renderer
 
   use Preprocessor
