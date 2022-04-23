@@ -173,7 +173,7 @@ defmodule Still.Preprocessor do
 
       defp run_next_preprocessors(source_files, [next_preprocessor | remaining_preprocesors]) do
         source_files
-        |> Enum.map(fn source_file ->
+        |> Enum.flat_map(fn source_file ->
           cond do
             not Still.Utils.module_exists?(next_preprocessor) ->
               raise "Module #{next_preprocessor} does not exist"
@@ -185,7 +185,6 @@ defmodule Still.Preprocessor do
               next_preprocessor.run(source_file, remaining_preprocesors)
           end
         end)
-        |> List.flatten()
       end
 
       @doc """
