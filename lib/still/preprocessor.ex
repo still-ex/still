@@ -172,21 +172,20 @@ defmodule Still.Preprocessor do
       defp run_next_preprocessors(source_files, []), do: source_files
 
       defp run_next_preprocessors(source_files, [next_preprocessor | remaining_preprocesors]) do
-        Enum.map(source_files, fn source_file ->
-          Task.async(fn ->
-            cond do
-              not Still.Utils.module_exists?(next_preprocessor) ->
-                raise "Module #{next_preprocessor} does not exist"
+        source_files
+        |> Enum.map(fn source_file ->
+          cond do
+            not Still.Utils.module_exists?(next_preprocessor) ->
+              raise "Module #{next_preprocessor} does not exist"
 
-              not function_exported?(next_preprocessor, :run, 2) ->
-                raise "Function run/2 in module #{next_preprocessor} does not exist"
+            not function_exported?(next_preprocessor, :run, 2) ->
+              raise "Function run/2 in module #{next_preprocessor} does not exist"
 
-              true ->
-                next_preprocessor.run(source_file, remaining_preprocesors)
-            end
-          end)
+            true ->
+              next_preprocessor.run(source_file, remaining_preprocesors)
+          end
         end)
-        |> Enum.flat_map(&Task.await(&1, :infinity))
+        |> List.flatten()
       end
 
       @doc """

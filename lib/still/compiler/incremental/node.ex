@@ -85,7 +85,7 @@ defmodule Still.Compiler.Incremental.Node do
 
       Enum.each(froms, &GenServer.reply(&1, source_files))
 
-      source_files = Enum.map(source_files, &%{&1 | content: nil})
+      source_files = Enum.map(source_files, &%{&1 | content: nil, metadata: nil})
 
       {:noreply, %{state | source_files: source_files}}
     catch
@@ -110,7 +110,7 @@ defmodule Still.Compiler.Incremental.Node do
   def handle_call({:compile_metadata, _opts}, _from, state) do
     source_files =
       __MODULE__.Compile.run(state.file, :compile_metadata)
-      |> Enum.map(&%{&1 | content: nil})
+      |> Enum.map(&%{&1 | content: nil, metadata: nil})
 
     {:reply, source_files, %{state | source_files: source_files}}
   catch

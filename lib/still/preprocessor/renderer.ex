@@ -98,6 +98,8 @@ defmodule Still.Preprocessor.Renderer do
 
             import Still.Compiler.TemplateHelpers
 
+            alias Still.Data
+
             Enum.each(unquote(Macro.escape(metadata)), fn {k, v} ->
               Module.put_attribute(__MODULE__, k, v)
             end)

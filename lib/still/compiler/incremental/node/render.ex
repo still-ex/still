@@ -8,12 +8,11 @@ defmodule Still.Compiler.Incremental.Node.Render do
   """
 
   alias Still.Compiler.{ErrorCache, PreprocessorError}
-  alias Still.Data
   alias Still.Preprocessor
   alias Still.SourceFile
 
   def run(input_file, %{dependency_chain: dependency_chain} = data) do
-    metadata = Map.merge(Data.global(), Map.drop(data, [:dependency_chain]))
+    metadata = Map.drop(data, [:dependency_chain])
 
     %SourceFile{
       input_file: input_file,

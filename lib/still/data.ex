@@ -10,7 +10,7 @@ defmodule Still.Data do
   @default_folder "_data"
 
   @moduledoc """
-  Loads data files and makes data available in templates.
+  Loads data files and makes the data available in templates.
   Any file in the _#{@default_folder}_ folder will be loaded
   using the file's name as a key. For instance, a file in
   _#{@default_folder}/site.json_ with the contents:
@@ -19,11 +19,11 @@ defmodule Still.Data do
         "title": "Still"
       }
 
-  Will be available in the templates as `@site.title`.
+  Will be available in the templates as `Data.global().site.title`.
 
   You can also use folders to organise files; the same file in
   `_#{@default_folder}/default/site.json_` would be available
-  in the templates as `@default.site.title`.
+  in the templates as `Data.global().default.site.title`.
 
   The data folder can be changed in the config:
 
@@ -140,7 +140,7 @@ defmodule Still.Data do
 
       ".json" ->
         File.read!(file)
-        |> Jason.decode!(keys: :atoms)
+        |> Jason.decode!()
     end
   end
 
