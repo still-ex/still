@@ -29,6 +29,7 @@ defmodule Still.MixProject do
         "guides/introduction/templates.md",
         "guides/introduction/configuration.md",
         "guides/introduction/data.md",
+        "guides/introduction/pagination.md",
         "guides/advanced/preprocessors.md",
         "guides/advanced/hooks.md"
       ],
