@@ -32,21 +32,22 @@ defmodule Still.Preprocessor.Pagination do
   def render(%{metadata: %{pagination: %{data: data, size: size}} = metadata} = source_file) do
     bindings = get_bindings(metadata)
 
-    with {pagination_data, _} when is_list(pagination_data) <- Code.eval_string(data, bindings) do
-      chunks = Enum.chunk_every(pagination_data, size)
+    case Code.eval_string(data, bindings) do
+      {pagination_data, _} when is_list(pagination_data) ->
+        chunks = Enum.chunk_every(pagination_data, size)
 
-      chunks
-      |> Enum.with_index(1)
-      |> Enum.map(fn {page_items, page_nr} ->
-        pagination = %{
-          items: page_items,
-          page_nr: page_nr,
-          pages: chunks
-        }
+        chunks
+        |> Enum.with_index(1)
+        |> Enum.map(fn {page_items, page_nr} ->
+          pagination = %{
+            items: page_items,
+            page_nr: page_nr,
+            pages: chunks
+          }
 
-        %{source_file | metadata: %{metadata | pagination: pagination}}
-      end)
-    else
+          %{source_file | metadata: %{metadata | pagination: pagination}}
+        end)
+
       _ ->
         raise "Failed to eval \"#{data}\""
     end
