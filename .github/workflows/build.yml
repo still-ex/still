@@ -30,16 +30,16 @@ jobs:
         uses: actions/cache@v2
         with:
           path: deps
-          key: ${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-mix-${{ hashFiles('**/mix.lock') }}
-          restore-keys: ${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-mix-
+          key: ${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-mix-v2-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-mix-v2
 
       - name: Cache build
         uses: actions/cache@v1
         with:
           path: _build
-          key: ${{ runner.OS }}-${{ matrix.elixir }}-${{ matrix.otp }}-build-
+          key: ${{ runner.OS }}-${{ matrix.elixir }}-${{ matrix.otp }}-build-v2
           restore-keys: |
-            ${{ runner.OS }}-${{ matrix.elixir }}-${{ matrix.otp }}-build-
+            ${{ runner.OS }}-${{ matrix.elixir }}-${{ matrix.otp }}-build-v2
 
       - name: Install dependencies
         run: |
