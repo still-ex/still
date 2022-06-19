@@ -45,8 +45,7 @@ defmodule Still.Compiler.TemplateHelpers do
 
     metadata = Map.put(metadata, :dependency_chain, env[:dependency_chain])
 
-    with pid when not is_nil(pid) <- Incremental.Registry.get_or_create_file_process(file),
-         source_files <- Incremental.Node.render(pid, metadata),
+    with source_files <- Incremental.Node.Render.run(file, metadata),
          %SourceFile{content: content} <- SourceFile.for_extension(source_files, env.extension) do
       content
     else

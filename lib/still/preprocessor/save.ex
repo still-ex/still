@@ -18,7 +18,7 @@ defmodule Still.Preprocessor.Save do
 
   @impl true
   def render(%{input_file: input_file, run_type: :compile} = file) do
-    file = %{content: content} = file |> append_development_layout()
+    file = %{content: content} = append_development_layout(file)
 
     with new_file_path <- get_output_path(file),
          _ <- File.mkdir_p!(Path.dirname(new_file_path)),
@@ -40,8 +40,7 @@ defmodule Still.Preprocessor.Save do
 
   @impl true
   def render(%{run_type: :compile_dev} = file) do
-    file
-    |> append_development_layout()
+    append_development_layout(file)
   end
 
   @impl true

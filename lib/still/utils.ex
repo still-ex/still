@@ -175,6 +175,16 @@ defmodule Still.Utils do
   end
 
   @doc """
+  Receives an absolute path and converts it to relative by trimming the site's
+  entrypoint directory.
+  """
+  def get_relative_output_path(full_path) do
+    full_path
+    |> String.replace(get_output_path(), "")
+    |> String.trim_leading("/")
+  end
+
+  @doc """
   Returns the site's base URL.
   """
   def get_base_url do

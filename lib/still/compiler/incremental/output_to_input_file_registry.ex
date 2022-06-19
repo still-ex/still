@@ -17,21 +17,24 @@ defmodule Still.Compiler.Incremental.OutputToInputFileRegistry do
   def register(input_file, output_file) do
     Registry.register(
       __MODULE__,
-      output_file |> Still.Utils.get_output_path(),
+      get_output_path(output_file),
       input_file
     )
   end
 
   @doc """
-  Compiles the input files for the given output.
+  Compiles the input files for the given output file.
   """
   @spec recompile(binary()) :: any()
-  def recompile(output_file) do
-    Registry.lookup(__MODULE__, output_file)
+  def recompile(output_path) do
+    output_file = get_relative_output_path(output_path)
+
+    Registry.lookup(__MODULE__, output_path)
     |> Enum.flat_map(fn {_pid, input_file} ->
       compile_file(input_file, run_type: :compile_dev)
     end)
     |> Enum.filter(fn v -> v != :ok end)
+    |> Enum.filter(fn %{output_file: other_output_file} -> output_file == other_output_file end)
     |> case do
       [source_file] ->
         source_file

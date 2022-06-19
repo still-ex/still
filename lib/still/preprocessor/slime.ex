@@ -14,14 +14,21 @@ defmodule Still.Preprocessor.Slime do
   @extension ".html"
 
   @impl true
-  def render(%{run_type: :compile_metadata} = source_file),
-    do: %{source_file | extension: @extension}
+  def render(%{run_type: :compile_metadata} = source_file) do
+    set_extension(source_file)
+  end
 
-  def render(source_file),
-    do: %{source_file | content: do_render(source_file), extension: @extension}
+  def render(source_file) do
+    %{source_file | content: do_render(source_file)}
+    |> set_extension()
+  end
 
   defp do_render(source_file) do
     Renderer.create(source_file)
     |> apply(:render, [])
+  end
+
+  defp set_extension(source_file) do
+    %{source_file | extension: @extension}
   end
 end

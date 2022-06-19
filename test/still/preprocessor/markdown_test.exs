@@ -1,8 +1,8 @@
 defmodule Still.Preprocessor.MarkdownTest do
   use ExUnit.Case, async: true
 
-  alias Still.SourceFile
   alias Still.Preprocessor.Markdown
+  alias Still.SourceFile
 
   describe "render/1" do
     test "doesn't replace images with responsive images when :use_responsive_images is false" do

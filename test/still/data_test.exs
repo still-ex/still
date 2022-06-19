@@ -18,11 +18,11 @@ defmodule Still.DataTest do
                  people: %{"authors" => ["gabriel", "fernando"]},
                  site: %{
                    colors: %{
-                     black: "#222",
-                     brown: "#A46F41",
-                     orange: "#DA9F5D",
-                     red: "#D57050",
-                     white: "#F3EAC3"
+                     "black" => "#222",
+                     "brown" => "#A46F41",
+                     "orange" => "#DA9F5D",
+                     "red" => "#D57050",
+                     "white" => "#F3EAC3"
                    },
                    footer: %{
                      copy: %{message: "This is the end of the website."}
@@ -56,11 +56,11 @@ defmodule Still.DataTest do
                  people: %{"authors" => ["gabriel", "fernando"]},
                  site: %{
                    colors: %{
-                     black: "#222",
-                     brown: "#A46F41",
-                     orange: "#DA9F5D",
-                     red: "#D57050",
-                     white: "#F3EAC3"
+                     "black" => "#222",
+                     "brown" => "#A46F41",
+                     "orange" => "#DA9F5D",
+                     "red" => "#D57050",
+                     "white" => "#F3EAC3"
                    },
                    footer: %{
                      copy: %{message: "This is the end of the website."}

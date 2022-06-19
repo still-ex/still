@@ -1,8 +1,8 @@
 # Preprocessors
 
-Preprocessors are the cornerstone of Still. A preprocessor chain can take a markdown file, execute its embedded Elixir, extract metadata from its frontmatter, transform it into HTML and wrap it in a layout.
+Preprocessors are the cornerstone of Still. A preprocessor chain can take a markdown file, extract metadata from its frontmatter, execute its embedded Elixir, transform it into HTML and wrap it in a layout.
 
-The default preprocessors are in `Still.Preprocessor`. Each file in the input folder with one of the declared extensions is transformed and placed in the same relative place in the output folder. For instance, the file `about.md` will become `about.html` in the output folder. A file inside a folder, such as `blog/post_1.md`, will be in the same folder on the output directory: `blog/post_1.html`.
+The default preprocessors are in `Still.Preprocessor`. Each file in the input folder with one of the declared extensions is transformed and placed in the same relative place in the output folder. For instance, the file `about.md` will become `about.html` in the output folder. A file in a subfolder, such as `blog/post_1.md`, will be in the same subfolder on the output directory: `blog/post_1.html`. See `Still.Preprocessor.OutputPath` if you need to override this behaviour.
 
 Notice that many file types, such as markdown and CSS, run through EEx, which means you can use EEx syntax in those files. Here's an example of a CSS file that uses EEx interpolation:
 
@@ -34,10 +34,10 @@ end
 
 **A custom preprocessor is a module that calls `use Still.Preprocessor` and implements the `render/1` function.** In this example, the `render` function is used to transform the metadata of a `Still.SourceFile`.
 
-**Preprocessors are always part of a transformation chain** and each file will run through the chain, using the output of the one preprocessor as the input of the next.
-If you look at the default preprocessors in the `Still.Preprocessor`, you can see that some files go through a frontmatter preprocessor, and CSS, for instance, goes through EEx, which allows for the interpolation mentioned above.
+**Preprocessors are a transformation chain** where the output of one preprocessor is used as the input of the next.
+See `Still.Preprocessor` for the default chains.
 
-To use the preprocessor defined above, you need to add it to the config:
+To use the preprocessor defined above, add it to the config:
 
 ```elixir
 config :still,

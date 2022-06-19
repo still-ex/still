@@ -1,4 +1,5 @@
 {
   "description": "Still is a composable static site generator for Elixir.",
-  "keywords": "elixir, static, site, generator, open-source, opensource, static-site"
+  "keywords": "elixir, static, site, generator, open-source, opensource, static-site",
+  "test": ["1", "asdf2", "3", "4", "5"]
 }

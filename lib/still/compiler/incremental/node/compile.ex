@@ -17,8 +17,6 @@ defmodule Still.Compiler.Incremental.Node.Compile do
     PreprocessorError
   }
 
-  alias Still.Data
-
   alias Still.Preprocessor
   alias Still.SourceFile
 
@@ -30,7 +28,7 @@ defmodule Still.Compiler.Incremental.Node.Compile do
         input_file: input_file,
         dependency_chain: [input_file],
         run_type: run_type,
-        metadata: Data.global()
+        metadata: %{}
       }
       |> do_run()
       |> Still.Utils.to_list()

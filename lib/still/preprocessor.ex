@@ -52,18 +52,19 @@ defmodule Still.Preprocessor do
     Save,
     AddLayout,
     AddContent,
-    Profiler
+    Profiler,
+    Pagination
   }
 
   @default_preprocessors %{
-    ".slim" => [AddContent, EEx, Frontmatter, Slime, OutputPath, AddLayout, Save],
-    ".slime" => [AddContent, EEx, Frontmatter, Slime, OutputPath, AddLayout, Save],
-    ".eex" => [AddContent, EEx, Frontmatter, OutputPath, AddLayout, Save],
     ".css" => [AddContent, EEx, CSSMinify, OutputPath, URLFingerprinting, AddLayout, Save],
-    ".js" => [AddContent, EEx, JS, OutputPath, URLFingerprinting, AddLayout, Save],
-    ".md" => [AddContent, EEx, Frontmatter, Markdown, OutputPath, AddLayout, Save],
+    ".eex" => [AddContent, Frontmatter, EEx, OutputPath, AddLayout, Save],
     ".jpg" => [OutputPath, Image.Preprocessor],
-    ".png" => [OutputPath, Image.Preprocessor]
+    ".js" => [AddContent, EEx, JS, OutputPath, URLFingerprinting, AddLayout, Save],
+    ".md" => [AddContent, Frontmatter, Pagination, EEx, Markdown, OutputPath, AddLayout, Save],
+    ".png" => [OutputPath, Image.Preprocessor],
+    ".slim" => [AddContent, Frontmatter, Pagination, Slime, OutputPath, AddLayout, Save],
+    ".slime" => [AddContent, Frontmatter, Pagination, Slime, OutputPath, AddLayout, Save]
   }
 
   @doc """
@@ -171,7 +172,8 @@ defmodule Still.Preprocessor do
       defp run_next_preprocessors(source_files, []), do: source_files
 
       defp run_next_preprocessors(source_files, [next_preprocessor | remaining_preprocesors]) do
-        Enum.flat_map(source_files, fn source_file ->
+        source_files
+        |> Enum.flat_map(fn source_file ->
           cond do
             not Still.Utils.module_exists?(next_preprocessor) ->
               raise "Module #{next_preprocessor} does not exist"
