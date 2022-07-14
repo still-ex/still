@@ -33,7 +33,7 @@ defmodule Still.Profiler do
   end
 
   @doc """
-  Return a timestamp of the current system time in millseconds.
+  Return a timestamp of the current system time in milliseconds.
   """
   def timestamp do
     :os.system_time(:millisecond)

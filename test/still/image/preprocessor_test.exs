@@ -87,7 +87,7 @@ defmodule Still.Image.PreprocessorTest do
       assert Timex.compare(mtime, new_mtime) == -1
     end
 
-    test "doens't run if the options didn't change" do
+    test "doesn't run if the options didn't change" do
       source_file = %SourceFile{
         metadata: %{image_opts: %{sizes: [100, 200]}},
         input_file: @input_file,

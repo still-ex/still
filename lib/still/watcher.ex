@@ -1,7 +1,7 @@
 defmodule Still.Watcher do
   @moduledoc """
   File system watcher that triggers compilation for new files, recompilation for
-  changed files and kills ane `Still.Compiler.Incremental.Node` for removed
+  changed files and kills and `Still.Compiler.Incremental.Node` for removed
   files. Should only be used in the `dev` environment.
   """
 

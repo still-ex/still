@@ -69,7 +69,7 @@ defmodule Still.Utils do
   end
 
   @doc """
-  Returns true if the modified time of the imput file is different than the output file.
+  Returns true if the modified time of the input file is different than the output file.
   """
   def input_file_changed?(input_file, output_file) do
     with {:ok, input_mtime} <-
