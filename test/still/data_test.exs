@@ -46,7 +46,7 @@ defmodule Still.DataTest do
   end
 
   describe "global/1" do
-    test "reads from memroy" do
+    test "reads from memory" do
       assert Data.global() == %{}
 
       Data.load()

@@ -30,7 +30,7 @@ defmodule Still.Compiler.Incremental.Registry do
   end
 
   @doc """
-  Attempts to retrive the `Still.Compiler.Incremental.Node` corresponding to the
+  Attempts to retrieve the `Still.Compiler.Incremental.Node` corresponding to the
   given file name. If none exists, a new node is started.
   """
   def get_or_create_file_process(file) do

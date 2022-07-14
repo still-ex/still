@@ -92,11 +92,11 @@ If you add your own template language, you can support this by ensuring the file
 
 ### Permalink
 
-Setting the `permalink` option allows you to override the output path of a file. For instance, by default `blog/post_1/index.md` would generate `blog/post_1/index.html`, but you can change it to `blog/announcment.html` like this:
+Setting the `permalink` option allows you to override the output path of a file. For instance, by default `blog/post_1/index.md` would generate `blog/post_1/index.html`, but you can change it to `blog/announcement.html` like this:
 
 ```slime
 ---
-permalink: `blog/announcment.html`
+permalink: `blog/announcement.html`
 ---
 
 # Post 1 - Announcement
