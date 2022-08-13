@@ -1,5 +1,10 @@
 defmodule Mix.Tasks.Still.Compile do
+  @moduledoc """
+  Compiles your site into an output folder, which is `_site` by default.
+  """
   use Mix.Task
+
+  @shortdoc "Compiles your site"
 
   @config_key :compilation_task
 
@@ -15,5 +20,6 @@ defmodule Mix.Tasks.Still.Compile do
     Still.Compiler.Compile.run()
   end
 
+  @doc false
   def config_key, do: @config_key
 end
