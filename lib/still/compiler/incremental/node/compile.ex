@@ -22,14 +22,27 @@ defmodule Still.Compiler.Incremental.Node.Compile do
 
   require Logger
 
-  def run(input_file, run_type \\ :compile) do
+  def run(input_file, opts) when is_list(opts) do
+    run(input_file, Enum.into(opts, %{}))
+  end
+
+  def run(input_file, opts) do
+    attrs =
+      Map.merge(
+        %{
+          input_file: input_file,
+          dependency_chain: [input_file],
+          run_type: :compile,
+          metadata: %{}
+        },
+        opts
+      )
+
     source_files =
-      %SourceFile{
-        input_file: input_file,
-        dependency_chain: [input_file],
-        run_type: run_type,
-        metadata: %{}
-      }
+      struct(
+        SourceFile,
+        attrs
+      )
       |> do_run()
       |> Still.Utils.to_list()
 

@@ -17,6 +17,7 @@ defmodule Still.SourceFile do
     extension: nil,
     metadata: %{},
     profilable: true,
+    requested_output_file: nil,
     run_type: :render
   ]
 
@@ -27,6 +28,7 @@ defmodule Still.SourceFile do
           input_file: binary(),
           metadata: map(),
           output_file: binary() | nil,
+          requested_output_file: binary() | nil,
           profilable: boolean(),
           run_type: :render | :compile | :compile_metadata | :compile_dev
         }
