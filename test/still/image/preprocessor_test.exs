@@ -73,6 +73,10 @@ defmodule Still.Image.PreprocessorTest do
         get_output_path(@output_file_100)
         |> get_modified_time!()
 
+      # Sleep is necessary because the minium unit for the modified time is second.
+      # Therefore we would sometimes get failing tests just because they ran too fast.
+      Process.sleep(1000)
+
       source_file.input_file
       |> get_input_path()
       |> File.touch!()
