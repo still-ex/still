@@ -1,5 +1,5 @@
 defmodule Still.Preprocessor.PaginationTest do
-  use Still.Case, async: true
+  use Still.Case, async: false
 
   alias Still.Preprocessor.Pagination
   alias Still.SourceFile

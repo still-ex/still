@@ -1,5 +1,5 @@
 defmodule Still.Image.Preprocessor.HtmlTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case, async: false
 
   alias Still.Image.Preprocessor.Html
   alias Still.SourceFile
