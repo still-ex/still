@@ -40,31 +40,52 @@ defmodule Still.Preprocessor do
   alias Still.Image
 
   alias __MODULE__.{
+    AddContent,
+    AddLayout,
     CSSMinify,
     EEx,
     Frontmatter,
     JS,
     Markdown,
     OutputPath,
-    OutputPath,
-    Slime,
-    URLFingerprinting,
-    Save,
-    AddLayout,
-    AddContent,
+    Pagination,
     Profiler,
-    Pagination
+    RequestedOutputFile,
+    Save,
+    Slime,
+    URLFingerprinting
   }
 
+  @content_before_preprocessors [
+    AddContent,
+    Frontmatter,
+    Pagination
+  ]
+
+  @content_after_preprocessors [
+    OutputPath,
+    RequestedOutputFile,
+    AddLayout,
+    Save
+  ]
+
+  @assets_after_preprocessors [
+    OutputPath,
+    RequestedOutputFile,
+    URLFingerprinting,
+    AddLayout,
+    Save
+  ]
+
   @default_preprocessors %{
-    ".css" => [AddContent, EEx, CSSMinify, OutputPath, URLFingerprinting, AddLayout, Save],
-    ".eex" => [AddContent, Frontmatter, EEx, OutputPath, AddLayout, Save],
+    ".css" => [AddContent, EEx, CSSMinify] ++ @assets_after_preprocessors,
+    ".eex" => @content_before_preprocessors ++ [EEx] ++ @content_after_preprocessors,
     ".jpg" => [OutputPath, Image.Preprocessor],
-    ".js" => [AddContent, EEx, JS, OutputPath, URLFingerprinting, AddLayout, Save],
-    ".md" => [AddContent, Frontmatter, Pagination, EEx, Markdown, OutputPath, AddLayout, Save],
+    ".js" => [AddContent, EEx, JS] ++ @assets_after_preprocessors,
+    ".md" => @content_before_preprocessors ++ [EEx, Markdown] ++ @content_after_preprocessors,
     ".png" => [OutputPath, Image.Preprocessor],
-    ".slim" => [AddContent, Frontmatter, Pagination, Slime, OutputPath, AddLayout, Save],
-    ".slime" => [AddContent, Frontmatter, Pagination, Slime, OutputPath, AddLayout, Save]
+    ".slim" => @content_before_preprocessors ++ [Slime] ++ @content_after_preprocessors,
+    ".slime" => @content_before_preprocessors ++ [Slime] ++ @content_after_preprocessors
   }
 
   @doc """
