@@ -74,7 +74,6 @@ defmodule Still.Image.Preprocessor.Mogrify do
         File.cp!(input_file_path, output_file_path)
 
         output_file_path
-        |> IO.inspect(label: "output_file_path")
         |> open()
         |> apply_transformations(Map.get(opts, :transformations))
         |> resize(size)
