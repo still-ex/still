@@ -1,5 +1,5 @@
 defmodule Still.ProfilerTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case, async: false
 
   alias Still.Profiler
   alias Still.SourceFile

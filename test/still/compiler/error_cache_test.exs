@@ -1,5 +1,5 @@
 defmodule Still.Compiler.ErrorCacheTest do
-  use Still.Case, async: true
+  use Still.Case, async: false
 
   alias Still.Compiler.{ErrorCache, PreprocessorError}
   alias Still.SourceFile

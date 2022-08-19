@@ -1,5 +1,5 @@
 defmodule Still.Preprocessor.MarkdownTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case, async: false
 
   alias Still.Preprocessor.Markdown
   alias Still.SourceFile

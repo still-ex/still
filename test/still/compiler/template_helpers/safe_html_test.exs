@@ -1,5 +1,5 @@
 defmodule Still.Compiler.TemplateHelpers.SafeHTMLTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case, async: false
 
   alias Still.Compiler.TemplateHelpers.SafeHTML
 

@@ -20,6 +20,12 @@ defmodule Still.Case do
         Still.Utils.clean_output_dir()
         Still.Case.ensure_clean_error_cache()
 
+        preprocessors = Application.get_env(:still, :preprocessors) || %{}
+
+        on_exit(fn ->
+          Application.put_env(:still, :preprocessors, preprocessors)
+        end)
+
         :ok
       end
     end
