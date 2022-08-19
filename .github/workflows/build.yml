@@ -53,8 +53,8 @@ jobs:
       - name: Run formatter
         run: mix format --check-formatted
 
-      # - name: Run credo
-      #   run: mix credo
+      - name: Run credo
+        run: mix credo
 
       - name: Run tests
         run: mix test --timeout 120000
