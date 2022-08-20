@@ -45,7 +45,7 @@ Add `still` as a dependency in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:still, "~> 0.7.0"}
+    {:still, "~> 0.8.0"}
   ]
 end
 ```

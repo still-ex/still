@@ -10,7 +10,7 @@ by adding `still_new` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:still_new, "~> 0.7.0"}
+    {:still_new, "~> 0.8.0"}
   ]
 end
 ```
