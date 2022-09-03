@@ -71,14 +71,13 @@ defmodule Still.Image.Preprocessor.Mogrify do
         output_file_path = get_output_path(output_file)
 
         output_file_path |> Path.dirname() |> File.mkdir_p!()
-        File.cp!(input_file_path, output_file_path)
 
-        output_file_path
+        input_file_path
         |> open()
         |> apply_transformations(Map.get(opts, :transformations))
         |> resize(size)
         |> quality(config(:image_quality, 90))
-        |> save(in_place: true)
+        |> save(path: output_file_path)
       end)
     end)
     |> Enum.map(&Task.await(&1, :infinity))

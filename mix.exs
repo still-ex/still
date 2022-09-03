@@ -70,7 +70,7 @@ defmodule Still.MixProject do
       {:jason, "~> 1.2"},
       {:mime, "~> 1.0"},
       {:mock, "~> 0.3.0", only: :test},
-      {:mogrify, "~> 0.8.0"},
+      {:mogrify, "~> 0.9.2"},
       {:plug, "~> 1.10"},
       {:plug_cowboy, "~> 2.3"},
       {:slime, "~> 1.2"},
