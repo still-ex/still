@@ -10,6 +10,8 @@ defmodule Still.Compiler.ErrorCache do
 
   alias Still.SourceFile
 
+  import Still.Utils
+
   def start_link(_) do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
   end
@@ -57,11 +59,15 @@ defmodule Still.Compiler.ErrorCache do
   end
 
   def handle_cast({:set, {:ok, source_file}}, state) do
-    errors =
+    {errors, previous_errors} =
       state.errors
-      |> Map.delete(source_file_id(source_file))
+      |> Enum.split_with(fn {_, error} ->
+        error.source_file.input_file != source_file.input_file
+      end)
 
-    state = %{state | errors: errors}
+    recompile_source_files(previous_errors)
+
+    state = %{state | errors: Enum.into(errors, %{})}
 
     {:noreply, state}
   end
@@ -98,5 +104,19 @@ defmodule Still.Compiler.ErrorCache do
   defp source_file_id(%SourceFile{dependency_chain: dependency_chain}) do
     dependency_chain
     |> Enum.join(" <- ")
+  end
+
+  defp recompile_source_files([]), do: nil
+
+  defp recompile_source_files(errors) do
+    errors
+    |> Enum.map(fn {_, error} ->
+      Task.async(fn ->
+        error.source_file.dependency_chain
+        |> List.last()
+        |> compile_file_metadata()
+      end)
+    end)
+    |> Task.await_many(:infinity)
   end
 end
