@@ -43,7 +43,7 @@ defmodule Still.Compiler.TemplateHelpers do
   def include(env, file, metadata) do
     ensure_file_exists!(file)
 
-    metadata = Map.put(metadata, :dependency_chain, env[:dependency_chain])
+    metadata = Map.merge(env, metadata)
 
     with source_files <- Incremental.Node.Render.run(file, metadata),
          %SourceFile{content: content} <- SourceFile.for_extension(source_files, env.extension) do
