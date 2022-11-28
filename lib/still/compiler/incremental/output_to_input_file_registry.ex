@@ -32,6 +32,7 @@ defmodule Still.Compiler.Incremental.OutputToInputFileRegistry do
     Registry.lookup(__MODULE__, output_path)
     |> Enum.flat_map(fn {_pid, input_file} ->
       compile_file(input_file, run_type: :compile_dev, requested_output_file: output_file)
+      |> to_list()
     end)
     |> Enum.filter(fn v -> v != :ok end)
     |> Enum.filter(fn %{output_file: other_output_file} -> output_file == other_output_file end)
