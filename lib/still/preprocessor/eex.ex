@@ -12,8 +12,8 @@ defmodule Still.Preprocessor.EEx do
   use Preprocessor
 
   @impl true
-  def render(%{extension: extension} = source_file) do
-    %{source_file | content: do_render(source_file), extension: extension || ".html"}
+  def render(source_file) do
+    %{source_file | content: do_render(source_file), extension: ".html"}
   end
 
   defp do_render(source_file) do
